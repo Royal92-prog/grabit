@@ -7,7 +7,7 @@ Now with:
 - New game modes!
 - No physical cards required!
 
-*Finally you can take the popular card game to anywhere, play with everyone, and HAVE FUN!*
+**Finally you can take the popular card game to anywhere, play with everyone, and HAVE FUN!**
 
 
 ## Motivation
