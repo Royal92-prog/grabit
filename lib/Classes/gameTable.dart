@@ -11,10 +11,9 @@ class gameTable extends StatelessWidget {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     //Container(color : Colors.green),
     return Center(child : SizedBox(height:0.8 * size.height,width:0.75 * size.width,
-      child: Stack(children: <Widget>[Center(child:SvgPicture.asset('assets/WoodenTable.svg',height: 0.65 * size.height,width:0.75 * size.width ,alignment: Alignment.centerRight))
-    ,//height: 320,fit: BoxFit.fitHeight
-      Player()
-        ])));
+      child: Stack(children: <Widget>[Center(child:SvgPicture.asset('assets/WoodenTable.svg',height: 0.65 * size.height,
+      width:0.75 * size.width ,alignment: Alignment.centerRight)),
+      Player()])));
   }
 }
 //Positioned(top: -1*size.height * 0.001,left:size.width*0.347,child:)
