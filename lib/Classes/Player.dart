@@ -31,7 +31,8 @@ class PlayerState extends State<Player>{
 
     var size = MediaQuery.of(context).size;
     print(size.height);
-    return Align(child:Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: [Stack(fit: StackFit.passthrough,children:
+    print(size.height);
+    return Align(child:Column(children: [Align(alignment:Alignment(-0.01,0),child:Stack(fit: StackFit.passthrough,children:
     [Positioned(right:0.01 * size.width,child:Column(children: [Text("Player No.1",style: TextStyle(fontSize: 10,color: Colors.white)
       ,),Container(height:0.12 * size.height,
       width:0.12 * size.width, decoration: BoxDecoration(
@@ -40,19 +41,12 @@ class PlayerState extends State<Player>{
         child:Stack(clipBehavior: Clip.antiAliasWithSaveLayer, fit: StackFit.loose,children:
         [Align(widthFactor:0.2 * size.width, heightFactor: 0.2 * size.height,
             alignment: Alignment.bottomLeft, child:SvgPicture.asset('assets/Full_pack.svg',width: 0.1 * size.width, height: 0.1 * size.height,))
-          ,Positioned(right:0.016 * size.width,top:0.017 * size.height,
-            child:Text("0",style: TextStyle(fontSize: 16,color: Colors.black)))],
-        ) )],),
+          ,Align(alignment:Alignment(-0.73,0.3),child: Text("0",style: TextStyle(fontSize: 16,color: Colors.black)))],
+        ) )],),),SizedBox(height: size.height * 0.06, width: size.width * 0.06 ,),
       SvgPicture.asset('assets/1.svg',width: 0.12 * size.width, height: 0.12 * size.height,
-          alignment: Alignment(-1000,-0.5))
-    ],
-//Positioned(right:5,top:30,child:
-//SvgPicture.asset('assets/1.svg',width: 0.12 * size.width, height: 0.12 * size.height,)
-
-
-
-    ),
-    alignment: Alignment(0,-0.8),);;
+          alignment: Alignment.bottomRight)
+    ],),
+    alignment: Alignment(0,-1),);;
   }
 
 }
