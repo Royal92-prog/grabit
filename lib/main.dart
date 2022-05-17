@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart';
-import 'package:grabit/Classes/Player.dart';
+import 'package:grabit/Classes/player.dart';
 import 'package:grabit/Classes/gameTable.dart';
+import 'package:provider/provider.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -10,30 +11,121 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-
-
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<gameHandler>(
+          create: (_) => gameHandler(3),
+        )
+      ],
+      child:MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: gameTable()//OrientationBuilder(builder: (context, orientation) =>buildTable(),),
-    );
+        debugShowCheckedModeBanner: false,
+
+        home: gameTable()//OrientationBuilder(builder: (context, orientation) =>buildTable(),),
+    ),);
   }
 }
+
+class gameHandler with ChangeNotifier {
+  //var similar = [[1,2],[3,4]];
+  final numPlayers;
+  int turn = 0;
+  var openCards = [];//'royal@gmail.com'
+  var hiddenCards = [];
+  var totemCards = [];
+  var cardsHandler = [];
+  var cardsGroups = [1,1,2,2,3];
+  gameHandler(this.numPlayers) {//this.hiddenCards,
+    turn = 0;
+    var cardsArr = List.filled(10, 1) + List.filled(10, 2) + List.filled(10, 3) + List.filled(10, 4);
+    cardsArr.shuffle();
+    int cards = (10 / numPlayers).toInt();
+    int start = 0;
+   for(int i = 0; i < numPlayers; i++){
+      //var tempCards = cardsArr.sublist(start,start + cards -1);
+      start += 1;
+      cardsHandler.add([cardsArr.sublist(start,start + cards -1),[]]);
+    }
+  }
+  void updatePlayerStatus() {
+    cardsHandler[turn][1].insert(0,cardsHandler[turn][0].removeAt(0));
+    turn= (turn + 1) % 3;
+    notifyListeners();
+  }
+
+  void pastTotemUpdate(){
+    var splits = [];
+    print("before");
+    print(cardsHandler);
+    for(int i = 0; i < numPlayers; i++){
+      if (i == turn || cardsHandler[i][1] == []) continue;
+      print("i is  ");
+      print(i);
+
+      if (cardsGroups[cardsHandler[turn][1][0]] == cardsGroups[cardsHandler[i][1][0]]){
+        splits.add(i);
+      }
+    }
+    print("splits");
+    print(splits);
+    if(splits.length == 0){
+      print("penalty!!!");
+    }
+    else {
+      splits.shuffle();
+      int counter = 0;
+      int factor = ((cardsHandler[turn][1].length) / splits.length).toInt();
+      var temp = cardsHandler[turn][1].map((s) => s as dynamic).toList();
+      for (int i = 0; i < splits.length; i++) {
+        counter += factor;
+        var temp2 = cardsHandler[splits[i]][0].map((s) => s as dynamic).toList();
+        var temp1 = temp.sublist(i * factor, (i * factor) + factor);
+        var res = temp2 + temp1;
+        cardsHandler[splits[i]][0] = res.map((s) => s as int).toList();
+        }
+      int index = 0;
+       while (counter < cardsHandler[turn][1].length) {
+         var temp2 = cardsHandler[splits[index]][0].map((s) => s as dynamic).toList();
+         var temp1 = temp.sublist(counter,counter);
+         print(temp1);
+         var res = temp2 + temp1;
+         cardsHandler[splits[index]][0] = res.map((s) => s as int).toList();
+         index = (index + 1) % splits.length;
+         counter += 1;
+       }
+      cardsHandler[turn][1] = [];
+    }
+    print("after");
+    print(cardsHandler);
+    notifyListeners();
+  }
+}
+
+
+
+
+
+
+
+/*
+class cardsHandler with ChangeNotifier {
+  var openCards = [];//'royal@gmail.com'
+  var hiddenCards = [];
+  cardsHandler(this.hiddenCards);
+  void updatePlayerStatus() {
+    openCards.insert(0,hiddenCards.removeAt(0));
+    notifyListeners();
+  }
+}
+*/
+
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);

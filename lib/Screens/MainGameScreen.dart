@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:grabit/Classes/Player.dart';
+import 'package:grabit/Classes/player.dart';
 import 'package:flutter/services.dart';
 
 
@@ -23,19 +23,11 @@ class MainGameScreenState extends State<MainGameScreen>{
   var mainGameCurrentTurn; /// Todo implement if user with current turn quits
   var mainGameUnderTotemCards;
 
-  @override
-  void initState(){
-    super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
-  }
+
 
 
   @override
   Widget build(BuildContext context) {
-    initState();
     // TODO: implement build
     return Container();
   }
