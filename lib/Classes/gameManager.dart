@@ -14,9 +14,7 @@ class gameManagerStates extends State<gameManager>{
 @override
 Widget build(BuildContext context) {return Container();}
 }
-
-/*
-class gameHandler with ChangeNotifier {
+/*class gameHandler with ChangeNotifier {
   final numPlayers;
   int turn = 1;
   var openCards = [];//'royal@gmail.com'
