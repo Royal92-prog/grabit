@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   flutter_svg: ^0.22.0
+  provider: ^6.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -92,6 +93,11 @@ flutter:
     - assets/Full_pack.svg
     - WoodenTable.svg
     - 1.svg
+    - 2.svg
+    - 3.svg
+    - 4.svg
+    - 5.svg
     - Full_pack.svg
-    - CTAButton.svg
+    - CTAButton.png
+    - Background.png
   #-
