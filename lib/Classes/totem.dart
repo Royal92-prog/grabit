@@ -22,13 +22,11 @@ class totemState extends State<totem>{
     var size = MediaQuery.of(context).size;
     var gameMan = Provider.of<gameHandler>(context);
     return GestureDetector(
-      child:       Image.asset('assets/CTAButton.png',width: 0.2 * size.width,height: 0.15
-          * size.height,// 0.05 * size.width, height: 0.05 * size.height,
+      child:Image.asset('assets/CTAButton.png',width: 0.2 * size.width,height: 0.15
+          * size.height,
           alignment: Alignment.center),
         onTap: () {
-
           gameMan.pastTotemUpdate();
-
         }
 
     );

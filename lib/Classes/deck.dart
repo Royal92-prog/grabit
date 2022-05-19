@@ -6,7 +6,7 @@ import '../main.dart';
 
 
 Map <int,String> cardsDic = {1 : 'assets/1.svg', 2 : 'assets/2.svg', 3 : 'assets/3.svg',
-  4 : 'assets/4.svg', 5 : 'assets/5.svg', 6 : 'assets/CTA Button .svg'};
+  4 : 'assets/4.svg', 5 : 'assets/5.svg'};
 
 
 class playerDeck extends StatefulWidget {
@@ -30,7 +30,6 @@ class deckState extends State<playerDeck>{
     var gameMan = Provider.of<gameHandler>(context);
     var cardsArr = List.filled(10, 1)+List.filled(10, 2)+List.filled(10, 3)+List.filled(10, 4);
     cardsArr.shuffle();
-    //var remainingCards = Provider.of<cardsHandler>(context);
     var widthMes = 0.01;//remainingCards.hiddenCards.length > 9 ? 0.01 : 0.018;//how to align the card's Text - 2 different cases
     var size = MediaQuery.of(context).size;
     return GestureDetector(
