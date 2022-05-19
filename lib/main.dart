@@ -78,26 +78,13 @@ class gameHandler with ChangeNotifier {
     if (cardsGroupArray[(((cardsHandler[turn][1][0])-1)~/4 )] > 1) {
     for (int i = 0; i < numPlayers; i++) {
       if (i == turn || cardsHandler[i][1] == []) continue;
-
-      /// TODO - why continue for []?
-      print("i is  ");
-      print(i);
-
-
-      //if (cardsGroups[cardsHandler[turn][1][0]] == cardsGroups[cardsHandler[i][1][0]]){
-      if ((((cardsHandler[i][1][0])-1)~/4 )== (cardsHandler[turn][1][0]-1)~/4) {
-        print("A");
-        (cardsHandler[i][1].addAll(cardsHandler[turn][1])).shuffle();
-        print(cardsHandler[turn][1]);
-        print("ATTEMP");
-        print(cardsHandler[i][1]);
-        print("B");
-        cardsHandler[i][0].addAll(cardsHandler[i][1]);
-        print("C");
+      if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[turn][1][0]-1)~/4){
+        var loserCards = [...cardsHandler[i][1],...cardsHandler[turn][1]];
+        loserCards.shuffle();
+        cardsHandler[i][0] = [...cardsHandler[i][0],...loserCards];
         cardsHandler[turn][1] = [];
-        print("D");
         cardsHandler[i][1] = [];
-        print("E");
+        turn = i;
         break;
       }
     }
