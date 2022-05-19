@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:grabit/Classes/card.dart';
 import 'package:provider/provider.dart';
-
 import '../main.dart';
+
 
 
 Map <int,String> cardsDic = {1 : 'assets/1.svg', 2 : 'assets/2.svg', 3 : 'assets/3.svg',
@@ -28,7 +29,8 @@ class deckState extends State<playerDeck>{
   @override
   Widget build(BuildContext context) {
     var gameMan = Provider.of<gameHandler>(context);
-    var cardsArr = List.filled(10, 1)+List.filled(10, 2)+List.filled(10, 3)+List.filled(10, 4);
+    //var cardsArr = List.filled(10, 1)+List.filled(10, 2)+List.filled(10, 3)+List.filled(10, 4);
+    var cardsArr = [for(var i=1; i<=numberOfRegularCards; i++) i];
     cardsArr.shuffle();
     var widthMes = 0.01;//remainingCards.hiddenCards.length > 9 ? 0.01 : 0.018;//how to align the card's Text - 2 different cases
     var size = MediaQuery.of(context).size;

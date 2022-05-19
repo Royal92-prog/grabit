@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:grabit/Classes/card.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'deck.dart';
 
@@ -46,7 +47,7 @@ class PlayerState extends State<Player>{
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
         playerDeck(index:widget.index)), Positioned(right: 0.11* size.width,
             top: 0.16* size.height, child: Text("Player No.1",style:
-            TextStyle(fontSize: 10,color: Colors.white),)),
+            GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(bottom:-size.height*0.01,right:size.width*0.13,child: currentCard(index: widget.index))]);
     }
 
@@ -59,7 +60,7 @@ class PlayerState extends State<Player>{
           Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
           playerDeck(index:widget.index)),
           Positioned(right: 0.11* size.width,top: 0.16* size.height,
-              child: Text("Player No.1",style: TextStyle(fontSize: 10,color: Colors.white),)),
+              child: Text("Player No.2",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
           Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index))]);
     }
 
@@ -72,7 +73,7 @@ class PlayerState extends State<Player>{
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
         playerDeck(index:widget.index)),
         Positioned(right: 0.11* size.width,top: 0.16* size.height,
-            child: Text("Player No.1",style: TextStyle(fontSize: 10,color: Colors.white),)),
+            child: Text("Player No.3",style: TextStyle(fontSize: 20,color: Colors.white),)),
         Positioned(bottom:size.height*0.17,right:size.width*0.23,child: currentCard(index: widget.index))]);
       /*
       return Container(width:size.width*0.4,height:size.height*0.3,child:Stack(children: [Positioned(
