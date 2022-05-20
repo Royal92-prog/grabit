@@ -39,7 +39,7 @@ class PlayerState extends State<Player>{
 
     if (widget.index == 1){//player No.1
     //Positioned(right:0.01 * size.width,child:
-      return Stack(children: [
+      return Stack(fit:StackFit.loose,children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
           width:0.12 * size.width,
           decoration: BoxDecoration(
@@ -48,9 +48,9 @@ class PlayerState extends State<Player>{
         playerDeck(index:widget.index)), Positioned(right: 0.11* size.width,
             top: 0.16* size.height, child: Text("Player No.1",style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-        Positioned(bottom:-size.height*0.01,right:size.width*0.13,child: currentCard(index: widget.index))]);
+        Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index))]);
     }
-
+//-size.height*0.01
     else if(widget.index == 0){//0
         return Stack(children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
