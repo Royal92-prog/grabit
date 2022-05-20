@@ -104,6 +104,8 @@ flutter:
   assets:
     - assets/Full_pack.svg
     - WoodenTable.svg
+    - nickname.png
+    - playButton.png
     - 1.svg
     - 2.svg
     - 3.svg

@@ -6,6 +6,8 @@ import 'package:grabit/Classes/player.dart';
 import 'package:grabit/Classes/gameTable.dart';
 import 'package:grabit/Classes/card.dart';
 import 'package:provider/provider.dart';
+
+import 'Screens/entryScreen.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
       ),
         debugShowCheckedModeBanner: false,
 
-        home: gameTable()//OrientationBuilder(builder: (context, orientation) =>buildTable(),),
+        home: entryScreen()//gameTable()
     ),);
   }
 }
