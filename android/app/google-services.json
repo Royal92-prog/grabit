@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "757319175892",
+    "project_id": "grabit-9d577",
+    "storage_bucket": "grabit-9d577.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757319175892:android:c18a8f714456a44a7db541",
+        "android_client_info": {
+          "package_name": "com.technion.android.grabit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "757319175892-9kkdi98qsq0dibtua3lldm86biieif58.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMqlDzmuwa56Gx2HjEKisGRFoWcJ9tfwo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "757319175892-9kkdi98qsq0dibtua3lldm86biieif58.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
