@@ -45,7 +45,7 @@ class cardState extends State<currentCard>{
     initializeCardsMap();
     //var gameHand = Provider.of<gameHandler>(context);
     var size = MediaQuery.of(context).size;
-
+    /*
     FirebaseFirestore db = FirebaseFirestore.instance;
 
     final openCardRef = db.collection("game").doc("game1");
@@ -60,12 +60,23 @@ class cardState extends State<currentCard>{
       },
       onError: (error) => print("Listen failed: $error"),
     );
-
-    return Container(
-      child:openCards.length == 0 ? SizedBox(width: 10,height: 10,):
-      SvgPicture.asset(cardsFullDeck[openCards[0]]?.item2
-      as String,width: 0.12 * size.width, height:
-      0.12 * size .height,
-          ),);
+*/
+    return StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
+    builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
+      if(snapshot.connectionState == ConnectionState.active){
+      final cloudData = snapshot.data;
+      if(cloudData != null) {
+      openCards = cloudData['player_${widget.index.toString()}_openCards'];
+      }
+      return Container(
+        child:openCards.length == 0 ? SizedBox(width: 10,height: 10,):
+        SvgPicture.asset(cardsFullDeck[openCards[0]]?.item2
+        as String,width: 0.12 * size.width, height:
+        0.12 * size .height,
+        ),);
+    }
+      else return SizedBox(width: 0.01,);
+      });
   }
 }
