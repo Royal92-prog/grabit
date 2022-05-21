@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "737007514434",
+    "project_id": "multiplayertutorial-f3f31",
+    "storage_bucket": "multiplayertutorial-f3f31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737007514434:android:b8b62cff8619320db6cedb",
+        "android_client_info": {
+          "package_name": "com.example.multi_player_tutorial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "737007514434-s40tkic9mibm47ibcgju5i9d8g7lci2k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoL_EuZGfHZnGxpXOFEmhSLLik2BKNdhg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "737007514434-s40tkic9mibm47ibcgju5i9d8g7lci2k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
