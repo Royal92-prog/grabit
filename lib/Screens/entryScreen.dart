@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,9 +7,11 @@ import 'package:grabit/Classes/player.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/services.dart';
 
-class entryScreen extends StatefulWidget {
-  const entryScreen({Key? key}) : super(key: key);
+import '../Classes/card.dart';
 
+class entryScreen extends StatefulWidget {
+  entryScreen({required this.numPlayers}); //super(key: key)
+  int numPlayers;
   @override
   State<entryScreen> createState() => entryScreenState();
 
@@ -42,7 +45,29 @@ class entryScreenState extends State<entryScreen>{
           child:GestureDetector(
               child:Image.asset('assets/playButton.png',width: 0.2 * size.width,
           height: 0.25 * size.height),
-          onTap: () {
+          onTap: () async{
+            FirebaseFirestore _firestore = FirebaseFirestore.instance;
+            var cardsArr = [for(var i=1; i<=numberOfRegularCards; i++) i];
+            cardsArr.shuffle();
+            int cards = (numberOfRegularCards / widget.numPlayers).toInt();
+            Map<String, dynamic> uploadData = {};
+            var cardsHandler = [];
+            Map<String,dynamic> dataUpload = {};
+            //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
+            dataUpload['totem'] = false;
+            dataUpload['turn'] = 0;
+            dataUpload['matchingCards'] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            for(int i = 0; i < widget.numPlayers; i++){
+              dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
+              dataUpload['player_${(i).toString()}_openCards'] = [];
+              //uploadData = {i.toString() : cardsArr.sublist(cards*i, (cards*(i+1)))};
+              //await _firestore.collection('game').doc('player_${i.toString()}_deck').set(uploadData, SetOptions(merge : false));
+             // await _firestore.collection('game').doc('player_${(i).toString()}_openCards').set({(i + widget.numPlayers).toString() : []}, SetOptions(merge : false));
+            }
+            await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
+            //await _firestore.collection('game').doc('totem').set({'busy' : false}, SetOptions(merge : false));
+            //await _firestore.collection('game').doc('turn').set({'turn' : 0}, SetOptions(merge : false));
+            //await _firestore.collection('game').doc('matchingCards').set({'matchesList' : [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, SetOptions(merge : false));
     Navigator.of(context).push(
     MaterialPageRoute<void>(
     builder: (context) {

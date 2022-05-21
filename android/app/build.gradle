@@ -8,7 +8,7 @@ if (localPropertiesFile.exists()) {
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    throw new FileNotFoundException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -21,6 +21,7 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -43,13 +44,16 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.technion.GrabIt.grabit"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        applicationId "com.technion.android.grabit"//"com.technion.android.grabit"
+        minSdkVersion 19//flutter.minSdkVersion
+        targetSdkVersion 32//flutter.targetSdkVersion
+        multiDexEnabled = true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
-
+    dependencies {
+        implementation 'com.android.support:multidex:1.0.3'
+    }
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
@@ -65,4 +69,5 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation platform('com.google.firebase:firebase-bom:30.0.1')
 }

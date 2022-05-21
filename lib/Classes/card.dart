@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +12,6 @@ enum ECardColor      { BLUE, GREEN, RED, YELLOW}
 enum ECardIsUnique   { YES , NO}
 enum ECardUniqueType { INSIDE_ARROWS, OUTSIDE_ARROWS, COLOR_MATCH } ///TODO add: 1.swap Decks, 2.joker 3. change direction ///
 
-Map <int,String> cardsDic = {1 : 'assets/1.svg', 2 : 'assets/2.svg', 3 : 'assets/3.svg',
-  4 : 'assets/4.svg', 5 : 'assets/5.svg', 6 : 'assets/CTA Button .svg'};
 
 Map <int,Tuple2<int,String>> cardsFullDeck = <int,Tuple2<int,String>>{};
 
@@ -28,7 +27,7 @@ class cardState extends State<currentCard>{
   var cardIsUnique;
   var cardImage;
   var cardNumber; /// Think if relevant out of 80 cards
-
+  var openCards = [];
   void initializeCardsMap(){
     if (cardsFullDeck.isNotEmpty) return;
     /// cardsFullDeck is not empty ///
@@ -44,20 +43,29 @@ class cardState extends State<currentCard>{
   @override
   Widget build(BuildContext context) {
     initializeCardsMap();
-    var gameHand = Provider.of<gameHandler>(context);
+    //var gameHand = Provider.of<gameHandler>(context);
     var size = MediaQuery.of(context).size;
-    print("chhdhdh");
-    print(gameHand.cardsHandler[widget.index][1]);
+
+    FirebaseFirestore db = FirebaseFirestore.instance;
+
+    final openCardRef = db.collection("game").doc("game1");
+
+    openCardRef.snapshots().listen(
+          (event) {
+        setState(() {
+          if(event.data() != null) {
+            openCards = event.data()?['player_${(widget.index).toString()}_openCards'];
+          }
+        });
+      },
+      onError: (error) => print("Listen failed: $error"),
+    );
 
     return Container(
-      child:gameHand.cardsHandler[widget.index][1].length == 0 ? SizedBox(width: 10,height: 10,):
-      SvgPicture.asset(cardsFullDeck[gameHand.cardsHandler[widget.index][1][0]]?.item2
+      child:openCards.length == 0 ? SizedBox(width: 10,height: 10,):
+      SvgPicture.asset(cardsFullDeck[openCards[0]]?.item2
       as String,width: 0.12 * size.width, height:
       0.12 * size .height,
           ),);
-
   }
-
-
-
 }
