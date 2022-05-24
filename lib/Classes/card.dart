@@ -59,7 +59,10 @@ class cardState extends State<currentCard>{
       if(snapshot.connectionState == ConnectionState.active){
       final cloudData = snapshot.data;
       if(cloudData != null) {
-      openCards = cloudData['player_${widget.index.toString()}_openCards'];
+      openCards = cloudData['player_${(widget.index).toString()}_openCards'];
+      if (openCards.length == 0){
+        print("indexxxx ${widget.index.toString()}");
+      }
       }
       return Container(
         child:openCards.length == 0 ? SizedBox(width: 10,height: 10,):

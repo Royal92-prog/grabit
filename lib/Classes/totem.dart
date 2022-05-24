@@ -44,15 +44,14 @@ class totemState extends State<totem>{
                     * size.height,alignment: Alignment.center),
                 onTap: isTotemPressed ? null : () async{
                   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-                  //await _firestore.collection('game').doc('game1').set({'totem' : true}, SetOptions(merge : true));
-
-
                   /// Regular Matching Attemp ///
-                  if (cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) {
+
+                  if (cardsHandler[widget.index][1].length > 0 && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) {
                     for (int i = 0; i < numPlayers; i++) {
                       if (i == widget.index || cardsHandler[i][1] == []) continue;
                       if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[currentTurn][1][0]-1)~/4){
                         print("i is ${i}");
+                        print("mixing ${(((cardsHandler[i][1][0])-1)~/4 )}, ${(cardsHandler[currentTurn][1][0]-1)~/4}");
                         var loserCards = [...cardsHandler[i][1], ...cardsHandler[widget.index][1]];
                         loserCards.shuffle();
                         setState(() {
@@ -71,9 +70,8 @@ class totemState extends State<totem>{
                     }
                   }
                 else {
-
-                    print("Eytham");
-                  }
+                    print("penalty - ");
+                }
                 }
 
             );
