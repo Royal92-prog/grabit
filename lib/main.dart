@@ -68,11 +68,18 @@ class gameHandler with ChangeNotifier {
   }
   void updatePlayerStatus() {
     if ((cardsHandler[turn][1].length>0)) {
-      cardsGroupArray[((cardsHandler[turn][1][0])-1)~/4]-=1; // remove card number from array
+
+      //var isRegularCard = (((cardsHandler[turn][1][0])-1) < numberOfRegularCards);
+      if (((cardsHandler[turn][1][0])-1) < numberOfRegularCards){
+        cardsGroupArray[((cardsHandler[turn][1][0])-1)~/4]-=1; // remove card number from array
+      }
     }
     cardsHandler[turn][1].insert(0,cardsHandler[turn][0].removeAt(0));
     ///TODO add check for unique cards
-    cardsGroupArray[((cardsHandler[turn][1][0])-1)~/4]+=1; // add new front number to array
+
+    if (((cardsHandler[turn][1][0])-1) < numberOfRegularCards){
+      cardsGroupArray[((cardsHandler[turn][1][0])-1)~/4]+=1; // add new front number to array
+    }
     print(cardsGroupArray);
     turn= (turn + 1) % 3;
     notifyListeners();

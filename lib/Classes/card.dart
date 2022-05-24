@@ -7,7 +7,8 @@ import '../main.dart';
 import 'package:tuple_dart/tuple.dart';
 
 const numberOfRegularCards = 72;
-const numberOfUniqueCards = 1;
+const numberOfUniqueCards = 3;
+const numberOfUniqueCardsRepeats = 2 ;
 enum ECardColor      { BLUE, GREEN, RED, YELLOW}
 enum ECardIsUnique   { YES , NO}
 enum ECardUniqueType { INSIDE_ARROWS, OUTSIDE_ARROWS, COLOR_MATCH } ///TODO add: 1.swap Decks, 2.joker 3. change direction ///
@@ -35,6 +36,14 @@ class cardState extends State<currentCard>{
     for (int i = 0; i< numberOfRegularCards;++i){
       for (var value in ECardColor.values){
         cardsFullDeck[counter] = Tuple2(((i~/4)+1),"assets/"+((i+1).toString())+"-"+value.toString().split('.').last+".svg")  ;
+        counter++;
+      }
+    }
+
+    counter = 1;
+    for (int i = numberOfRegularCards; i< numberOfRegularCards+numberOfUniqueCards;++i){
+      for (int j = 0 ; j < numberOfUniqueCardsRepeats ; j++){
+        cardsFullDeck[counter+numberOfRegularCards] = Tuple2(((i~/4)+1),"assets/"+"Special_card"+((i-numberOfRegularCards)+1).toString()+".svg")  ;
         counter++;
       }
     }

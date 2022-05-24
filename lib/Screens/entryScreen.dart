@@ -47,16 +47,18 @@ class entryScreenState extends State<entryScreen>{
           height: 0.25 * size.height),
           onTap: () async{
             FirebaseFirestore _firestore = FirebaseFirestore.instance;
-            var cardsArr = [for(int i = 1; i <= numberOfRegularCards; i++) i];
+            var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
             cardsArr.shuffle();
-            int cards = (numberOfRegularCards / widget.numPlayers).toInt();
+            int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) / widget.numPlayers).toInt();
             Map<String, dynamic> uploadData = {};
             var cardsHandler = [];
             Map<String,dynamic> dataUpload = {};
             //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
             dataUpload['totem'] = false;
             dataUpload['turn'] = 0;
-            dataUpload['matchingCards'] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
+            dataUpload['matchingColorCards'] = [0,0,0,0];
+            dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards); i++) 0];
             for(int i = 0; i < widget.numPlayers; i++){
               dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
               dataUpload['player_${(i).toString()}_openCards'] = [];

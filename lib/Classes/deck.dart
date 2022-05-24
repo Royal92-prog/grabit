@@ -23,11 +23,14 @@ class deckState extends State<playerDeck>{
   var cardIsUnique;
   var cardImage;
   var cardNumber; /// Think if relevant out of 80 cards
-    int currentTurn = 0;
-    var playerDeck = [];
-    var playerOpenCards = [];
-    //bool initialized = false;
-    late var cardsGroupArray;
+  int currentTurn = 0;
+  var playerDeck = [];
+  var playerOpenCards = [];
+
+  late var cardsGroupArray;
+  late var cardsColorArray ;
+  late var cardsActiveUniqueArray;
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -41,6 +44,8 @@ class deckState extends State<playerDeck>{
            playerOpenCards = cloudData['player_${widget.index.toString()}_openCards'];
            currentTurn = cloudData['turn'];
            cardsGroupArray = cloudData['matchingCards'];
+           cardsColorArray = cloudData['matchingColorCards'];
+           cardsActiveUniqueArray = cloudData['cardsActiveUniqueArray']; /// 0: insideArrows, 1: color, 2: outsideArrows
        }
     return GestureDetector(
     onTap: currentTurn != widget.index ? null : () async{
@@ -49,30 +54,47 @@ class deckState extends State<playerDeck>{
       });
       FirebaseFirestore db = FirebaseFirestore.instance;
       await db.collection("game").doc("game1").set({'turn' : -1},SetOptions(merge :true));
-    if ((playerOpenCards.length > 0)) {
-    cardsGroupArray[((playerOpenCards[0])-1)~/4] -= 1; // remove card number from array
-    }
-    playerOpenCards.insert(0,playerDeck.removeAt(0));
-    ///TODO add check for unique cards
-    cardsGroupArray[((playerOpenCards[0])-1)~/4] += 1; // add new front number to array
+      if ((playerOpenCards.length > 0)) {
+        if (((playerOpenCards[0])-1)~/4 < cardsGroupArray.length) { /// regular card
+          cardsGroupArray[((playerOpenCards[0]) - 1) ~/ 4] -= 1; // re
+          cardsColorArray[(((playerOpenCards[0]) - 1)%4)] -=1; /// 0 blue 1 green 2 red 3 yellow
+        }
+        else { /// unique cards
+          cardsActiveUniqueArray[((((playerOpenCards[0]) - 1))-numberOfRegularCards)~/2] -=1;
+        }// move card number from array
+        }
+        playerOpenCards.insert(0,playerDeck.removeAt(0));
+        ///TODO add check for unique cards
+      if (((playerOpenCards[0])-1)~/4 < cardsGroupArray.length) { /// regular card
+        cardsGroupArray[((playerOpenCards[0]) - 1) ~/ 4] +=1; // add new front number to array
+        cardsColorArray[(((playerOpenCards[0]) - 1)%4)] +=1; /// 0 blue 1 green 2 red 3 yellow
 
-    await db.collection("game").doc("game1").set({'player_${widget.index.toString()}_deck' : playerDeck,
-    'player_${widget.index.toString()}_openCards' : playerOpenCards, 'turn' : (widget.index + 1) % 3,'matchingCards': cardsGroupArray},SetOptions(merge :true));
-    },
-    child:Stack(clipBehavior: Clip.antiAliasWithSaveLayer, fit: StackFit.passthrough,children:
-    [
-    SvgPicture.asset('assets/Full_pack.svg',
-    width: 0.1 * size.width, height: 0.1 * size.height,),
-    Positioned(top: 0.01*size.height,right:0.012*size.width,
-    child:Text("${playerDeck.length}",style:
-    TextStyle(fontSize: 15,color: Colors.black)),)],
-    ),);
-        // : Text("${24}"
+      }
+      else { /// unique cards
+        cardsActiveUniqueArray[((((playerOpenCards[0]) - 1))-numberOfRegularCards)~/2] +=1;
+      }
+        print ("cardsActive Unique Array");
+        print(cardsActiveUniqueArray);
+        print("cardsColorArray is");
+        print(cardsColorArray);
+        await db.collection("game").doc("game1").set({'player_${widget.index.toString()}_deck' : playerDeck,
+        'player_${widget.index.toString()}_openCards' : playerOpenCards, 'turn' : (widget.index + 1) % 3,'matchingCards': cardsGroupArray,
+        'matchingColorCards' : cardsColorArray, 'cardsActiveUniqueArray' : cardsActiveUniqueArray},SetOptions(merge :true));
+        },
+      child:Stack(clipBehavior: Clip.antiAliasWithSaveLayer, fit: StackFit.passthrough,children:
+      [
+      SvgPicture.asset('assets/Full_pack.svg',
+      width: 0.1 * size.width, height: 0.1 * size.height,),
+      Positioned(top: 0.01*size.height,right:0.012*size.width,
+      child:Text("${playerDeck.length}",style:
+      TextStyle(fontSize: 15,color: Colors.black)),)],
+      ),);
+          // : Text("${24}"
 
+      }
+        else return CircularProgressIndicator();//SizedBox(width: size.width * 0.1, height: size.height * 0.1);
+      });
     }
-      else return CircularProgressIndicator();//SizedBox(width: size.width * 0.1, height: size.height * 0.1);
-    });
-  }
 }
 
 /*

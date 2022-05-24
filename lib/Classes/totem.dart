@@ -41,11 +41,13 @@ class totemState extends State<totem>{
             }
             return GestureDetector(
                 child:Image.asset('assets/CTAButton.png',width: 0.2 * size.width,height: 0.15
-                    * size.height,
-                    alignment: Alignment.center),
+                    * size.height,alignment: Alignment.center),
                 onTap: isTotemPressed ? null : () async{
                   FirebaseFirestore _firestore = FirebaseFirestore.instance;
                   //await _firestore.collection('game').doc('game1').set({'totem' : true}, SetOptions(merge : true));
+
+
+                  /// Regular Matching Attemp ///
                   if (cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) {
                     for (int i = 0; i < numPlayers; i++) {
                       if (i == widget.index || cardsHandler[i][1] == []) continue;
@@ -60,7 +62,8 @@ class totemState extends State<totem>{
                           currentTurn = i;
                         });
                         await _firestore.collection('game').doc('game1').set({'totem' : false, 'turn' : i,
-                        'player_${i}_openCards' : cardsHandler[i][1], 'player_${i}_deck' : cardsHandler[i][0],
+                          'player_${i}_openCards' : cardsHandler[i][1],
+                          'player_${i}_deck' : cardsHandler[i][0],
                           'player_${widget.index}_openCards' : cardsHandler[widget.index][1],
                           'player_${widget.index}_deck' : cardsHandler[widget.index][0]}, SetOptions(merge : true));
                         break;
@@ -70,7 +73,7 @@ class totemState extends State<totem>{
                 else {
 
                     print("Eytham");
-                }
+                  }
                 }
 
             );
