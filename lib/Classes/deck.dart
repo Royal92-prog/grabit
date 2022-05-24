@@ -37,12 +37,10 @@ class deckState extends State<playerDeck>{
       if(snapshot.connectionState == ConnectionState.active){
        final cloudData = snapshot.data;
        if(cloudData != null) {
-         //setState(() {
            playerDeck = cloudData['player_${widget.index.toString()}_deck'];
            playerOpenCards = cloudData['player_${widget.index.toString()}_openCards'];
            currentTurn = cloudData['turn'];
            cardsGroupArray = cloudData['matchingCards'];
-         //});
        }
     return GestureDetector(
     onTap: currentTurn != widget.index ? null : () async{

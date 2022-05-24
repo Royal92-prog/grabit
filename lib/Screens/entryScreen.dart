@@ -47,7 +47,7 @@ class entryScreenState extends State<entryScreen>{
           height: 0.25 * size.height),
           onTap: () async{
             FirebaseFirestore _firestore = FirebaseFirestore.instance;
-            var cardsArr = [for(var i=1; i<=numberOfRegularCards; i++) i];
+            var cardsArr = [for(int i = 1; i <= numberOfRegularCards; i++) i];
             cardsArr.shuffle();
             int cards = (numberOfRegularCards / widget.numPlayers).toInt();
             Map<String, dynamic> uploadData = {};
@@ -60,14 +60,8 @@ class entryScreenState extends State<entryScreen>{
             for(int i = 0; i < widget.numPlayers; i++){
               dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
               dataUpload['player_${(i).toString()}_openCards'] = [];
-              //uploadData = {i.toString() : cardsArr.sublist(cards*i, (cards*(i+1)))};
-              //await _firestore.collection('game').doc('player_${i.toString()}_deck').set(uploadData, SetOptions(merge : false));
-             // await _firestore.collection('game').doc('player_${(i).toString()}_openCards').set({(i + widget.numPlayers).toString() : []}, SetOptions(merge : false));
             }
             await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
-            //await _firestore.collection('game').doc('totem').set({'busy' : false}, SetOptions(merge : false));
-            //await _firestore.collection('game').doc('turn').set({'turn' : 0}, SetOptions(merge : false));
-            //await _firestore.collection('game').doc('matchingCards').set({'matchesList' : [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, SetOptions(merge : false));
     Navigator.of(context).push(
     MaterialPageRoute<void>(
     builder: (context) {

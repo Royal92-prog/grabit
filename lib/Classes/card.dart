@@ -43,24 +43,7 @@ class cardState extends State<currentCard>{
   @override
   Widget build(BuildContext context) {
     initializeCardsMap();
-    //var gameHand = Provider.of<gameHandler>(context);
     var size = MediaQuery.of(context).size;
-    /*
-    FirebaseFirestore db = FirebaseFirestore.instance;
-
-    final openCardRef = db.collection("game").doc("game1");
-
-    openCardRef.snapshots().listen(
-          (event) {
-        setState(() {
-          if(event.data() != null) {
-            openCards = event.data()?['player_${(widget.index).toString()}_openCards'];
-          }
-        });
-      },
-      onError: (error) => print("Listen failed: $error"),
-    );
-*/
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
     builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
