@@ -44,13 +44,18 @@ class deckState extends State<playerDeck>{
        }
     return GestureDetector(
     onTap: currentTurn != widget.index ? null : () async{
+      setState(() {
+        currentTurn = -1;
+      });
+      FirebaseFirestore db = FirebaseFirestore.instance;
+      await db.collection("game").doc("game1").set({'turn' : -1},SetOptions(merge :true));
     if ((playerOpenCards.length > 0)) {
     cardsGroupArray[((playerOpenCards[0])-1)~/4] -= 1; // remove card number from array
     }
     playerOpenCards.insert(0,playerDeck.removeAt(0));
     ///TODO add check for unique cards
     cardsGroupArray[((playerOpenCards[0])-1)~/4] += 1; // add new front number to array
-    FirebaseFirestore db = FirebaseFirestore.instance;
+
     await db.collection("game").doc("game1").set({'player_${widget.index.toString()}_deck' : playerDeck,
     'player_${widget.index.toString()}_openCards' : playerOpenCards, 'turn' : (widget.index + 1) % 3,'matchingCards': cardsGroupArray},SetOptions(merge :true));
     },
