@@ -18,6 +18,7 @@ class entryScreen extends StatefulWidget {
 }
 
 class entryScreenState extends State<entryScreen>{
+  final _nicknameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +30,26 @@ class entryScreenState extends State<entryScreen>{
             height: 0.35 * size.height),width:size.width * 0.35, height: size.height * 0.35 )),
       Positioned(top: 0.13 * size.height, right:0.585 * size.width,child:
       Container(width:0.15 * size.width,height: 0.15 * size.height,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,))),
       Positioned(top: size.height * 0.028, left: size.width * 0.25,child://18
           Container(
             width:size.width * 0.45,
             height: size.height * 0.35,
-        child:Row(mainAxisAlignment: MainAxisAlignment.start,children: [SizedBox(width:size.width*0.14),
-          Text("agfgagaga",
-      style:GoogleFonts.galindo(fontSize:16,color: Colors.black87,))]))),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body : Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 108, vertical: 50),
+            child: TextField(
+              controller: _nicknameController,
+              decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Enter nickname',
+              ),
+              ),
+            ),
+          ))
+          ),
       Positioned(bottom: size.height * 0.04, left: size.width * 0.37,child://18
       Container(
           width:size.width * 0.25,
