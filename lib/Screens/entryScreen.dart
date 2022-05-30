@@ -14,11 +14,13 @@ class entryScreen extends StatefulWidget {
   int numPlayers;
   int playerIndex;
   @override
-  State<entryScreen> createState() => entryScreenState();
+  State<entryScreen> createState() => entryScreenState(playerIndex: playerIndex);
 
 }
 
 class entryScreenState extends State<entryScreen>{
+  entryScreenState({required this.playerIndex});
+  int playerIndex;
   final _nicknameController = TextEditingController();
 
   @override
@@ -72,10 +74,9 @@ class entryScreenState extends State<entryScreen>{
             dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
             dataUpload['matchingColorCards'] = [0,0,0,0];
             dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards); i++) 0];
-            for(int i = 0; i < widget.numPlayers; i++){
-              dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
-              dataUpload['player_${(i).toString()}_openCards'] = [];
-            }
+            dataUpload['player_${playerIndex.toString()}_deck'] = cardsArr.sublist(cards*(playerIndex - 1), (cards*playerIndex));
+            dataUpload['player_${(playerIndex).toString()}_openCards'] = [];
+            dataUpload['player_${playerIndex.toString()}_nickname'] = _nicknameController.text;
             await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
               })))]);
 }}
