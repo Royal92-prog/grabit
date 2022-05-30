@@ -33,15 +33,15 @@ class _GameManagerState extends State<GameManager>{
               _connectedNum = data['connectedPlayersNum'];
             }
           }
-          if (_playerIndex == 0) {
-            _connectedNum++;
-            setConnectedNum(_connectedNum);
-            _playerIndex = _connectedNum;
-          }
           if (_connectedNum == 3) {
             _gameState = GameState.activeGame;
           }
           if (_gameState == GameState.waitingForPlayers) {
+            if (_playerIndex == 0) {
+              ++_connectedNum;
+              setConnectedNum(_connectedNum);
+              _playerIndex = _connectedNum;
+            }
             return entryScreen(numPlayers: 3, playerIndex: _playerIndex,);
           }
           else {
