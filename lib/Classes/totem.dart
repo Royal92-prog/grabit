@@ -32,9 +32,9 @@ class totemState extends State<totem>{
             final cloudData = snapshot.data;
             if(cloudData != null) {
               isTotemPressed = cloudData['totem'];
-              cardsHandler = [[cloudData['player_0_deck'], cloudData['player_0_openCards']],
-                [cloudData['player_1_deck'], cloudData['player_1_openCards']],
-                [cloudData['player_2_deck'], cloudData['player_2_openCards']]];
+              cardsHandler = [[cloudData['player_1_deck'], cloudData['player_1_openCards']],
+                [cloudData['player_2_deck'], cloudData['player_2_openCards']],
+                [cloudData['player_3_deck'], cloudData['player_3_openCards']]];
               //playerOpenCards = cloudData['player_${widget.index.toString()}_openCards'];
               currentTurn = cloudData['turn'];
               cardsGroupArray = cloudData['matchingCards'];
@@ -47,7 +47,7 @@ class totemState extends State<totem>{
                   /// Regular Matching Attemp ///
 
                   if (cardsHandler[widget.index][1].length > 0 && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) {
-                    for (int i = 0; i < numPlayers; i++) {
+                    for (int i = 1; i <= numPlayers; i++) {
                       if (i == widget.index || cardsHandler[i][1] == []) continue;
                       if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[currentTurn][1][0]-1)~/4){
                         print("i is ${i}");

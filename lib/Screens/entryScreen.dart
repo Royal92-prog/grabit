@@ -10,8 +10,9 @@ import 'package:flutter/services.dart';
 import '../Classes/card.dart';
 
 class entryScreen extends StatefulWidget {
-  entryScreen({required this.numPlayers}); //super(key: key)
+  entryScreen({required this.numPlayers, required this.playerIndex}); //super(key: key)
   int numPlayers;
+  int playerIndex;
   @override
   State<entryScreen> createState() => entryScreenState();
 
@@ -76,12 +77,7 @@ class entryScreenState extends State<entryScreen>{
               dataUpload['player_${(i).toString()}_openCards'] = [];
             }
             await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
-    Navigator.of(context).push(
-    MaterialPageRoute<void>(
-    builder: (context) {
-    return gameTable();
-          }
-          ));})))]);
+              })))]);
 }}
 
 

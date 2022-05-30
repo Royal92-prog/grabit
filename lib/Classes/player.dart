@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'deck.dart';
 
-enum ECardColor      { YELLOW, GREEN, RED, BLUE}
+enum ECardColor { YELLOW, GREEN, RED, BLUE}
 
 
 
@@ -42,7 +42,7 @@ class PlayerState extends State<Player>{
       return Stack(fit:StackFit.loose,children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
           width:0.12 * size.width,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
         playerDeck(index:widget.index)), Positioned(right: 0.11* size.width,
@@ -51,11 +51,11 @@ class PlayerState extends State<Player>{
         Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index))]);
     }
 //-size.height*0.01
-    else if(widget.index == 0){//0
+    else if(widget.index == 2){//0
         return Stack(children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
           width:0.12 * size.width,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
           Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
           playerDeck(index:widget.index)),
@@ -68,7 +68,7 @@ class PlayerState extends State<Player>{
       return Stack(children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
           width:0.12 * size.width,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
         playerDeck(index:widget.index)),
