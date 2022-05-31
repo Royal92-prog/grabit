@@ -16,6 +16,7 @@ class entryScreen extends StatelessWidget {
   final _nicknameController = TextEditingController();
   int _connectedPlayersNum = 0;
   int _playerIndex = 0;
+  late var cardsArr;
 
   @override
   Widget build(BuildContext context) {
@@ -57,15 +58,33 @@ class entryScreen extends StatelessWidget {
                   height: 0.25 * size.height),
               onTap: () async{
                 FirebaseFirestore _firestore = FirebaseFirestore.instance;
-                var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
-                cardsArr.shuffle();
-                int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) / numPlayers).toInt();
-                Map<String, dynamic> uploadData = {};
-                var cardsHandler = [];
                 _connectedPlayersNum = await getConnectedNum();
                 _playerIndex = _connectedPlayersNum;
                 ++_connectedPlayersNum;
                 Map<String,dynamic> dataUpload = {};
+                if (_connectedPlayersNum == 1) {
+                  cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
+                  cardsArr.shuffle();
+                  dataUpload['cardsData'] = cardsArr;
+                  print('hi ${_connectedPlayersNum}');
+                }
+                else {
+                  await _firestore.collection('game').doc('game1').get().then(
+                          (snapshot) {
+                            if (snapshot.exists) {
+                              final data = snapshot.data();
+                              if (data != null) {
+                                cardsArr = data['cardsData'];
+                              }
+                            }
+                            return null;
+                          }
+                          );
+                  print(_connectedPlayersNum);
+                }
+                int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) / numPlayers).toInt();
+                Map<String, dynamic> uploadData = {};
+                var cardsHandler = [];
                 //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
                 dataUpload['totem'] = false;
                 dataUpload['turn'] = 0;
