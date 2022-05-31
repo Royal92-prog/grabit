@@ -15,6 +15,7 @@ class entryScreen extends StatelessWidget {
   int numPlayers;
   final _nicknameController = TextEditingController();
   int _connectedPlayersNum = 0;
+  int _playerIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +63,8 @@ class entryScreen extends StatelessWidget {
                 Map<String, dynamic> uploadData = {};
                 var cardsHandler = [];
                 _connectedPlayersNum = await getConnectedNum();
+                _playerIndex = _connectedPlayersNum;
+                ++_connectedPlayersNum;
                 Map<String,dynamic> dataUpload = {};
                 //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
                 dataUpload['totem'] = false;
@@ -69,11 +72,10 @@ class entryScreen extends StatelessWidget {
                 dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
                 dataUpload['matchingColorCards'] = [0,0,0,0];
                 dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards); i++) 0];
-                dataUpload['player_${_connectedPlayersNum.toString()}_deck'] = cardsArr.sublist(cards*(_connectedPlayersNum - 1), (cards * _connectedPlayersNum));
-                dataUpload['player_${(_connectedPlayersNum).toString()}_openCards'] = [];
-                dataUpload['player_${_connectedPlayersNum.toString()}_nickname'] = _nicknameController.text;
+                dataUpload['player_${_playerIndex.toString()}_deck'] = cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1)));
+                dataUpload['player_${(_playerIndex).toString()}_openCards'] = [];
+                dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
                 dataUpload['connectedPlayersNum'] = _connectedPlayersNum;
-                ++_connectedPlayersNum;
                 await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
                 // Navigator.of(context).push(
                 // MaterialPageRoute<void>(
