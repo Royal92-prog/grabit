@@ -34,9 +34,15 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-
+  firebase_core: ^1.8.0
+  firebase_auth: ^1.0.0
+  cloud_firestore: ^3.1.7
   flutter_svg: ^0.22.0
   provider: ^6.0.2
+  tuple_dart: ^1.4.2
+  google_fonts: ^2.3.2
+  tuple: ^2.0.0
+  firebase_database: ^9.0.14
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -53,6 +59,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -89,9 +96,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: playerNameScript
+      fonts:
+        - asset: assets/fonts/playerNameScript.otf
+          weight: 700
+
+
+
   assets:
     - assets/Full_pack.svg
     - WoodenTable.svg
+    - nickname.png
+    - playButton.png
     - 1.svg
     - 2.svg
     - 3.svg
@@ -100,5 +117,99 @@ flutter:
     - Full_pack.svg
     - CTAButton.png
     - Background.png
-    -
+    - 1-BLUE.svg
+    - 1-GREEN.svg
+    - 1-RED.svg
+    - 1-YELLOW.svg
+
+    - 2-BLUE.svg
+    - 2-GREEN.svg
+    - 2-RED.svg
+    - 2-YELLOW.svg
+
+    - 3-BLUE.svg
+    - 3-GREEN.svg
+    - 3-RED.svg
+    - 3-YELLOW.svg
+
+    - 4-BLUE.svg
+    - 4-GREEN.svg
+    - 4-RED.svg
+    - 4-YELLOW.svg
+
+    - 5-BLUE.svg
+    - 5-GREEN.svg
+    - 5-RED.svg
+    - 5-YELLOW.svg
+
+    - 6-BLUE.svg
+    - 6-GREEN.svg
+    - 6-RED.svg
+    - 6-YELLOW.svg
+
+    - 7-BLUE.svg
+    - 7-GREEN.svg
+    - 7-RED.svg
+    - 7-YELLOW.svg
+
+    - 8-BLUE.svg
+    - 8-GREEN.svg
+    - 8-RED.svg
+    - 8-YELLOW.svg
+
+    - 9-BLUE.svg
+    - 9-GREEN.svg
+    - 9-RED.svg
+    - 9-YELLOW.svg
+
+    - 10-BLUE.svg
+    - 10-GREEN.svg
+    - 10-RED.svg
+    - 10-YELLOW.svg
+
+    - 11-BLUE.svg
+    - 11-GREEN.svg
+    - 11-RED.svg
+    - 11-YELLOW.svg
+
+    - 12-BLUE.svg
+    - 12-GREEN.svg
+    - 12-RED.svg
+    - 12-YELLOW.svg
+
+    - 13-BLUE.svg
+    - 13-GREEN.svg
+    - 13-RED.svg
+    - 13-YELLOW.svg
+
+    - 14-BLUE.svg
+    - 14-GREEN.svg
+    - 14-RED.svg
+    - 14-YELLOW.svg
+
+    - 15-BLUE.svg
+    - 15-GREEN.svg
+    - 15-RED.svg
+    - 15-YELLOW.svg
+
+    - 16-BLUE.svg
+    - 16-GREEN.svg
+    - 16-RED.svg
+    - 16-YELLOW.svg
+
+    - 17-BLUE.svg
+    - 17-GREEN.svg
+    - 17-RED.svg
+    - 17-YELLOW.svg
+
+    - 18-BLUE.svg
+    - 18-GREEN.svg
+    - 18-RED.svg
+    - 18-YELLOW.svg
+
+    - Special_card1.svg
+    - Special_card2.svg
+    - Special_card3.svg
+
+
   #-
