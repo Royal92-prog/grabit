@@ -38,44 +38,44 @@ class deckState extends State<playerDeck>{
       if(snapshot.connectionState == ConnectionState.active){
        final cloudData = snapshot.data;
        if(cloudData != null) {
-         cardsHandler = [[cloudData['player_0_deck'], cloudData['player_0_openCards']],
-         [cloudData['player_1_deck'], cloudData['player_1_openCards']],
-         [cloudData['player_2_deck'], cloudData['player_2_openCards']]];
+         cardsHandler = [[cloudData['player_1_deck'], cloudData['player_1_openCards']],
+         [cloudData['player_2_deck'], cloudData['player_2_openCards']],
+         [cloudData['player_3_deck'], cloudData['player_3_openCards']]];
          currentTurn = cloudData['turn'];
          cardsGroupArray = cloudData['matchingCards'];
          cardsColorArray = cloudData['matchingColorCards'];
          cardsActiveUniqueArray = cloudData['cardsActiveUniqueArray']; /// 0: insideArrows, 1: color, 2: outsideArrows
        }
     return GestureDetector(
-    onTap: currentTurn != widget.index ? null : () async{
+    onTap: currentTurn != (widget.index - 1) ? null : () async{
       FirebaseFirestore db = FirebaseFirestore.instance;
       await db.collection("game").doc("game1").set({'turn' : -1},SetOptions(merge :true));
-      if ((cardsHandler[widget.index][1].length > 0)) {//playerOpenCards
-        if (((cardsHandler[widget.index][1][0])-1)~/4 < cardsGroupArray.length) { /// regular card
-          cardsGroupArray[((cardsHandler[widget.index][1][0]) - 1) ~/ 4] -= 1; // re
-          cardsColorArray[(((cardsHandler[widget.index][1][0]) - 1)%4)] -=1; /// 0 blue 1 green 2 red 3 yellow
+      if ((cardsHandler[widget.index - 1][1].length > 0)) {//playerOpenCards
+        if (((cardsHandler[widget.index - 1][1][0])-1)~/4 < cardsGroupArray.length) { /// regular card
+          cardsGroupArray[((cardsHandler[widget.index - 1][1][0]) - 1) ~/ 4] -= 1; // re
+          cardsColorArray[(((cardsHandler[widget.index - 1][1][0]) - 1)%4)] -=1; /// 0 blue 1 green 2 red 3 yellow
         }
         else { /// unique cards
-          cardsActiveUniqueArray[((((cardsHandler[widget.index][1][0]) - 1))-numberOfRegularCards)~/2] -=1;
+          cardsActiveUniqueArray[((((cardsHandler[widget.index - 1][1][0]) - 1))-numberOfRegularCards)~/2] -=1;
         }// move card number from array
         }
-      print("kalimera ${widget.index.toString()}");
-      cardsHandler[widget.index][1].insert(0,cardsHandler[widget.index][0].removeAt(0));
+      print("kalimera ${(widget.index - 1).toString()}");
+      cardsHandler[widget.index - 1][1].insert(0,cardsHandler[widget.index - 1][0].removeAt(0));
         ///TODO add check for unique cards
-      if (((cardsHandler[widget.index][1][0])-1)~/4 < cardsGroupArray.length) { /// regular card
-        cardsGroupArray[((cardsHandler[widget.index][1][0]) - 1) ~/ 4] += 1; // add new front number to array
-        cardsColorArray[(((cardsHandler[widget.index][1][0]) - 1)%4)] += 1; /// 0 blue 1 green 2 red 3 yellow
+      if (((cardsHandler[widget.index - 1][1][0])-1)~/4 < cardsGroupArray.length) { /// regular card
+        cardsGroupArray[((cardsHandler[widget.index - 1][1][0]) - 1) ~/ 4] += 1; // add new front number to array
+        cardsColorArray[(((cardsHandler[widget.index - 1][1][0]) - 1)%4)] += 1; /// 0 blue 1 green 2 red 3 yellow
 
       }
       else { /// unique cards
         print('kalamarit');
-        if (((((cardsHandler[widget.index][1][0]) - 1)) - numberOfRegularCards)~/2 == 2){
+        if (((((cardsHandler[widget.index - 1][1][0]) - 1)) - numberOfRegularCards)~/2 == 2){
           for(int i = 0; i < 3; i++) {
             cardsHandler[i][1].insert(0, cardsHandler[i][0].removeAt(0));
           }
         }
         else{
-          cardsActiveUniqueArray[((((cardsHandler[widget.index][1][0]) - 1))-numberOfRegularCards)~/2] += 1;
+          cardsActiveUniqueArray[((((cardsHandler[widget.index - 1][1][0]) - 1))-numberOfRegularCards)~/2] += 1;
         }
       }
         print ("cardsActive Unique Array");
@@ -85,12 +85,12 @@ class deckState extends State<playerDeck>{
        print(cardsHandler[0][1]);
         //remember to substract 1 from player index when using firebase
         await db.collection("game").doc("game1").set({
-          'player_0_deck' : cardsHandler[0][0],
-          'player_1_deck' : cardsHandler[1][0],
-          'player_2_deck' : cardsHandler[2][0],
-          'player_0_openCards' : cardsHandler[0][1],
-          'player_1_openCards' : cardsHandler[1][1],
-          'player_2_openCards' : cardsHandler[2][1],
+          'player_1_deck' : cardsHandler[0][0],
+          'player_2_deck' : cardsHandler[1][0],
+          'player_3_deck' : cardsHandler[2][0],
+          'player_1_openCards' : cardsHandler[0][1],
+          'player_2_openCards' : cardsHandler[1][1],
+          'player_3_openCards' : cardsHandler[2][1],
           'turn' : (widget.index + 1) % 3,
           'matchingCards': cardsGroupArray,
           'matchingColorCards' : cardsColorArray,
@@ -101,7 +101,7 @@ class deckState extends State<playerDeck>{
       SvgPicture.asset('assets/Full_pack.svg',
       width: 0.1 * size.width, height: 0.1 * size.height,),
       Positioned(top: 0.01*size.height,right:0.012*size.width,
-      child:Text("${cardsHandler[widget.index][0].length}",style:
+      child:Text("${cardsHandler[widget.index - 1][0].length}",style:
       TextStyle(fontSize: 15,color: Colors.black)),)],
       ),);
           // : Text("${24}"

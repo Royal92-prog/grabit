@@ -6,6 +6,7 @@ import 'package:grabit/Classes/gameTable.dart';
 import 'package:grabit/Classes/player.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/services.dart';
+import 'package:grabit/Services/playersManager.dart';
 
 import '../Classes/card.dart';
 
@@ -20,6 +21,7 @@ class entryScreen extends StatefulWidget {
 
 class entryScreenState extends State<entryScreen>{
   final _nicknameController = TextEditingController();
+  int _connectedPlayersNum = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +41,14 @@ class entryScreenState extends State<entryScreen>{
             height: size.height * 0.35,
         child: Scaffold(
           backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: false,
           body : Padding(
             padding: const EdgeInsets.symmetric(horizontal: 108, vertical: 50),
             child: TextField(
               controller: _nicknameController,
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'Enter nickname',
+                hintText: 'Enter nickname',
               ),
               ),
             ),
@@ -65,6 +68,8 @@ class entryScreenState extends State<entryScreen>{
             int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) / widget.numPlayers).toInt();
             Map<String, dynamic> uploadData = {};
             var cardsHandler = [];
+            _connectedPlayersNum = await getConnectedNum();
+            ++_connectedPlayersNum;
             Map<String,dynamic> dataUpload = {};
             //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
             dataUpload['totem'] = false;
@@ -72,9 +77,10 @@ class entryScreenState extends State<entryScreen>{
             dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
             dataUpload['matchingColorCards'] = [0,0,0,0];
             dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards); i++) 0];
-            dataUpload['player_${widget.playerIndex.toString()}_deck'] = cardsArr.sublist(cards*(widget.playerIndex - 1), (cards * widget.playerIndex));
-            dataUpload['player_${(widget.playerIndex).toString()}_openCards'] = [];
-            dataUpload['player_${widget.playerIndex.toString()}_nickname'] = _nicknameController.text;
+            dataUpload['player_${_connectedPlayersNum.toString()}_deck'] = cardsArr.sublist(cards*(_connectedPlayersNum - 1), (cards * _connectedPlayersNum));
+            dataUpload['player_${(_connectedPlayersNum).toString()}_openCards'] = [];
+            dataUpload['player_${_connectedPlayersNum.toString()}_nickname'] = _nicknameController.text;
+            dataUpload['connectedPlayersNum'] = _connectedPlayersNum;
             await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
               })))]);
 }}

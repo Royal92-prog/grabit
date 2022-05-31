@@ -24,6 +24,7 @@ class _GameManagerState extends State<GameManager>{
 
   @override
   Widget build(BuildContext context) {
+    setConnectedNum(_connectedNum);
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -38,8 +39,8 @@ class _GameManagerState extends State<GameManager>{
           }
           if (_gameState == GameState.waitingForPlayers) {
             if (_playerIndex == 0) {
-              ++_connectedNum;
-              setConnectedNum(_connectedNum);
+              // ++_connectedNum;
+              // setConnectedNum(_connectedNum);
               _playerIndex = _connectedNum;
             }
             return entryScreen(numPlayers: 3, playerIndex: _playerIndex,);
