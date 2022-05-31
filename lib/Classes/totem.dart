@@ -33,8 +33,8 @@ class totemState extends State<totem>{
             if(cloudData != null) {
               isTotemPressed = cloudData['totem'];
               cardsHandler = [[cloudData['player_1_deck'], cloudData['player_1_openCards']],
-                [cloudData['player_2_deck'], cloudData['player_2_openCards']],
-                [cloudData['player_3_deck'], cloudData['player_3_openCards']]];
+                [cloudData['player_3_deck'], cloudData['player_3_openCards']],
+                [cloudData['player_2_deck'], cloudData['player_2_openCards']]];
               //playerOpenCards = cloudData['player_${widget.index.toString()}_openCards'];
               currentTurn = cloudData['turn'];
               cardsGroupArray = cloudData['matchingCards'];
@@ -46,25 +46,25 @@ class totemState extends State<totem>{
                   FirebaseFirestore _firestore = FirebaseFirestore.instance;
                   /// Regular Matching Attemp ///
 
-                  if (cardsHandler[widget.index][1].length > 0 && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) {
+                  if (cardsHandler[widget.index - 1][1].length > 0 && cardsGroupArray[(((cardsHandler[widget.index - 1][1][0])-1)~/4 )] > 1) {
                     for (int i = 1; i <= numPlayers; i++) {
                       if (i == widget.index || cardsHandler[i][1] == []) continue;
                       if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[currentTurn][1][0]-1)~/4){
                         print("i is ${i}");
                         print("mixing ${(((cardsHandler[i][1][0])-1)~/4 )}, ${(cardsHandler[currentTurn][1][0]-1)~/4}");
-                        var loserCards = [...cardsHandler[i][1], ...cardsHandler[widget.index][1]];
+                        var loserCards = [...cardsHandler[i][1], ...cardsHandler[widget.index - 1][1]];
                         loserCards.shuffle();
                         setState(() {
                           cardsHandler[i][0] = [...cardsHandler[i][0],...loserCards];
-                          cardsHandler[widget.index][1] = [];
+                          cardsHandler[widget.index - 1][1] = [];
                           cardsHandler[i][1] = [];
                           currentTurn = i;
                         });
                         await _firestore.collection('game').doc('game1').set({'totem' : false, 'turn' : i,
                           'player_${i}_openCards' : cardsHandler[i][1],
                           'player_${i}_deck' : cardsHandler[i][0],
-                          'player_${widget.index}_openCards' : cardsHandler[widget.index][1],
-                          'player_${widget.index}_deck' : cardsHandler[widget.index][0]}, SetOptions(merge : true));
+                          'player_${widget.index}_openCards' : cardsHandler[widget.index - 1][1],
+                          'player_${widget.index}_deck' : cardsHandler[widget.index - 1][0]}, SetOptions(merge : true));
                         break;
                       }
                     }
