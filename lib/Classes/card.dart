@@ -1,15 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
+import 'package:tuple_dart/tuple.dart';
 
-enum ECardColor      { YELLOW, GREEN, RED, BLUE}
+const numberOfRegularCards = 72;
+const numberOfUniqueCards = 3;
+const numberOfUniqueCardsRepeats = 2 ;
+enum ECardColor      { BLUE, GREEN, RED, YELLOW}
 enum ECardIsUnique   { YES , NO}
-enum ECardUniqueType { INSIDE_ARROWS, OUTSIDE_ARROWS, COLOR_MATCH } ///TODO add: 1.swap Decks, 2.joker 3. change direction
-Map <int,String> cardsDic = {1 : 'assets/1.svg', 2 : 'assets/2.svg', 3 : 'assets/3.svg',
-  4 : 'assets/4.svg', 5 : 'assets/5.svg', 6 : 'assets/CTA Button .svg'};
+enum ECardUniqueType { INSIDE_ARROWS, OUTSIDE_ARROWS, COLOR_MATCH } ///TODO add: 1.swap Decks, 2.joker 3. change direction ///
 
+
+Map <int,Tuple2<int,String>> cardsFullDeck = <int,Tuple2<int,String>>{};
 
 class currentCard extends StatefulWidget {
   int index;
@@ -23,23 +28,50 @@ class cardState extends State<currentCard>{
   var cardIsUnique;
   var cardImage;
   var cardNumber; /// Think if relevant out of 80 cards
+  var openCards = [];
+  void initializeCardsMap(){
+    if (cardsFullDeck.isNotEmpty) return;
+    /// cardsFullDeck is not empty ///
+    int counter = 1;
+    for (int i = 0; i< numberOfRegularCards;++i){
+      for (var value in ECardColor.values){
+        cardsFullDeck[counter] = Tuple2(((i~/4)+1),"assets/"+((i+1).toString())+"-"+value.toString().split('.').last+".svg")  ;
+        counter++;
+      }
+    }
 
+    counter = 1;
+    for (int i = numberOfRegularCards; i< numberOfRegularCards+numberOfUniqueCards;++i){
+      for (int j = 0 ; j < numberOfUniqueCardsRepeats ; j++){
+        cardsFullDeck[counter+numberOfRegularCards] = Tuple2(((i~/4)+1),"assets/"+"Special_card"+((i-numberOfRegularCards)+1).toString()+".svg")  ;
+        counter++;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    var gameHand = Provider.of<gameHandler>(context);
+    initializeCardsMap();
     var size = MediaQuery.of(context).size;
-    print("chhdhdh");
-    print(gameHand.cardsHandler[widget.index][1]);
-    return Container(
-      child:gameHand.cardsHandler[widget.index][1].length == 0 ? SizedBox(width: 10,height: 10,):
-      SvgPicture.asset(cardsDic[gameHand.cardsHandler[widget.index][1][0]]
-      as String,width: 0.12 * size.width, height:
-      0.12 * size .height,
-          ),);
-
+    return StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
+    builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
+      if(snapshot.connectionState == ConnectionState.active){
+      final cloudData = snapshot.data;
+      if(cloudData != null) {
+      openCards = cloudData['player_${(widget.index).toString()}_openCards'];
+      if (openCards.length == 0){
+        print("indexxxx ${widget.index.toString()}");
+      }
+      }
+      return Container(
+        child:openCards.length == 0 ? SizedBox(width: 10,height: 10,):
+        SvgPicture.asset(cardsFullDeck[openCards[0]]?.item2
+        as String,width: 0.12 * size.width, height:
+        0.12 * size .height,
+        ),);
+    }
+      else return SizedBox(width: 0.01,);
+      });
   }
-
-
-
 }
