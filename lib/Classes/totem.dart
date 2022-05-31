@@ -33,8 +33,8 @@ class totemState extends State<totem>{
             if(cloudData != null) {
               isTotemPressed = cloudData['totem'];
               cardsHandler = [[cloudData['player_1_deck'], cloudData['player_1_openCards']],
-                [cloudData['player_3_deck'], cloudData['player_3_openCards']],
-                [cloudData['player_2_deck'], cloudData['player_2_openCards']]];
+                [cloudData['player_2_deck'], cloudData['player_2_openCards']],
+                [cloudData['player_3_deck'], cloudData['player_3_openCards']]];
               //playerOpenCards = cloudData['player_${widget.index.toString()}_openCards'];
               currentTurn = cloudData['turn'];
               cardsGroupArray = cloudData['matchingCards'];
@@ -47,11 +47,11 @@ class totemState extends State<totem>{
                   /// Regular Matching Attemp ///
 
                   if (cardsHandler[widget.index - 1][1].length > 0 && cardsGroupArray[(((cardsHandler[widget.index - 1][1][0])-1)~/4 )] > 1) {
-                    for (int i = 1; i <= numPlayers; i++) {
-                      if (i == widget.index || cardsHandler[i][1] == []) continue;
-                      if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[currentTurn][1][0]-1)~/4){
+                    for (int i = 0; i < numPlayers; i++) {
+                      if (i == (widget.index - 1) || cardsHandler[i][1] == []) continue;
+                      if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[widget.index - 1][1][0]-1)~/4){
                         print("i is ${i}");
-                        print("mixing ${(((cardsHandler[i][1][0])-1)~/4 )}, ${(cardsHandler[currentTurn][1][0]-1)~/4}");
+                        print("mixing ${(((cardsHandler[i][1][0])-1)~/4 )}, ${(cardsHandler[widget.index - 1][1][0]-1)~/4}");
                         var loserCards = [...cardsHandler[i][1], ...cardsHandler[widget.index - 1][1]];
                         loserCards.shuffle();
                         setState(() {

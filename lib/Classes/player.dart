@@ -46,6 +46,8 @@ class PlayerState extends State<Player>{
     //print(size.height);
     //print(size.width);
 
+    widget.getNickname();
+
     if (widget.index == 1){//player No.1
     //Positioned(right:0.01 * size.width,child:
       return Stack(fit:StackFit.loose,children: [
