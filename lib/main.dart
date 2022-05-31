@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       ),
         debugShowCheckedModeBanner: false,
 
-        home: gameManager(numPlayers: 3)//entryScreen()//gameTable()
+        home: const GameManager()//entryScreen()//gameTable()
     ),);
   }
 }

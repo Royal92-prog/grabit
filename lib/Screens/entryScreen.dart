@@ -6,18 +6,15 @@ import 'package:grabit/Classes/gameTable.dart';
 import 'package:grabit/Classes/player.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/services.dart';
+import 'package:grabit/services/playerManager.dart';
 
 import '../Classes/card.dart';
 
-class entryScreen extends StatefulWidget {
+class entryScreen extends StatelessWidget {
   entryScreen({required this.numPlayers}); //super(key: key)
   int numPlayers;
-  @override
-  State<entryScreen> createState() => entryScreenState();
-
-}
-
-class entryScreenState extends State<entryScreen>{
+  final _nicknameController = TextEditingController();
+  int _connectedPlayersNum = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -32,44 +29,62 @@ class entryScreenState extends State<entryScreen>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,))),
       Positioned(top: size.height * 0.028, left: size.width * 0.25,child://18
-          Container(
-            width:size.width * 0.45,
-            height: size.height * 0.35,
-        child:Row(mainAxisAlignment: MainAxisAlignment.start,children: [SizedBox(width:size.width*0.14),
-          Text("agfgagaga",
-      style:GoogleFonts.galindo(fontSize:16,color: Colors.black87,))]))),
+      Container(
+          width:size.width * 0.45,
+          height: size.height * 0.35,
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            resizeToAvoidBottomInset: false,
+            body : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 108, vertical: 50),
+              child: TextField(
+                controller: _nicknameController,
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  hintText: 'Enter nickname',
+                ),
+              ),
+            ),
+          ))
+      ),
       Positioned(bottom: size.height * 0.04, left: size.width * 0.37,child://18
       Container(
           width:size.width * 0.25,
           height: size.height * 0.25,
           child:GestureDetector(
               child:Image.asset('assets/playButton.png',width: 0.2 * size.width,
-          height: 0.25 * size.height),
-          onTap: () async{
-            FirebaseFirestore _firestore = FirebaseFirestore.instance;
-            var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
-            cardsArr.shuffle();
-            int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) / widget.numPlayers).toInt();
-            Map<String, dynamic> uploadData = {};
-            var cardsHandler = [];
-            Map<String,dynamic> dataUpload = {};
-            //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
-            dataUpload['totem'] = false;
-            dataUpload['turn'] = 0;
-            dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
-            dataUpload['matchingColorCards'] = [0,0,0,0];
-            dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards); i++) 0];
-            for(int i = 0; i < widget.numPlayers; i++){
-              dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
-              dataUpload['player_${(i).toString()}_openCards'] = [];
-            }
-            await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
-    Navigator.of(context).push(
-    MaterialPageRoute<void>(
-    builder: (context) {
-    return gameTable();
-          }
-          ));})))]);
-}}
+                  height: 0.25 * size.height),
+              onTap: () async{
+                FirebaseFirestore _firestore = FirebaseFirestore.instance;
+                var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
+                cardsArr.shuffle();
+                int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) / numPlayers).toInt();
+                Map<String, dynamic> uploadData = {};
+                var cardsHandler = [];
+                _connectedPlayersNum = await getConnectedNum();
+                Map<String,dynamic> dataUpload = {};
+                //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
+                dataUpload['totem'] = false;
+                dataUpload['turn'] = 0;
+                dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
+                dataUpload['matchingColorCards'] = [0,0,0,0];
+                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards); i++) 0];
+                dataUpload['player_${_connectedPlayersNum.toString()}_deck'] = cardsArr.sublist(cards*(_connectedPlayersNum - 1), (cards * _connectedPlayersNum));
+                dataUpload['player_${(_connectedPlayersNum).toString()}_openCards'] = [];
+                dataUpload['player_${_connectedPlayersNum.toString()}_nickname'] = _nicknameController.text;
+                dataUpload['connectedPlayersNum'] = _connectedPlayersNum;
+                ++_connectedPlayersNum;
+                await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
+                // Navigator.of(context).push(
+                // MaterialPageRoute<void>(
+                // builder: (context) {
+                // return gameTable();
+                //       }
+                //       ));
+              })))]);
+  }
+
+}
+
 
 
