@@ -49,6 +49,7 @@ class deckState extends State<playerDeck>{
        }
     return GestureDetector(
     onTap: currentTurn != widget.index ? null : () async{
+      print('deck cards group = ${cardsGroupArray}');
       FirebaseFirestore db = FirebaseFirestore.instance;
       await db.collection("game").doc("game1").set({'turn' : -1},SetOptions(merge :true));
       if ((cardsHandler[widget.index][1].length > 0)) {//playerOpenCards

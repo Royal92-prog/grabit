@@ -10,7 +10,8 @@ enum GameState { waitingForPlayers, activeGame, endGame }
 
 
 class GameManager extends StatefulWidget {
-  const GameManager({Key? key}) : super(key: key);
+  GameManager({Key? key, required this.playerIndex}) : super(key: key);
+  int playerIndex;
 
   @override
   State<GameManager> createState() => _GameManagerState();
@@ -20,11 +21,9 @@ class GameManager extends StatefulWidget {
 class _GameManagerState extends State<GameManager>{
   GameState _gameState = GameState.waitingForPlayers;
   int _connectedNum = 0;
-  int _playerIndex = -1;
 
   @override
   Widget build(BuildContext context) {
-    setConnectedNum(_connectedNum);
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -38,15 +37,10 @@ class _GameManagerState extends State<GameManager>{
             _gameState = GameState.activeGame;
           }
           if (_gameState == GameState.waitingForPlayers) {
-            if (_playerIndex == -1) {
-              // ++_connectedNum;
-              // setConnectedNum(_connectedNum);
-              _playerIndex = _connectedNum;
-            }
-            return entryScreen(numPlayers: 3);
+            return const Center(child: CircularProgressIndicator());
           }
           else {
-            return gameTable(playerIndex: _playerIndex,);
+            return gameTable(playerIndex: widget.playerIndex,);
           }
         }
     );

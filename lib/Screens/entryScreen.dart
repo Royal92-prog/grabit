@@ -66,7 +66,6 @@ class entryScreen extends StatelessWidget {
                   cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
                   cardsArr.shuffle();
                   dataUpload['cardsData'] = cardsArr;
-                  print('hi ${_connectedPlayersNum}');
                 }
                 else {
                   await _firestore.collection('game').doc('game1').get().then(
@@ -96,12 +95,12 @@ class entryScreen extends StatelessWidget {
                 dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
                 dataUpload['connectedPlayersNum'] = _connectedPlayersNum;
                 await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
-                // Navigator.of(context).push(
-                // MaterialPageRoute<void>(
-                // builder: (context) {
-                // return gameTable();
-                //       }
-                //       ));
+                Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                builder: (context) {
+                return gameTable(playerIndex: _playerIndex,);
+                      }
+                      ));
               })))]);
   }
 

@@ -22,6 +22,10 @@ class totemState extends State<totem>{
  late int currentTurn ;
  var cardsHandler = [];
  int numPlayers = 3;
+ final _mistakeSnackbar = const SnackBar(
+     content: Text('penalty'),
+ );
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -43,13 +47,14 @@ class totemState extends State<totem>{
                 child:Image.asset('assets/CTAButton.png',width: 0.2 * size.width,height: 0.15
                     * size.height,alignment: Alignment.center),
                 onTap: isTotemPressed ? null : () async{
+                  print('totem index = ${widget.index}');
                   FirebaseFirestore _firestore = FirebaseFirestore.instance;
                   /// Regular Matching Attemp ///
 
                   if (cardsHandler[widget.index][1].length > 0 && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) {
                     for (int i = 0; i < numPlayers; i++) {
                       if (i == widget.index || cardsHandler[i][1] == []) continue;
-                      if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[currentTurn][1][0]-1)~/4){
+                      if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[widget.index][1][0]-1)~/4){
                         print("i is ${i}");
                         print("mixing ${(((cardsHandler[i][1][0])-1)~/4 )}, ${(cardsHandler[currentTurn][1][0]-1)~/4}");
                         var loserCards = [...cardsHandler[i][1], ...cardsHandler[widget.index][1]];
@@ -71,6 +76,7 @@ class totemState extends State<totem>{
                   }
                 else {
                     print("penalty - ");
+                    ScaffoldMessenger.of(context).showSnackBar(_mistakeSnackbar);
                 }
                 }
 
