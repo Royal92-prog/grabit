@@ -13,7 +13,8 @@ enum ECardColor      { YELLOW, GREEN, RED, BLUE}
 
 class Player extends StatefulWidget {
   final int index;
-  const Player({required this.index});
+  final int deviceIndex;
+  const Player({required this.index, required this.deviceIndex});
 
 
   @override
@@ -45,7 +46,7 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index)), Positioned(right: 0.11* size.width,
+        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex,)), Positioned(right: 0.11* size.width,
             top: 0.16* size.height, child: Text("Player No.1",style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index))]);
@@ -58,7 +59,7 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
           Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
-          playerDeck(index:widget.index)),
+          playerDeck(index:widget.index, deviceIndex: widget.deviceIndex,)),
           Positioned(right: 0.11* size.width,top: 0.16* size.height,
               child: Text("Player No.2",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
           Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index))]);
@@ -71,7 +72,7 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index)),
+        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex,)),
         Positioned(right: 0.11* size.width,top: 0.16* size.height,
             child: Text("Player No.3",style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),

@@ -14,7 +14,8 @@ Map <int,String> cardsDic = {1 : 'assets/1.svg', 2 : 'assets/2.svg', 3 : 'assets
 
 class playerDeck extends StatefulWidget {
   int index;
-  playerDeck( {required this.index});
+  int deviceIndex;
+  playerDeck( {required this.index, required this.deviceIndex});
 
   @override
   State<playerDeck> createState() => deckState();
@@ -48,7 +49,7 @@ class deckState extends State<playerDeck>{
          cardsActiveUniqueArray = cloudData['cardsActiveUniqueArray']; /// 0: insideArrows, 1: color, 2: outsideArrows
        }
     return GestureDetector(
-    onTap: currentTurn != widget.index ? null : () async{
+    onTap: (currentTurn != widget.index || widget.index != widget.deviceIndex) ? null : () async{
       print('deck cards group = ${cardsGroupArray}');
       FirebaseFirestore db = FirebaseFirestore.instance;
       await db.collection("game").doc("game1").set({'turn' : -1},SetOptions(merge :true));
