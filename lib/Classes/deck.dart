@@ -52,11 +52,10 @@ class deckState extends State<playerDeck>{
     onTap: (currentTurn != widget.index || widget.index != widget.deviceIndex) ? null : () async{
       print('deck cards group = ${cardsGroupArray}');
       FirebaseFirestore db = FirebaseFirestore.instance;
-      await db.collection("game").doc("game1").set({'turn' : -1},SetOptions(merge :true));
       if ((cardsHandler[widget.index][1].length > 0)) {//playerOpenCards
         if (((cardsHandler[widget.index][1][0])-1)~/4 < cardsGroupArray.length) { /// regular card
           cardsGroupArray[((cardsHandler[widget.index][1][0]) - 1) ~/ 4] -= 1; // re
-          cardsColorArray[(((cardsHandler[widget.index][1][0]) - 1)%4)] -=1; /// 0 blue 1 green 2 red 3 yellow
+          cardsColorArray[(((cardsHandler[widget.index][1][0]) - 1)%4)] -= 1; /// 0 blue 1 green 2 red 3 yellow
         }
         else { /// unique cards
           cardsActiveUniqueArray[((((cardsHandler[widget.index][1][0]) - 1))-numberOfRegularCards)~/2] -=1;
@@ -86,6 +85,14 @@ class deckState extends State<playerDeck>{
         //print("cardsColorArray is");
         //print(cardsColorArray);
        print(cardsHandler[0][1]);
+
+       var nextTurn = (widget.index + 1) % 3;
+       while (nextTurn != widget.index) {
+         if (cardsHandler[nextTurn][0].length > 0) {
+           break;
+         }
+         nextTurn = (nextTurn + 1) % 3;
+       }
         //remember to substract 1 from player index when using firebase
         await db.collection("game").doc("game1").set({
           'player_0_deck' : cardsHandler[0][0],
@@ -94,7 +101,7 @@ class deckState extends State<playerDeck>{
           'player_0_openCards' : cardsHandler[0][1],
           'player_1_openCards' : cardsHandler[1][1],
           'player_2_openCards' : cardsHandler[2][1],
-          'turn' : (widget.index + 1) % 3,
+          'turn' : nextTurn,
           'matchingCards': cardsGroupArray,
           'matchingColorCards' : cardsColorArray,
           'cardsActiveUniqueArray' : cardsActiveUniqueArray},SetOptions(merge :true));

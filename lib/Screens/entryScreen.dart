@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:grabit/services/playerManager.dart';
 
 import '../Classes/card.dart';
+import '../Classes/gameManager.dart';
 
 class entryScreen extends StatelessWidget {
   entryScreen({required this.numPlayers}); //super(key: key)
@@ -93,12 +94,12 @@ class entryScreen extends StatelessWidget {
                 dataUpload['player_${_playerIndex.toString()}_deck'] = cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1)));
                 dataUpload['player_${(_playerIndex).toString()}_openCards'] = [];
                 dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
-                dataUpload['connectedPlayersNum'] = _connectedPlayersNum;
                 await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
+                setConnectedNum(_connectedPlayersNum);
                 Navigator.of(context).push(
                 MaterialPageRoute<void>(
                 builder: (context) {
-                return gameTable(playerIndex: _playerIndex,);
+                return GameManager(playerIndex: _playerIndex, playersNum: numPlayers,);
                       }
                       ));
               })))]);

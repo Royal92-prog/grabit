@@ -22,6 +22,7 @@ class totemState extends State<totem>{
  late int currentTurn ;
  var cardsHandler = [];
  int numPlayers = 3;
+ bool _isColorActive = false;
  final _mistakeSnackbar = const SnackBar(
      content: Text('penalty'),
  );
@@ -41,7 +42,8 @@ class totemState extends State<totem>{
                 [cloudData['player_2_deck'], cloudData['player_2_openCards']]];
               //playerOpenCards = cloudData['player_${widget.index.toString()}_openCards'];
               currentTurn = cloudData['turn'];
-              cardsGroupArray = cloudData['matchingCards'];
+              _isColorActive = cloudData['cardsActiveUniqueArray'][1] > 0;
+              cardsGroupArray = _isColorActive ? cloudData['matchingColorCards'] : cloudData['matchingCards'];
             }
             return GestureDetector(
                 child:Image.asset('assets/CTAButton.png',width: 0.2 * size.width,height: 0.15
@@ -51,29 +53,25 @@ class totemState extends State<totem>{
                   FirebaseFirestore _firestore = FirebaseFirestore.instance;
                   /// Regular Matching Attemp ///
 
-                  if (cardsHandler[widget.index][1].length > 0 && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) {
-                    for (int i = 0; i < numPlayers; i++) {
-                      if (i == widget.index || cardsHandler[i][1] == []) continue;
-                      if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[widget.index][1][0]-1)~/4){
-                        print("i is ${i}");
-                        print("mixing ${(((cardsHandler[i][1][0])-1)~/4 )}, ${(cardsHandler[currentTurn][1][0]-1)~/4}");
-                        var loserCards = [...cardsHandler[i][1], ...cardsHandler[widget.index][1]];
-                        loserCards.shuffle();
-                        setState(() {
-                          cardsHandler[i][0] = [...cardsHandler[i][0],...loserCards];
-                          cardsHandler[widget.index][1] = [];
-                          cardsHandler[i][1] = [];
-                          currentTurn = i;
-                        });
-                        await _firestore.collection('game').doc('game1').set({'totem' : false, 'turn' : i,
-                          'player_${i}_openCards' : cardsHandler[i][1],
-                          'player_${i}_deck' : cardsHandler[i][0],
-                          'player_${widget.index}_openCards' : cardsHandler[widget.index][1],
-                          'player_${widget.index}_deck' : cardsHandler[widget.index][0]}, SetOptions(merge : true));
-                        break;
-                      }
+
+                  if (cardsHandler[widget.index][1].length > 0 &&
+                      ((!_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) ||
+                          (_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1) % 4 )] > 1))) {
+                    int loserIndex = getLoserIndex();
+                    var loserCards = [...cardsHandler[loserIndex][1], ...cardsHandler[widget.index][1]];
+                    loserCards.shuffle();
+                    setState(() {
+                      cardsHandler[loserIndex][0] = [...cardsHandler[loserIndex][0],...loserCards];
+                      cardsHandler[widget.index][1] = [];
+                      cardsHandler[loserIndex][1] = [];
+                      currentTurn = loserIndex;
+                    });
+                    await _firestore.collection('game').doc('game1').set({'totem' : false, 'turn' : loserIndex,
+                      'player_${loserIndex}_openCards' : cardsHandler[loserIndex][1],
+                      'player_${loserIndex}_deck' : cardsHandler[loserIndex][0],
+                      'player_${widget.index}_openCards' : cardsHandler[widget.index][1],
+                      'player_${widget.index}_deck' : cardsHandler[widget.index][0]}, SetOptions(merge : true));
                     }
-                  }
                 else {
                     print("penalty - ");
                     ScaffoldMessenger.of(context).showSnackBar(_mistakeSnackbar);
@@ -84,17 +82,24 @@ class totemState extends State<totem>{
           }
           else return SizedBox(width: 0.01,);
         });
+  }
 
-
-
-
-
-
-
-
-
-
-
-
+  int getLoserIndex() {
+    for (int i = 0; i < numPlayers; i++) {
+      if (i == widget.index || cardsHandler[i][1] == []) continue;
+      if (_isColorActive) {
+        if ((((cardsHandler[i][1][0]) - 1) % 4) ==
+            (cardsHandler[widget.index][1][0] - 1) % 4) {
+          return i;
+        }
+      }
+      else {
+        if ((((cardsHandler[i][1][0]) - 1) ~/ 4) ==
+            (cardsHandler[widget.index][1][0] - 1) ~/ 4) {
+          return i;
+        }
+      }
+    }
+    return -1;
   }
 }
