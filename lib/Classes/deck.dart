@@ -55,7 +55,7 @@ class deckState extends State<playerDeck>{
       if ((cardsHandler[widget.index][1].length > 0)) {//playerOpenCards
         if (((cardsHandler[widget.index][1][0])-1)~/4 < cardsGroupArray.length) { /// regular card
           cardsGroupArray[((cardsHandler[widget.index][1][0]) - 1) ~/ 4] -= 1; // re
-          cardsColorArray[(((cardsHandler[widget.index][1][0]) - 1)%4)] -= 1; /// 0 blue 1 green 2 red 3 yellow
+          cardsColorArray[(((cardsHandler[widget.index][1][0]) - 1) % 4)] -= 1; /// 0 blue 1 green 2 red 3 yellow
         }
         else { /// unique cards
           cardsActiveUniqueArray[((((cardsHandler[widget.index][1][0]) - 1))-numberOfRegularCards)~/2] -=1;
@@ -66,7 +66,7 @@ class deckState extends State<playerDeck>{
         ///TODO add check for unique cards
       if (((cardsHandler[widget.index][1][0])-1)~/4 < cardsGroupArray.length) { /// regular card
         cardsGroupArray[((cardsHandler[widget.index][1][0]) - 1) ~/ 4] += 1; // add new front number to array
-        cardsColorArray[(((cardsHandler[widget.index][1][0]) - 1)%4)] += 1; /// 0 blue 1 green 2 red 3 yellow
+        cardsColorArray[(((cardsHandler[widget.index][1][0]) - 1) % 4)] += 1; /// 0 blue 1 green 2 red 3 yellow
 
       }
       else { /// unique cards
