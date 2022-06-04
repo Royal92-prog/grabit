@@ -77,7 +77,7 @@ class deckState extends State<playerDeck>{
           }
         }
         else{
-          cardsActiveUniqueArray[((((cardsHandler[widget.index][1][0]) - 1))-numberOfRegularCards)~/2] += 1;
+          cardsActiveUniqueArray[((((cardsHandler[widget.index][1][0]) - 1)) - numberOfRegularCards)~/2] += 1;
         }
       }
         print ("cardsActive Unique Array");
@@ -93,7 +93,8 @@ class deckState extends State<playerDeck>{
          }
          nextTurn = (nextTurn + 1) % 3;
        }
-        //remember to substract 1 from player index when using firebase
+
+      //remember to substract 1 from player index when using firebase
         await db.collection("game").doc("game1").set({
           'player_0_deck' : cardsHandler[0][0],
           'player_1_deck' : cardsHandler[1][0],
@@ -106,16 +107,16 @@ class deckState extends State<playerDeck>{
           'matchingColorCards' : cardsColorArray,
           'cardsActiveUniqueArray' : cardsActiveUniqueArray},SetOptions(merge :true));
         },
-      child:Stack(clipBehavior: Clip.antiAliasWithSaveLayer, fit: StackFit.passthrough,children:
+      child:Stack(clipBehavior: Clip.antiAliasWithSaveLayer, fit : StackFit.passthrough, children:
       [
       SvgPicture.asset('assets/Full_pack.svg',
       width: 0.1 * size.width, height: 0.1 * size.height,),
-      Positioned(top: 0.01*size.height,right:0.012*size.width,
+      Positioned(top: 0.015 * size.height,right: cardsHandler[widget.index][0].length < 10 ? 0.018 * size.width :
+      0.012 * size.width,
       child:Text("${cardsHandler[widget.index][0].length}",style:
-      TextStyle(fontSize: 15,color: Colors.black)),)],
+      const TextStyle(fontSize: 15,color: Colors.black, decoration: TextDecoration.none)),)],
       ),);
           // : Text("${24}"
-
       }
         else return CircularProgressIndicator();//SizedBox(width: size.width * 0.1, height: size.height * 0.1);
       });
