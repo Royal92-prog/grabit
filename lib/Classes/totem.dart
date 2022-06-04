@@ -17,11 +17,14 @@ class totem extends StatefulWidget {
 
 class totemState extends State<totem>{
  bool isTotemPressed = false;
- //late var playerOpenCards;
+ late var matchingColorCards;
+ late var matchingRegularCards;
  late var cardsGroupArray;
  late int currentTurn ;
  var cardsHandler = [];
  int numPlayers = 3;
+ bool _isColorActive = false;
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -35,9 +38,11 @@ class totemState extends State<totem>{
               cardsHandler = [[cloudData['player_0_deck'], cloudData['player_0_openCards']],
                 [cloudData['player_1_deck'], cloudData['player_1_openCards']],
                 [cloudData['player_2_deck'], cloudData['player_2_openCards']]];
-              //playerOpenCards = cloudData['player_${widget.index.toString()}_openCards'];
               currentTurn = cloudData['turn'];
-              cardsGroupArray = cloudData['matchingCards'];
+              _isColorActive = cloudData['cardsActiveUniqueArray'][1] > 0;
+              cardsGroupArray = _isColorActive ? cloudData['matchingColorCards'] : cloudData['matchingCards'];
+              matchingRegularCards = cloudData['matchingCards'];
+              matchingColorCards = cloudData['matchingColorCards'];
             }
             return GestureDetector(
                 child:Image.asset('assets/CTAButton.png',width: 0.2 * size.width,height: 0.15
@@ -46,12 +51,15 @@ class totemState extends State<totem>{
                   FirebaseFirestore _firestore = FirebaseFirestore.instance;
                   /// Regular Matching Attemp ///
 
-                  if (cardsHandler[widget.index][1].length > 0 && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) {
+                  if (cardsHandler[widget.index][1].length > 0 &&
+                      ((!_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) ||
+                          (_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1) % 4 )] > 1)))
+                  {/*
                     for (int i = 0; i < numPlayers; i++) {
                       if (i == widget.index || cardsHandler[i][1] == []) continue;
-                      if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[currentTurn][1][0]-1)~/4){
+                      if ((((cardsHandler[i][1][0])-1)~/4 ) == (cardsHandler[widget.index][1][0]-1)~/4){
                         print("i is ${i}");
-                        print("mixing ${(((cardsHandler[i][1][0])-1)~/4 )}, ${(cardsHandler[currentTurn][1][0]-1)~/4}");
+                        print("mixing ${(((cardsHandler[i][1][0])-1)~/4 )}, ${(cardsHandler[widget.index][1][0]-1)~/4}");
                         var loserCards = [...cardsHandler[i][1], ...cardsHandler[widget.index][1]];
                         loserCards.shuffle();
                         setState(() {
@@ -67,7 +75,29 @@ class totemState extends State<totem>{
                           'player_${widget.index}_deck' : cardsHandler[widget.index][0]}, SetOptions(merge : true));
                         break;
                       }
-                    }
+                    }*/
+                    int loserIndex = getLoserIndex();
+                    var loserCards = [...cardsHandler[loserIndex][1], ...cardsHandler[widget.index][1]];
+                    loserCards.shuffle();
+                    setState(() {
+                      cardsHandler[loserIndex][0] = [...cardsHandler[loserIndex][0],...loserCards];
+                      cardsHandler[widget.index][1] = [];
+                      cardsHandler[loserIndex][1] = [];
+                      currentTurn = loserIndex;
+                      matchingRegularCards[(((cardsHandler[loserIndex][1][0])-1) ~/4)] -= 1;
+                      matchingColorCards[(((cardsHandler[loserIndex][1][0])-1) % 4)] -= 1;
+                      matchingRegularCards[(((cardsHandler[widget.index][1][0])-1) ~/4)] -= 1;
+                      matchingColorCards[(((cardsHandler[widget.index][1][0])-1) % 4 )] -= 1;
+                    });
+                    await _firestore.collection('game').doc('game1').set({
+                      'totem' : false,
+                      'turn' : loserIndex,
+                      'player_${loserIndex}_openCards' : cardsHandler[loserIndex][1],
+                      'player_${loserIndex}_deck' : cardsHandler[loserIndex][0],
+                      'player_${widget.index}_openCards' : cardsHandler[widget.index][1],
+                      'player_${widget.index}_deck' : cardsHandler[widget.index][0],
+                      'matchingCards': matchingRegularCards,
+                      'matchingColorCards' : matchingColorCards,}, SetOptions(merge : true));
                   }
                 else {
                     print("penalty - ");
