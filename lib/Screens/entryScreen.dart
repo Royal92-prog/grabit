@@ -39,8 +39,9 @@ class entryScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             resizeToAvoidBottomInset: false,
             body : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 108, vertical: 50),
+              padding: const EdgeInsets.symmetric(horizontal: 108, vertical: 50),//108,50
               child: TextField(
+
                 controller: _nicknameController,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),

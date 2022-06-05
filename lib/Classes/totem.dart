@@ -248,8 +248,7 @@ class totemState extends State<totem> {
     else { //unique card
       print("card is :: line 186 :: ${card}");
       uniqueArray[(((card - 1)) - numberOfRegularCards) ~/ 2] -= 1;
-      if ((((card - 1)) - numberOfRegularCards) ~/ 2 == 0 &&
-          uniqueArray[2] > 0) {
+      if ((((card - 1)) - numberOfRegularCards) ~/ 2 == 0 && uniqueArray[3] > 0) {
         uniqueArray[3] -= 1;
       }
     }
