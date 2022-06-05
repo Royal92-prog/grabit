@@ -47,6 +47,7 @@ class totemState extends State<totem> {
           if (snapshot.connectionState == ConnectionState.active) {
             final cloudData = snapshot.data;
             if (cloudData != null) {
+              underTotemCards = cloudData['underTotemCards'];
               isTotemPressed = cloudData['totem'];
               cardsHandler =
               [[cloudData['player_0_deck'], cloudData['player_0_openCards']],
@@ -86,8 +87,13 @@ class totemState extends State<totem> {
                         FirebaseFirestore _firestore = FirebaseFirestore
                             .instance;
                         await _firestore.collection('game').doc('game1').set(
-                            {'totem': true}, SetOptions(merge: true));
-
+                            {'totem': true, 'totem${widget.index}Pressed': true}, SetOptions(merge: true));
+                        await Future.delayed(const Duration(milliseconds: 500));
+                        for (int i=0; i<numPlayers && !isTotemPressed; i++) {
+                          if (cloudData!['totem${i}Pressed']) {
+                            return;
+                          }
+                        }
                         ///#1st case :  totem was pressed since inner arrows is on the table
                         if (uniqueArray[0] > 0 &&
                             uniqueArray[0] > uniqueArray[3]) {
@@ -104,6 +110,7 @@ class totemState extends State<totem> {
                           cardsHandler[widget.index][1] = [];
                           await _firestore.collection('game').doc('game1').set({
                             'totem': false,
+                            'totem${widget.index}Pressed': false,
                             'turn': widget.index,
                             'cardsActiveUniqueArray': uniqueArray,
                             'matchingCards': matchingRegularCards,
@@ -142,6 +149,8 @@ class totemState extends State<totem> {
                           });
                           await _firestore.collection('game').doc('game1').set({
                             'totem': false,
+                            'underTotemCards': underTotemCards,
+                            'totem${widget.index}Pressed': false,
                             'turn': loserIndex,
                             'player_${loserIndex}_openCards': cardsHandler[loserIndex][1],
                             'player_${loserIndex}_deck': cardsHandler[loserIndex][0],
@@ -190,7 +199,8 @@ class totemState extends State<totem> {
                             'matchingCards': matchingRegularCards,
                             'matchingColorCards': matchingColorCards,
                             'cardsActiveUniqueArray': uniqueArray,
-                            'totem': false}, SetOptions(merge: true));
+                            'totem': false,
+                            'totem${widget.index}Pressed': false}, SetOptions(merge: true));
                         }
                         //checking whther we have a winner after this press
                         var winners = [];

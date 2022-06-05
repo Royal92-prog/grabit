@@ -86,7 +86,11 @@ class entryScreen extends StatelessWidget {
                 Map<String, dynamic> uploadData = {};
                 var cardsHandler = [];
                 //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
+                dataUpload['underTotemCards'] = [];
                 dataUpload['totem'] = false;
+                dataUpload['totem0Pressed'] = false;
+                dataUpload['totem1Pressed'] = false;
+                dataUpload['totem2Pressed'] = false;
                 dataUpload['turn'] = 0;
                 dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
                 dataUpload['matchingColorCards'] = [0,0,0,0];
