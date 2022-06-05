@@ -90,7 +90,7 @@ class entryScreen extends StatelessWidget {
                 dataUpload['turn'] = 0;
                 dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
                 dataUpload['matchingColorCards'] = [0,0,0,0];
-                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards); i++) 0];
+                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
                 dataUpload['player_${_playerIndex.toString()}_deck'] = cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1)));
                 dataUpload['player_${(_playerIndex).toString()}_openCards'] = [];
                 dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
