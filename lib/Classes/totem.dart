@@ -142,7 +142,17 @@ class totemState extends State<totem>{
                     if(cardsHandler[i][0].length == 0 && cardsHandler[i][1].length == 0 ) winners.add(i);
                     //print("card is ${cardsHandler[i][1][0]}");
                   }
-                  print("winners are :: ${winners}");
+                  if(winners.length > 0){
+                  var finalMsg = "";
+                  if(winners.length > 1) finalMsg = "there is no sole winner in this battle";
+                  else  finalMsg = "Player No, ${winners[0]} won !";
+
+                  await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),behavior: SnackBarBehavior.floating,backgroundColor:
+                  Colors.black.withOpacity(0.5),
+                      margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
+                          left:size.width * 0.25, bottom: size.height * 0.6) ,
+                      content:Center(child: Text(finalMsg),)));
+                  }
                 }
                 )],));
           }

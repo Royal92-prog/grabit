@@ -162,13 +162,9 @@ class deckState extends State<playerDeck>{
      for(int i = 0; i < numPlayers; i++) {
       if(cardsHandler[i][0].length > 0) {
         if(cardsHandler[i][1].length > 0 && i != widget.index) decreaseCardsArray(cardsHandler[i][1][0]);
-        //print(" Line 160 cards ${i}  , ${cardsHandler[i][1][0]}, ${cardsHandler[i][0][0]}");
         setState(() {
           cardsHandler[i][1].insert(0, cardsHandler[i][0].removeAt(0));
         });
-       // await FirebaseFirestore.instance.collection("game").doc("game1").set({
-          //'player_${i}_openCards' : cardsHandler[i][1],
-          //'player_${i}_deck' : cardsHandler[i][0],},SetOptions(merge :true));
         if(increaseCardsArray(cardsHandler[i][1][0]) == 2) deliverAgain = true;
       }
     }
