@@ -61,6 +61,7 @@ class totemState extends State<totem>{
                   FirebaseFirestore _firestore = FirebaseFirestore.instance;
                   await _firestore.collection('game').doc('game1').set({'totem' : true}, SetOptions(merge : true));
                   ///#1st case :  totem was pressed since inner arrows is on the table
+                  print("Unique array :: ${uniqueArray}");
                   if (uniqueArray[0] > 0 && uniqueArray[0] > uniqueArray[3]){
                     uniqueArray[3] += 1;// marking that the special card is used
                     if(cardsHandler[widget.index][1].length > 0) decreaseCardsArray(cardsHandler[widget.index][1][0]);
@@ -174,7 +175,7 @@ class totemState extends State<totem>{
    else{//unique card
      print("card is :: line 186 :: ${card}");
      uniqueArray[(((card - 1)) - numberOfRegularCards) ~/ 2] -= 1;
-     if((((card - 1))-numberOfRegularCards) ~/ 2 == 0 && uniqueArray[2] > 0) {
+     if((((card - 1))-numberOfRegularCards) ~/ 2 == 0 && uniqueArray[3] > 0) {
        uniqueArray[3] -= 1;
      }
    }

@@ -66,9 +66,6 @@ class deckState extends State<playerDeck>{
             SetOptions(merge :true));
         //cardsHandler[widget.index][0].removeAt(0);
         await Future.delayed(Duration(seconds: 1));
-        print("Handlinggg1");
-        await db.collection("game").doc("game1").set({'player_${widget.index}_openCards' :
-        cardsHandler[widget.index][1],},SetOptions(merge :true));
         await handleSpecialCardNo0();
         print("final");
         }
@@ -164,10 +161,13 @@ class deckState extends State<playerDeck>{
         setState(() {
           cardsHandler[i][1].insert(0, cardsHandler[i][0].removeAt(0));
         });
+       // await FirebaseFirestore.instance.collection("game").doc("game1").set({
+          //'player_${i}_openCards' : cardsHandler[i][1],
+          //'player_${i}_deck' : cardsHandler[i][0],},SetOptions(merge :true));
         if(increaseCardsArray(cardsHandler[i][1][0]) == 2) deliverAgain = true;
       }
     }
-    if (deliverAgain == true) {
+   /* if (deliverAgain == true) {
       await Future.delayed(Duration(seconds: 1));
       print("Handlinggg1");
       await FirebaseFirestore.instance.collection("game").doc("game1").set({
@@ -178,10 +178,11 @@ class deckState extends State<playerDeck>{
       'player_1_deck' : cardsHandler[1][0],
       'player_2_deck' : cardsHandler[2][0],
       },SetOptions(merge :true));
-      print("Handlinggg2");
+      print("seconddd");
+      await Future.delayed(Duration(seconds: 1));
       handleSpecialCardNo0();
-    }
-    print("final 172");
+    }*/
+    return deliverAgain;
   }
 }
 
