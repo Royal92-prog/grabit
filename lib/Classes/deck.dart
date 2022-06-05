@@ -48,6 +48,7 @@ class deckState extends State<playerDeck>{
     return GestureDetector(
     onTap: currentTurn != widget.index ? null : () async{
       FirebaseFirestore db = FirebaseFirestore.instance;
+      print("decks : ${cardsHandler[0][0]} ,${cardsHandler[1][0]},  ${cardsHandler[2][0]} ");
       await db.collection("game").doc("game1").set({'turn' : -1},SetOptions(merge :true));
       if(cardsHandler[0][1].length > 0 && cardsHandler[1][1].length > 0 &&
           cardsHandler[2][1].length > 0 )
@@ -62,10 +63,12 @@ class deckState extends State<playerDeck>{
 
       if(increaseCardsArray(cardsHandler[widget.index][1][0]) == 2){
         await db.collection("game").doc("game1").set({'player_${widget.index}_openCards' :
-        cardsHandler[widget.index][1],'player_1_deck' : cardsHandler[widget.index][0]},
+        cardsHandler[widget.index][1],'player_${widget.index}_deck' : cardsHandler[widget.index][0]},
             SetOptions(merge :true));
         //cardsHandler[widget.index][0].removeAt(0);
-        await Future.delayed(Duration(seconds: 1));
+        print("HERE 69");
+        await Future.delayed(Duration(milliseconds: 500));
+        print("HERE 71");
         await handleSpecialCardNo0();
         print("final");
         }
@@ -142,7 +145,7 @@ class deckState extends State<playerDeck>{
         margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
             left:size.width * 0.25, bottom: size.height * 0.6) ,
         content:Center(child: Text("Get Ready"),)));
-    for(int i = numPlayers; i > 0 ; i--) {
+    for(int i = 3 ; i > 0 ; i--) {
       await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
@@ -153,11 +156,13 @@ class deckState extends State<playerDeck>{
               left: size.width * 0.25, bottom: size.height * 0.6),
           content: Center(child: Text("${i}"),)));
     }
-    await Future.delayed(Duration(seconds: 6));
-    print("kirr");
+    print("159 ----");
+    await Future.delayed(Duration(seconds: 5));
+    print("161 ----");
      for(int i = 0; i < numPlayers; i++) {
       if(cardsHandler[i][0].length > 0) {
         if(cardsHandler[i][1].length > 0 && i != widget.index) decreaseCardsArray(cardsHandler[i][1][0]);
+        //print(" Line 160 cards ${i}  , ${cardsHandler[i][1][0]}, ${cardsHandler[i][0][0]}");
         setState(() {
           cardsHandler[i][1].insert(0, cardsHandler[i][0].removeAt(0));
         });
@@ -167,8 +172,9 @@ class deckState extends State<playerDeck>{
         if(increaseCardsArray(cardsHandler[i][1][0]) == 2) deliverAgain = true;
       }
     }
-   /* if (deliverAgain == true) {
-      await Future.delayed(Duration(seconds: 1));
+     print("Check :: line 170 ${deliverAgain}");
+    if (deliverAgain == true) {
+      //await Future.delayed(Duration(seconds: 2));
       print("Handlinggg1");
       await FirebaseFirestore.instance.collection("game").doc("game1").set({
       'player_0_openCards' : cardsHandler[0][1],
@@ -179,9 +185,9 @@ class deckState extends State<playerDeck>{
       'player_2_deck' : cardsHandler[2][0],
       },SetOptions(merge :true));
       print("seconddd");
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(seconds: 3));
       handleSpecialCardNo0();
-    }*/
+    }
     return deliverAgain;
   }
 }

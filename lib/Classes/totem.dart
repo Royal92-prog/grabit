@@ -124,6 +124,7 @@ class totemState extends State<totem>{
                     print("after totem update: ${matchingRegularCards}");
                     await _firestore.collection('game').doc('game1').
                     set({
+                      'turn' : widget.index,
                       'player_${0}_openCards' : cardsHandler[0][1],
                       'player_${0}_deck' : cardsHandler[0][0],
                       'player_${1}_openCards' : cardsHandler[1][1],
