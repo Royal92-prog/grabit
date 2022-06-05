@@ -7,11 +7,6 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 
 
-
-Map <int,String> cardsDic = {1 : 'assets/1.svg', 2 : 'assets/2.svg', 3 : 'assets/3.svg',
-  4 : 'assets/4.svg', 5 : 'assets/5.svg'};
-
-
 class playerDeck extends StatefulWidget {
   int index;
   int deviceIndex;
@@ -20,6 +15,7 @@ class playerDeck extends StatefulWidget {
   @override
   State<playerDeck> createState() => deckState();
 }
+
 class deckState extends State<playerDeck>{
   //var cardColor;
   //var cardIsUnique;
@@ -61,7 +57,7 @@ class deckState extends State<playerDeck>{
         await db.collection("game").doc("game1").set({
         'player_${widget.index}_openCards' : cardsHandler[widget.index][1],
         'player_${widget.index}_deck' : cardsHandler[widget.index][0]}, SetOptions(merge :true));
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(Duration(milliseconds: 800));
         await handleSpecialCardNo0();
       }
       int nextTurn = (widget.index + 1) % 3;
@@ -94,10 +90,7 @@ class deckState extends State<playerDeck>{
       Positioned(top: 0.01*size.height,right:0.012 * size.width,
       child:Text("${cardsHandler[widget.index][0].length}",style:
       TextStyle(fontSize: 15,color: Colors.black)),)],
-      ),);
-          // : Text("${24}"
-
-      }
+      ),);}
         else return CircularProgressIndicator();//SizedBox(width: size.width * 0.1, height: size.height * 0.1);
       });
     }
@@ -110,7 +103,6 @@ class deckState extends State<playerDeck>{
     }
     else{//unique card
       if((((card - 1))-numberOfRegularCards) ~/ 2 != 2) {
-        //print("HEree2");
         cardsActiveUniqueArray[(((card - 1)) - numberOfRegularCards) ~/ 2] += 1;
       }
       else ret = 2;
@@ -135,7 +127,8 @@ class deckState extends State<playerDeck>{
     bool deliverAgain = false;
     await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
     behavior: SnackBarBehavior.floating, backgroundColor: Colors.black.withOpacity(0.5),
-    margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25, left: size.width * 0.25, bottom: size.height * 0.6) ,
+    margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
+        left: size.width * 0.25, bottom: size.height * 0.6) ,
         content:Center(child: Text("Get Ready"),)));
     for(int i = numPlayers; i > 0 ; i--) {
       await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -152,9 +145,9 @@ class deckState extends State<playerDeck>{
     for(int i = 0; i < numPlayers; i++) {
       if(cardsHandler[i][0].length > 0) {
         if(cardsHandler[i][1].length > 0 && i != widget.index) decreaseCardsArray(cardsHandler[i][1][0]);
-       // setState(() {
+        setState(() {
           cardsHandler[i][1].insert(0, cardsHandler[i][0].removeAt(0));
-      //  });
+        });
         if(increaseCardsArray(cardsHandler[i][1][0]) == 2) deliverAgain = true;
       }
     }
