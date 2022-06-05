@@ -46,6 +46,7 @@ class entryScreenState extends State<entryScreen>{
               child:Image.asset('assets/playButton.png',width: 0.2 * size.width,
           height: 0.25 * size.height),
           onTap: () async{
+            //ScaffoldMessenger("dadada");Container(color: Colors.black.withOpacity(0.5),child:  ,height: size.height * 0.1)
             FirebaseFirestore _firestore = FirebaseFirestore.instance;
             var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
             cardsArr.shuffle();
@@ -58,7 +59,7 @@ class entryScreenState extends State<entryScreen>{
             dataUpload['turn'] = 0;
             dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
             dataUpload['matchingColorCards'] = [0,0,0,0];
-            dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards); i++) 0];
+            dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
             for(int i = 0; i < widget.numPlayers; i++){
               dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
               dataUpload['player_${(i).toString()}_openCards'] = [];
@@ -67,7 +68,7 @@ class entryScreenState extends State<entryScreen>{
     Navigator.of(context).push(
     MaterialPageRoute<void>(
     builder: (context) {
-    return gameTable();
+    return Scaffold(backgroundColor: Colors.black, extendBody: true, body: gameTable());
           }
           ));})))]);
 }}
