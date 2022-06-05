@@ -62,7 +62,8 @@ class WaitingRoomState extends State<WaitingRoom>{
         Center(child : SizedBox(height:1 * size.height,width:0.75 * size.width,
         child:Stack(children: <Widget>[Center(child:SvgPicture.asset('assets/WoodenTable.svg',
         height: 0.65 * size.height,width:0.75 * size.width ,alignment: Alignment.centerRight))]))),
-        Positioned(top: size.height * 0.3, left: size.width * 0.35, child : Text("PREPARING FOR \n   THE BATTLE . . .",style:
-        GoogleFonts.galindo( fontSize: 25,color: Colors.white, fontWeight: FontWeight.w800),))]));
+        Positioned(top: size.height * 0.3, left: size.width * 0.35, child :
+        Text("PREPARING FOR \n   THE BATTLE . . .",
+        style: GoogleFonts.galindo( fontSize: 25,color: Colors.white, fontWeight: FontWeight.w800),))]));
     }
 }

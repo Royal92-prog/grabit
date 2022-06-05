@@ -55,17 +55,14 @@ class deckState extends State<playerDeck>{
       await db.collection("game").doc("game1").set({'turn' : -1},SetOptions(merge :true));
       if(cardsHandler[widget.index][1].length > 0) decreaseCardsArray(cardsHandler[widget.index][1][0]);
       cardsHandler[widget.index][1].insert(0,cardsHandler[widget.index][0].removeAt(0));
+      ///in this case the outer errors card was exposed - let's draw a new card to all players
       if(increaseCardsArray(cardsHandler[widget.index][1][0]) == 2){
-        await db.collection("game").doc("game1").set({'player_${widget.index}_openCards' :
-        cardsHandler[widget.index][1],'player_1_deck' : cardsHandler[widget.index][0]},
-            SetOptions(merge :true));
-        //cardsHandler[widget.index][0].removeAt(0);
+        ///update the firebase accordingly before drawing new cards
+        await db.collection("game").doc("game1").set({
+        'player_${widget.index}_openCards' : cardsHandler[widget.index][1],
+        'player_${widget.index}_deck' : cardsHandler[widget.index][0]}, SetOptions(merge :true));
         await Future.delayed(Duration(seconds: 1));
-        print("Handlinggg1");
-        await db.collection("game").doc("game1").set({'player_${widget.index}_openCards' :
-        cardsHandler[widget.index][1],},SetOptions(merge :true));
         await handleSpecialCardNo0();
-        print("final");
       }
       int nextTurn = (widget.index + 1) % 3;
       bool swapped = false;
@@ -136,10 +133,9 @@ class deckState extends State<playerDeck>{
   handleSpecialCardNo0() async{
     var size = MediaQuery.of(context).size;
     bool deliverAgain = false;
-    /*await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),behavior: SnackBarBehavior.floating,backgroundColor:
-    Colors.black.withOpacity(0.5),
-        margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
-            left:size.width * 0.25, bottom: size.height * 0.6) ,
+    await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
+    behavior: SnackBarBehavior.floating, backgroundColor: Colors.black.withOpacity(0.5),
+    margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25, left: size.width * 0.25, bottom: size.height * 0.6) ,
         content:Center(child: Text("Get Ready"),)));
     for(int i = numPlayers; i > 0 ; i--) {
       await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -152,8 +148,7 @@ class deckState extends State<playerDeck>{
               left: size.width * 0.25, bottom: size.height * 0.6),
           content: Center(child: Text("${i}"),)));
     }
-    await Future.delayed(Duration(seconds: 6));
-    print("kirr");*/
+    await Future.delayed(Duration(seconds: 5));
     for(int i = 0; i < numPlayers; i++) {
       if(cardsHandler[i][0].length > 0) {
         if(cardsHandler[i][1].length > 0 && i != widget.index) decreaseCardsArray(cardsHandler[i][1][0]);
@@ -163,9 +158,8 @@ class deckState extends State<playerDeck>{
         if(increaseCardsArray(cardsHandler[i][1][0]) == 2) deliverAgain = true;
       }
     }
+    //in this case we should do the same procedure again
     if (deliverAgain == true) {
-     /* await Future.delayed(Duration(seconds: 1));
-      print("Handlinggg1");
       await FirebaseFirestore.instance.collection("game").doc("game1").set({
         'player_0_openCards' : cardsHandler[0][1],
         'player_1_openCards' : cardsHandler[1][1],
@@ -173,8 +167,8 @@ class deckState extends State<playerDeck>{
         'player_0_deck' : cardsHandler[0][0],
         'player_1_deck' : cardsHandler[1][0],
         'player_2_deck' : cardsHandler[2][0],
-      },SetOptions(merge :true));*/
-      print("Handlinggg2");
+      },SetOptions(merge :true));
+      await Future.delayed(Duration(seconds: 3));
       handleSpecialCardNo0();
     }
   }
