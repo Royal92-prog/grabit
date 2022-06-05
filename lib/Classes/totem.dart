@@ -95,10 +95,8 @@ class totemState extends State<totem> {
                           }
                         }
                         ///#1st case :  totem was pressed since inner arrows is on the table
-                        if (uniqueArray[0] > 0 &&
-                            uniqueArray[0] > uniqueArray[3]) {
-                          uniqueArray[3] +=
-                          1; // marking that the special card is used
+                        if (uniqueArray[0] > 0 && uniqueArray[0] > uniqueArray[3]) {
+                          uniqueArray[3] += 1; // marking that the special card is used
                           if (cardsHandler[widget.index][1].length >
                               0) decreaseCardsArray(
                               cardsHandler[widget.index][1][0]);
@@ -169,27 +167,19 @@ class totemState extends State<totem> {
                           print("penalty - ");
                           //3 is the number of players
                           for (int i = 0; i < 3; i ++) {
-                            if (cardsHandler[i][1].length >
-                                0) decreaseCardsArray(cardsHandler[i][1][0]);
-                            //print("card is ${cardsHandler[i][1][0]}");
+                            if (cardsHandler[i][1].length > 0) decreaseCardsArray(cardsHandler[i][1][0]);
                           }
-                          var loserDeck = [
-                            ...cardsHandler[0][1],
-                            ...cardsHandler[1][1],
-                            ...cardsHandler[2][1],
-                            ...underTotemCards
-                          ];
-                          print("Loser ${loserDeck}");
+                          var loserDeck = [...cardsHandler[0][1], ...cardsHandler[1][1], ...cardsHandler[2][1], ...underTotemCards];
                           cardsHandler[0][1] = [];
                           cardsHandler[1][1] = [];
                           cardsHandler[2][1] = [];
                           underTotemCards = [];
                           loserDeck.shuffle();
-                          cardsHandler[widget.index][0] =
-                          [...cardsHandler[widget.index][0], ...loserDeck];
-                          print("after totem update: ${matchingRegularCards}");
+                          cardsHandler[widget.index][0] = [...cardsHandler[widget.index][0], ...loserDeck];
                           await _firestore.collection('game').doc('game1').
                           set({
+                            'underTotemCards' : [],
+                            'turn' : widget.index,
                             'player_${0}_openCards': cardsHandler[0][1],
                             'player_${0}_deck': cardsHandler[0][0],
                             'player_${1}_openCards': cardsHandler[1][1],
@@ -204,12 +194,19 @@ class totemState extends State<totem> {
                         }
                         //checking whther we have a winner after this press
                         var winners = [];
-                        for (int i = 0; i < 3; i ++) {
-                          if (cardsHandler[i][0].length == 0 &&
-                              cardsHandler[i][1].length == 0) winners.add(i);
-                          //print("card is ${cardsHandler[i][1][0]}");
+                        for(int i = 0; i < 3; i ++){
+                          if(cardsHandler[i][0].length == 0 && cardsHandler[i][1].length == 0 ) winners.add(i);
                         }
-                        print("winners are :: ${winners}");
+                        if(winners.length > 0){
+                          var finalMsg = "";
+                          if(winners.length > 1) finalMsg = "there is no sole winner in this battle";
+                          else  finalMsg = "Player No, ${winners[0]} won !";
+                          await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),behavior:
+                          SnackBarBehavior.floating,backgroundColor: Colors.black.withOpacity(0.5),
+                          margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
+                          left:size.width * 0.25, bottom: size.height * 0.6) ,
+                          content:Center(child: Text(finalMsg),)));
+                        }
                       })
                 ],));
           }
@@ -241,8 +238,7 @@ class totemState extends State<totem> {
 
   decreaseCardsArray(int card) {
     if ((card - 1) ~/ 4 < matchingRegularCards.length) {
-      matchingRegularCards[(card - 1) ~/ 4] -=
-      1; // add new front number to array
+      matchingRegularCards[(card - 1) ~/ 4] -= 1; // add new front number to array
       matchingColorCards[((card - 1) % 4)] -= 1;
     }
     else { //unique card
@@ -255,43 +251,3 @@ class totemState extends State<totem> {
   }
 
 }
-
-
-
-
-
-            /*GestureDetector(
-                child:Image.asset('assets/CTAButton.png',width: 0.2 * size.width,height: 0.15
-                    * size.height,alignment: Alignment.center),
-                onTap: isTotemPressed ? null : () async{
-                  print('totem index = ${widget.index}');
-                  FirebaseFirestore _firestore = FirebaseFirestore.instance;
-                  /// Regular Matching Attemp ///
-
-
-                  if (cardsHandler[widget.index][1].length > 0 &&
-                      ((!_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) ||
-                          (_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1) % 4 )] > 1))) {
-                    int loserIndex = getLoserIndex();
-                    var loserCards = [...cardsHandler[loserIndex][1], ...cardsHandler[widget.index][1]];
-                    loserCards.shuffle();
-                    setState(() {
-                      cardsHandler[loserIndex][0] = [...cardsHandler[loserIndex][0],...loserCards];
-                      cardsHandler[widget.index][1] = [];
-                      cardsHandler[loserIndex][1] = [];
-                      currentTurn = loserIndex;
-                    });
-                    await _firestore.collection('game').doc('game1').set({'totem' : false, 'turn' : loserIndex,
-                      'player_${loserIndex}_openCards' : cardsHandler[loserIndex][1],
-                      'player_${loserIndex}_deck' : cardsHandler[loserIndex][0],
-                      'player_${widget.index}_openCards' : cardsHandler[widget.index][1],
-                      'player_${widget.index}_deck' : cardsHandler[widget.index][0]}, SetOptions(merge : true));
-                    }
-                else {
-                    print("penalty - ");
-                    ScaffoldMessenger.of(context).showSnackBar(_mistakeSnackbar);
-                }
-                }
-
-            );*/
-
