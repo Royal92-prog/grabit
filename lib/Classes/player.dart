@@ -15,7 +15,7 @@ enum ECardColor      { YELLOW, GREEN, RED, BLUE}
 
 class Player extends StatefulWidget {
   final int index;
-  final Function() currentTurnCallback;
+  final Function(bool) currentTurnCallback;
   const Player({required this.index, required this.currentTurnCallback});
 
 

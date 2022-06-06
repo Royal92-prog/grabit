@@ -12,7 +12,7 @@ import '../main.dart';
 
 class playerDeck extends StatefulWidget {
   int index;
-  final Function() currentTurnCallback;
+  final Function(bool) currentTurnCallback;
   playerDeck( {required this.index, required this.currentTurnCallback});
 
   @override
@@ -45,7 +45,7 @@ class deckState extends State<playerDeck>{
          currentTurn = cloudData['turn'];
          /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
          if(currentTurn == -1 && widget.index == 0){
-           widget.currentTurnCallback();
+           widget.currentTurnCallback(true);
          }
 
          cardsGroupArray = cloudData['matchingCards'];

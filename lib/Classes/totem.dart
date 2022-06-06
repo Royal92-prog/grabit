@@ -7,8 +7,9 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 
 class totem extends StatefulWidget {
-  totem({required this.index});
+  totem({required this.index, required this.winnerCallback});
   int index;
+  final Function(bool) winnerCallback;
 
   @override
   State<totem> createState() => totemState();
@@ -143,15 +144,17 @@ class totemState extends State<totem>{
                     //print("card is ${cardsHandler[i][1][0]}");
                   }
                   if(winners.length > 0){
-                  var finalMsg = "";
-                  if(winners.length > 1) finalMsg = "there is no sole winner in this battle";
-                  else  finalMsg = "Player No, ${winners[0]} won !";
+                    var finalMsg = "";
+                    if(winners.length > 1) finalMsg = "there is no sole winner in this battle";
+                    else  finalMsg = "Player No, ${winners[0]} won !";
 
-                  await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),behavior: SnackBarBehavior.floating,backgroundColor:
-                  Colors.black.withOpacity(0.5),
-                      margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
-                          left:size.width * 0.25, bottom: size.height * 0.6) ,
-                      content:Center(child: Text(finalMsg),)));
+                    await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),behavior: SnackBarBehavior.floating,backgroundColor:
+                    Colors.black.withOpacity(0.5),
+                        margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
+                            left:size.width * 0.25, bottom: size.height * 0.6) ,
+                        content:Center(child: Text(finalMsg),)));
+
+                    widget.winnerCallback(false);
                   }
                 }
                 )],));
