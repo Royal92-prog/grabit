@@ -56,7 +56,8 @@ class entryScreenState extends State<entryScreen>{
             Map<String,dynamic> dataUpload = {};
             //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
             dataUpload['totem'] = false;
-            dataUpload['turn'] = 0;
+            ///modification for dead end game examination 
+            dataUpload['turn'] = -1;//0
             dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
             dataUpload['matchingColorCards'] = [0,0,0,0];
             dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];

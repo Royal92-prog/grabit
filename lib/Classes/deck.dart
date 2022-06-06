@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -29,6 +31,7 @@ class deckState extends State<playerDeck>{
 
   @override
   Widget build(BuildContext context) {
+    var  searchOnStoppedTyping = new Timer(Duration(seconds: 15), () {});
     var size = MediaQuery.of(context).size;
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
@@ -40,10 +43,20 @@ class deckState extends State<playerDeck>{
          [cloudData['player_1_deck'], cloudData['player_1_openCards']],
          [cloudData['player_2_deck'], cloudData['player_2_openCards']]];
          currentTurn = cloudData['turn'];
+         /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
+         if(currentTurn == -1){
+           print("HERE line 47");
+           searchOnStoppedTyping = new Timer(Duration(seconds: 8), () async {
+             await Future.delayed(Duration(seconds: 7));
+             print("after 15 seconds");
+             Navigator.of(context).pop();});
+         }
+         else{
+           searchOnStoppedTyping.cancel();
+         }
          cardsGroupArray = cloudData['matchingCards'];
          cardsColorArray = cloudData['matchingColorCards'];
          cardsActiveUniqueArray = cloudData['cardsActiveUniqueArray'];/// 0: insideArrows, 1: color, 2: outsideArrows
-
        }
     return GestureDetector(
     onTap: currentTurn != widget.index ? null : () async{
