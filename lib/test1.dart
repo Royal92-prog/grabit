@@ -53,15 +53,21 @@ class test1State extends State<test1>{
           } ,
       //onError: (error) => print("Listen failed: $error"),
     );*/
+    var size = MediaQuery
     return Container(
       width: 400,
       height: 250,
       color: Colors.green,
-      child: Column(children:[SizedBox(height: 100,),Text("trtrtr",style:
-      TextStyle(fontSize: 21,color: Colors.black)),GestureDetector(
+      child: Column(children:[SizedBox(height: 100,),SnackBar( duration:Duration(seconds: 1),behavior:
+      SnackBarBehavior.floating,backgroundColor: Colors.black.withOpacity(0.5),
+          margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
+              left:size.width * 0.25, bottom: size.height * 0.6) ,
+          content:Center(child: Text(finalMsg),)),GestureDetector(
         child: SvgPicture.asset('assets/Full_pack.svg', width: 100, height: 70,),
         onTap: () async{
-          print("kalamari");
+          setState(() {
+            x +=1;
+          });
           //var cloudWords =  await FirebaseFirestore.instance.collection('N1').doc('N2').
           //get().then((querySnapshot) {return querySnapshot.data();});
           //Map<String, dynamic> c1 = {'check':cloudWords!['check'] + 1};

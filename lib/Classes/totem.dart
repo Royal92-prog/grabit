@@ -33,9 +33,7 @@ class totemState extends State<totem> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery
-        .of(context)
-        .size;
+    var size = MediaQuery.of(context).size;
     double rightPosition = underTotemCards.length > 9 ? 0.008 : 0.016;
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
