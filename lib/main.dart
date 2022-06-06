@@ -32,11 +32,11 @@ class MyApp extends StatelessWidget {
       ),
         debugShowCheckedModeBanner: false,
         home: Scaffold(resizeToAvoidBottomInset: false, backgroundColor: Colors.black,extendBody: true,
-        body:entryScreen(numPlayers: 3),),);
+        body: WaitingRoom() ,),);//test2()
   }
 }
-
-
+//entryScreen(numPlayers: 3)
+//entryScreen(numPlayers: 3)
 class App extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
