@@ -15,7 +15,8 @@ enum ECardColor      { YELLOW, GREEN, RED, BLUE}
 
 class Player extends StatefulWidget {
   final int index;
-  const Player({required this.index});
+  final Function() currentTurnCallback;
+  const Player({required this.index, required this.currentTurnCallback});
 
 
   @override
@@ -31,22 +32,10 @@ class PlayerState extends State<Player>{
   var playerRemaniningCardsCount;
   var playerCurrentlyOpenedCard; ///Todo use unique identifier for cards Card.cardNumber ///
   var playerHasWon = 0 ;
-  int turn = 0;
 
 
   @override
   Widget build(BuildContext context) {
-
-    var  searchOnStoppedTyping = new Timer(Duration(seconds: 15), () {});
-    if (turn == -1) {
-      searchOnStoppedTyping = new Timer(Duration(seconds: 8), () async {
-        await Future.delayed(Duration(seconds: 7));
-        print("after 15 seconds");
-        Navigator.of(context).pop();});
-    }
-    else{
-      searchOnStoppedTyping.cancel();
-    }
 
     var size = MediaQuery.of(context).size;
     //print(size.height);
@@ -60,9 +49,7 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, currentTurnCallback: (int currentTurn) {
-          turn = currentTurn;
-        },)), Positioned(right: 0.11* size.width,
+        playerDeck(index:widget.index, currentTurnCallback: widget.currentTurnCallback,)), Positioned(right: 0.11* size.width,
             top: 0.16* size.height, child: Text("Player No.1",style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index))]);
@@ -75,9 +62,7 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
           Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
-          playerDeck(index:widget.index, currentTurnCallback: (int currentTurn) {
-            turn = currentTurn;
-          },)),
+          playerDeck(index:widget.index, currentTurnCallback: widget.currentTurnCallback,)),
           Positioned(right: 0.11* size.width,top: 0.16* size.height,
               child: Text("Player No.2",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
           Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index))]);
@@ -90,9 +75,7 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, currentTurnCallback: (int currentTurn) {
-          turn = currentTurn;
-        },)),
+        playerDeck(index:widget.index, currentTurnCallback: widget.currentTurnCallback,)),
         Positioned(right: 0.11* size.width,top: 0.16* size.height,
             child: Text("Player No.3",style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
@@ -112,9 +95,11 @@ class PlayerState extends State<Player>{
 
   }
 
-  void turnCallback(int currentTurn) {
-    turn = currentTurn;
-  }
+  // void turnCallback(int currentTurn) {
+  //   setState(() {
+  //     turn = currentTurn;
+  //   });
+  // }
 
   // void deadEndHandler() {
   //   var  searchOnStoppedTyping = new Timer(Duration(seconds: 15), () {});

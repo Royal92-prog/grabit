@@ -12,7 +12,7 @@ import '../main.dart';
 
 class playerDeck extends StatefulWidget {
   int index;
-  final Function(int) currentTurnCallback;
+  final Function() currentTurnCallback;
   playerDeck( {required this.index, required this.currentTurnCallback});
 
   @override
@@ -44,8 +44,8 @@ class deckState extends State<playerDeck>{
          [cloudData['player_2_deck'], cloudData['player_2_openCards']]];
          currentTurn = cloudData['turn'];
          /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
-         if(currentTurn == -1){
-           widget.currentTurnCallback(currentTurn);
+         if(currentTurn == -1 && widget.index == 0){
+           widget.currentTurnCallback();
          }
 
          cardsGroupArray = cloudData['matchingCards'];
@@ -56,7 +56,7 @@ class deckState extends State<playerDeck>{
     onTap: currentTurn != widget.index ? null : () async{
       FirebaseFirestore db = FirebaseFirestore.instance;
       print("decks : ${cardsHandler[0][0]} ,${cardsHandler[1][0]},  ${cardsHandler[2][0]} ");
-      await db.collection("game").doc("game1").set({'turn' : -1},SetOptions(merge :true));
+      await db.collection("game").doc("game1").set({'turn' : -2},SetOptions(merge :true));
       if(cardsHandler[0][1].length > 0 && cardsHandler[1][1].length > 0 &&
           cardsHandler[2][1].length > 0 )
         print("open :: ${cardsHandler[0][1][0]},${cardsHandler[1][1][0]},${cardsHandler[2][1][0]}");
