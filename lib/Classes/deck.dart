@@ -12,7 +12,8 @@ import '../main.dart';
 
 class playerDeck extends StatefulWidget {
   int index;
-  playerDeck( {required this.index});
+  final Function(int) currentTurnCallback;
+  playerDeck( {required this.index, required this.currentTurnCallback});
 
   @override
   State<playerDeck> createState() => deckState();
@@ -31,7 +32,6 @@ class deckState extends State<playerDeck>{
 
   @override
   Widget build(BuildContext context) {
-    var  searchOnStoppedTyping = new Timer(Duration(seconds: 15), () {});
     var size = MediaQuery.of(context).size;
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
@@ -45,15 +45,9 @@ class deckState extends State<playerDeck>{
          currentTurn = cloudData['turn'];
          /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
          if(currentTurn == -1){
-           print("HERE line 47");
-           searchOnStoppedTyping = new Timer(Duration(seconds: 8), () async {
-             await Future.delayed(Duration(seconds: 7));
-             print("after 15 seconds");
-             Navigator.of(context).pop();});
+           widget.currentTurnCallback(currentTurn);
          }
-         else{
-           searchOnStoppedTyping.cancel();
-         }
+
          cardsGroupArray = cloudData['matchingCards'];
          cardsColorArray = cloudData['matchingColorCards'];
          cardsActiveUniqueArray = cloudData['cardsActiveUniqueArray'];/// 0: insideArrows, 1: color, 2: outsideArrows
@@ -108,6 +102,10 @@ class deckState extends State<playerDeck>{
           'matchingCards': cardsGroupArray,
           'matchingColorCards' : cardsColorArray,
           'cardsActiveUniqueArray' : cardsActiveUniqueArray},SetOptions(merge :true));
+
+          // if (nextTurn == -1) {
+          //   widget.currentTurnCallback(nextTurn);
+          // }
         },
       child:Stack(clipBehavior: Clip.antiAliasWithSaveLayer, fit: StackFit.passthrough,children:
       [
