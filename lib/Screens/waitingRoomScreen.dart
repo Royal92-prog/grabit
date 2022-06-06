@@ -6,9 +6,32 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class WaitingRoom extends StatefulWidget {
+class WaitingRoom extends StatelessWidget {
+  int connectedNum;
+  WaitingRoom({required this.connectedNum});
+
   @override
-  State<WaitingRoom> createState() => WaitingRoomState();
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
+    //Container(color : Colors.green),
+    return Scaffold(backgroundColor: Colors.black,extendBody: true,
+        body:Stack(children: [Container(child: Image.asset('assets/Background.png',
+          width: size.width, height: size.height,),),
+          Center(child : SizedBox(height:1 * size.height,width:0.75 * size.width,
+              child:Stack(children: <Widget>[Center(child:SvgPicture.asset('assets/WoodenTable.svg',
+                  height: 0.65 * size.height,width:0.75 * size.width ,alignment: Alignment.centerRight))]))),
+          Positioned(top: size.height * 0.3, left: size.width * 0.31, child :
+          Column(
+              children: [
+                Text("PREPARING FOR \n   THE BATTLE . . .",
+                  style: GoogleFonts.galindo( fontSize: 25,color: Colors.white, fontWeight: FontWeight.w800),),
+                CircularProgressIndicator(),
+                Text("Connected players : ${connectedNum}",
+                  style: GoogleFonts.galindo( fontSize: 25,color: Colors.white, fontWeight: FontWeight.w800),),
+          ])),
+            ],));
+  }
   //_timeElapsed.
  /* @override
   Widget build(BuildContext context) {
@@ -19,7 +42,7 @@ class WaitingRoom extends StatefulWidget {
   }
 
 
-class WaitingRoomState extends State<WaitingRoom>{
+// class WaitingRoomState extends State<WaitingRoom>{
 
   ///do not rewmove - important for timer settings
   /*String formatTime(int milliseconds) {
@@ -51,19 +74,6 @@ class WaitingRoomState extends State<WaitingRoom>{
     //_stopwatch.start();
   }*/
 
-  @override
-    Widget build(BuildContext context) {
-      var size = MediaQuery.of(context).size;
-      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
-      //Container(color : Colors.green),
-      return Scaffold(backgroundColor: Colors.black,extendBody: true,
-        body:Stack(children: [Container(child: Image.asset('assets/Background.png',
-        width: size.width, height: size.height,),),
-        Center(child : SizedBox(height:1 * size.height,width:0.75 * size.width,
-        child:Stack(children: <Widget>[Center(child:SvgPicture.asset('assets/WoodenTable.svg',
-        height: 0.65 * size.height,width:0.75 * size.width ,alignment: Alignment.centerRight))]))),
-        Positioned(top: size.height * 0.3, left: size.width * 0.35, child :
-        Text("PREPARING FOR \n   THE BATTLE . . .",
-        style: GoogleFonts.galindo( fontSize: 25,color: Colors.white, fontWeight: FontWeight.w800),))]));
-    }
-}
+  // @override
+
+// }

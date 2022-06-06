@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       ),
         debugShowCheckedModeBanner: false,
         home: Scaffold(resizeToAvoidBottomInset: false, backgroundColor: Colors.black,extendBody: true,
-        body: WaitingRoom() ,),);//test2()
+        body: entryScreen(numPlayers: 3,) ,),);//test2()
   }
 }
 //entryScreen(numPlayers: 3)
