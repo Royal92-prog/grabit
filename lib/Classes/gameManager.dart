@@ -23,10 +23,12 @@ class GameManager extends StatelessWidget {
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('game').doc('players1').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          var nicknames;
           if (snapshot.connectionState == ConnectionState.active) {
             final data = snapshot.data;
             if (data != null) {
               _connectedNum = data['connectedPlayersNum'];
+              nicknames = [data['player_0_nickname'], data['player_1_nickname'], data['player_2_nickname']];
             }
           }
           if (_gameState == GameState.waitingForPlayers && _connectedNum == 3) {
@@ -37,7 +39,7 @@ class GameManager extends StatelessWidget {
             return WaitingRoom(connectedNum: _connectedNum,);
           }
           else {
-            return gameTable(playerIndex: playerIndex,);
+            return gameTable(playerIndex: playerIndex, nicknames: nicknames,);
           }
         }
     );

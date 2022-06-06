@@ -65,6 +65,7 @@ class entryScreen extends StatelessWidget {
                 ++_connectedPlayersNum;
                 Map<String,dynamic> dataUpload = {};
                 if (_connectedPlayersNum == 1) {
+                  initializePlayers();
                   cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
                   cardsArr.shuffle();
                   dataUpload['cardsData'] = cardsArr;
@@ -98,9 +99,10 @@ class entryScreen extends StatelessWidget {
                 dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
                 dataUpload['player_${_playerIndex.toString()}_deck'] = cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1)));
                 dataUpload['player_${(_playerIndex).toString()}_openCards'] = [];
-                dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
+                // dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
                 await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
                 setConnectedNum(_connectedPlayersNum);
+                updateNicknameByIndex(_playerIndex, _nicknameController.text);
                 Navigator.of(context).push(
                 MaterialPageRoute<void>(
                 builder: (context) {

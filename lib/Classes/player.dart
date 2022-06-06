@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:grabit/Classes/card.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grabit/services/playerManager.dart';
 
 import 'deck.dart';
 
@@ -14,7 +15,9 @@ enum ECardColor      { YELLOW, GREEN, RED, BLUE}
 class Player extends StatefulWidget {
   final int index;
   final int deviceIndex;
-  const Player({required this.index, required this.deviceIndex});
+  final Function(bool) currentTurnCallback;
+  final String nickname;
+  const Player({required this.index, required this.deviceIndex, required this.currentTurnCallback, required this.nickname});
 
 
   @override
@@ -33,11 +36,8 @@ class PlayerState extends State<Player>{
 
   @override
   Widget build(BuildContext context) {
-
+    print(widget.nickname);
     var size = MediaQuery.of(context).size;
-    //print(size.height);
-    //print(size.width);
-
     if (widget.index == 1){//player No.1
     //Positioned(right:0.01 * size.width,child:
       return Stack(fit:StackFit.loose,children: [
@@ -46,8 +46,8 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex,)), Positioned(right: 0.11* size.width,
-            top: 0.16* size.height, child: Text("Player No.1",style:
+        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback,)), Positioned(right: 0.11* size.width,
+            top: 0.16* size.height, child: Text(widget.nickname, style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index))]);
     }
@@ -59,9 +59,9 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
           Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
-          playerDeck(index:widget.index, deviceIndex: widget.deviceIndex,)),
+          playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback,)),
           Positioned(right: 0.11* size.width,top: 0.16* size.height,
-              child: Text("Player No.2",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
+              child: Text(widget.nickname, style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
           Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index))]);
     }
 
@@ -72,9 +72,9 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex,)),
+        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback,)),
         Positioned(right: 0.11* size.width,top: 0.16* size.height,
-            child: Text("Player No.3",style:
+            child: Text(widget.nickname, style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(bottom:size.height*0.17,right:size.width*0.23,child: currentCard(index: widget.index))]);
       /*
@@ -91,6 +91,10 @@ class PlayerState extends State<Player>{
     }
 
   }
+
+  // void getNickname() async{
+  //   nickname = await getNicknameByIndex(widget.index);
+  // }
 
 }
 //Container(height:20,width: 60,color: Colors.green,),

@@ -10,7 +10,8 @@ import '../main.dart';
 class playerDeck extends StatefulWidget {
   int index;
   int deviceIndex;
-  playerDeck( {required this.index, required this.deviceIndex});
+  final Function(bool) currentTurnCallback;
+  playerDeck( {required this.index, required this.deviceIndex, required this.currentTurnCallback});
 
   @override
   State<playerDeck> createState() => deckState();
@@ -45,10 +46,15 @@ class deckState extends State<playerDeck>{
          cardsColorArray = cloudData['matchingColorCards'];
          cardsActiveUniqueArray = cloudData['cardsActiveUniqueArray']; /// 0: insideArrows, 1: color, 2: outsideArrows
        }
+
+       if(currentTurn == -1 && widget.index == 0){
+         widget.currentTurnCallback(true);
+       }
+
     return GestureDetector(
     onTap: (currentTurn != widget.index || widget.index != widget.deviceIndex) ? null : () async{
       FirebaseFirestore db = FirebaseFirestore.instance;
-      await db.collection("game").doc("game1").set({'turn' : -1},SetOptions(merge :true));
+      await db.collection("game").doc("game1").set({'turn' : -2},SetOptions(merge :true));
       if(cardsHandler[widget.index][1].length > 0) decreaseCardsArray(cardsHandler[widget.index][1][0]);
       cardsHandler[widget.index][1].insert(0,cardsHandler[widget.index][0].removeAt(0));
       ///in this case the outer errors card was exposed - let's draw a new card to all players
