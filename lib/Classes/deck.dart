@@ -2,10 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:grabit/Classes/card.dart';
-import 'package:grabit/Screens/entryScreen.dart';
-import 'package:provider/provider.dart';
-import '../main.dart';
-
 
 class playerDeck extends StatefulWidget {
   int index;
@@ -18,10 +14,6 @@ class playerDeck extends StatefulWidget {
 }
 
 class deckState extends State<playerDeck>{
-  //var cardColor;
-  //var cardIsUnique;
-  //var cardImage;
-  //var cardNumber; /// Think if relevant out of 80 cards
   int numPlayers = 3;
   late int currentTurn;
   late var cardsHandler;
@@ -65,6 +57,12 @@ class deckState extends State<playerDeck>{
         'player_${widget.index}_deck' : cardsHandler[widget.index][0]}, SetOptions(merge :true));
         await Future.delayed(Duration(milliseconds: 800));
         await handleSpecialCardNo0();
+        if((((cardsHandler[0][1][0] - 1)) - numberOfRegularCards) ~/ 2 == 2 ||
+            (((cardsHandler[1][1][0] - 1)) - numberOfRegularCards) ~/ 2 == 2 ||
+            (((cardsHandler[2][1][0] - 1)) - numberOfRegularCards) ~/ 2 == 2 ){
+          await Future.delayed(Duration(seconds: 1));
+          handleSpecialCardNo0();
+        }
       }
       int nextTurn = (widget.index + 1) % 3;
       bool swapped = false;
@@ -76,38 +74,37 @@ class deckState extends State<playerDeck>{
         nextTurn = (nextTurn + 1) % 3;
       }
       if(swapped == false) nextTurn = -1;
-        //remember to substract 1 from player index when using firebase
-        await db.collection("game").doc("game1").set({
-          'player_0_deck' : cardsHandler[0][0],
-          'player_1_deck' : cardsHandler[1][0],
-          'player_2_deck' : cardsHandler[2][0],
-          'player_0_openCards' : cardsHandler[0][1],
-          'player_1_openCards' : cardsHandler[1][1],
-          'player_2_openCards' : cardsHandler[2][1],
-          'turn' : nextTurn,
-          'matchingCards': cardsGroupArray,
-          'matchingColorCards' : cardsColorArray,
-          'cardsActiveUniqueArray' : cardsActiveUniqueArray},SetOptions(merge :true));
-        },
+      //remember to substract 1 from player index when using firebase
+      await db.collection("game").doc("game1").set({
+        'player_0_deck' : cardsHandler[0][0],
+        'player_1_deck' : cardsHandler[1][0],
+        'player_2_deck' : cardsHandler[2][0],
+        'player_0_openCards' : cardsHandler[0][1],
+        'player_1_openCards' : cardsHandler[1][1],
+        'player_2_openCards' : cardsHandler[2][1],
+        'turn' : nextTurn,
+        'matchingCards': cardsGroupArray,
+        'matchingColorCards' : cardsColorArray,
+        'cardsActiveUniqueArray' : cardsActiveUniqueArray},SetOptions(merge :true));
+      },
       child:Stack(clipBehavior: Clip.antiAliasWithSaveLayer, fit: StackFit.passthrough,children:
       [
       SvgPicture.asset('assets/Full_pack.svg',
       width: 0.1 * size.width, height: 0.1 * size.height,),
-      Positioned(top: 0.01*size.height,right:0.012 * size.width,
-      child:Text("${cardsHandler[widget.index][0].length}",style:
-      TextStyle(fontSize: 15,color: Colors.black)),)],
-      ),);}
-        else return CircularProgressIndicator();//SizedBox(width: size.width * 0.1, height: size.height * 0.1);
-      });
-    }
+      Positioned(top: 0.01 * size.height, right: 0.012 * size.width,
+      child:Text("${cardsHandler[widget.index][0].length}", style:
+      TextStyle(fontSize: 15,color: Colors.black)),)
+      ],),);}
+    else return CircularProgressIndicator();//SizedBox(width: size.width * 0.1, height: size.height * 0.1);
+    });}
   int increaseCardsArray(int card){
-    print("HEree ${card}");
     int ret = -1;
     if((card -1) ~/4 < cardsGroupArray.length){
       cardsGroupArray[(card - 1) ~/ 4] += 1; // add new front number to array
       cardsColorArray[(card - 1) % 4] += 1;
     }
-    else{//unique card
+    //unique card
+    else{
       if((((card - 1))-numberOfRegularCards) ~/ 2 != 2) {
         cardsActiveUniqueArray[(((card - 1)) - numberOfRegularCards) ~/ 2] += 1;
       }
@@ -121,7 +118,8 @@ class deckState extends State<playerDeck>{
       cardsGroupArray[(card - 1) ~/ 4] -= 1; // add new front number to array
       cardsColorArray[((card - 1) % 4)] -= 1;
     }
-    else{//unique card
+    //unique card
+    else{
       cardsActiveUniqueArray[(((card - 1)) - numberOfRegularCards) ~/ 2] -= 1;
       if((((card - 1))-numberOfRegularCards) ~/ 2 == 0 && cardsActiveUniqueArray[3] > 0) {
         cardsActiveUniqueArray[3] -= 1;
@@ -130,45 +128,34 @@ class deckState extends State<playerDeck>{
   }
   handleSpecialCardNo0() async{
     var size = MediaQuery.of(context).size;
-    bool deliverAgain = false;
+    ///irrelevant for final branch
     await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
-    behavior: SnackBarBehavior.floating, backgroundColor: Colors.black.withOpacity(0.5),
-    margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
-        left: size.width * 0.25, bottom: size.height * 0.6) ,
+        behavior: SnackBarBehavior.floating,backgroundColor: Colors.black.withOpacity(0.5),
+        margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
+            left:size.width * 0.25, bottom: size.height * 0.6) ,
         content:Center(child: Text("Get Ready"),)));
-    for(int i = numPlayers; i > 0 ; i--) {
+    ///till here
+    for(int i = 3 ; i > 0 ; i--) {
+      ///irrelevant for final branch
       await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          duration: Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor:
-          Colors.black.withOpacity(0.5),
-          margin: EdgeInsets.only(
-              top: size.height * 0.25, right: size.width * 0.25,
-              left: size.width * 0.25, bottom: size.height * 0.6),
-          content: Center(child: Text("${i}"),)));
-    }
+          duration: Duration(seconds: 1), behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.black.withOpacity(0.5), margin: EdgeInsets.only(
+          top: size.height * 0.25, right: size.width * 0.25, left: size.width * 0.25,
+          bottom: size.height * 0.6), content: Center(child: Text("${i}"),)));
+    }///till here
     await Future.delayed(Duration(seconds: 5));
     for(int i = 0; i < numPlayers; i++) {
       if(cardsHandler[i][0].length > 0) {
         if(cardsHandler[i][1].length > 0 && i != widget.index) decreaseCardsArray(cardsHandler[i][1][0]);
-        setState(() {
-          cardsHandler[i][1].insert(0, cardsHandler[i][0].removeAt(0));
-        });
-        if(increaseCardsArray(cardsHandler[i][1][0]) == 2) deliverAgain = true;
+        cardsHandler[i][1].insert(0, cardsHandler[i][0].removeAt(0));
+        increaseCardsArray(cardsHandler[i][1][0]);
+        await FirebaseFirestore.instance.collection("game").doc("game1").set({
+          'player_${i}_deck' : cardsHandler[i][0],
+          'player_${i}_openCards' : cardsHandler[i][1],
+          'matchingCards': cardsGroupArray,
+          'matchingColorCards' : cardsColorArray,
+          'cardsActiveUniqueArray' : cardsActiveUniqueArray},SetOptions(merge :true));
       }
-    }
-    //in this case we should do the same procedure again
-    if (deliverAgain == true) {
-      await FirebaseFirestore.instance.collection("game").doc("game1").set({
-        'player_0_openCards' : cardsHandler[0][1],
-        'player_1_openCards' : cardsHandler[1][1],
-        'player_2_openCards' : cardsHandler[2][1],
-        'player_0_deck' : cardsHandler[0][0],
-        'player_1_deck' : cardsHandler[1][0],
-        'player_2_deck' : cardsHandler[2][0],
-      },SetOptions(merge :true));
-      await Future.delayed(Duration(seconds: 3));
-      handleSpecialCardNo0();
     }
   }
 }
