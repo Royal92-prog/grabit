@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:grabit/services/playerManager.dart';
 
 import '../Classes/card.dart';
+import '../Classes/gameManager.dart';
 
 class entryScreen extends StatelessWidget {
   entryScreen({required this.numPlayers}); //super(key: key)
@@ -38,8 +39,9 @@ class entryScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             resizeToAvoidBottomInset: false,
             body : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 108, vertical: 50),
+              padding: const EdgeInsets.symmetric(horizontal: 108, vertical: 50),//108,50
               child: TextField(
+
                 controller: _nicknameController,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
@@ -63,10 +65,10 @@ class entryScreen extends StatelessWidget {
                 ++_connectedPlayersNum;
                 Map<String,dynamic> dataUpload = {};
                 if (_connectedPlayersNum == 1) {
+                  initializePlayers();
                   cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
                   cardsArr.shuffle();
                   dataUpload['cardsData'] = cardsArr;
-                  print('hi ${_connectedPlayersNum}');
                 }
                 else {
                   await _firestore.collection('game').doc('game1').get().then(
@@ -86,22 +88,27 @@ class entryScreen extends StatelessWidget {
                 Map<String, dynamic> uploadData = {};
                 var cardsHandler = [];
                 //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
+                dataUpload['underTotemCards'] = [];
                 dataUpload['totem'] = false;
+                dataUpload['totem0Pressed'] = false;
+                dataUpload['totem1Pressed'] = false;
+                dataUpload['totem2Pressed'] = false;
                 dataUpload['turn'] = 0;
                 dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
                 dataUpload['matchingColorCards'] = [0,0,0,0];
-                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards); i++) 0];
+                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
                 dataUpload['player_${_playerIndex.toString()}_deck'] = cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1)));
                 dataUpload['player_${(_playerIndex).toString()}_openCards'] = [];
-                dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
-                dataUpload['connectedPlayersNum'] = _connectedPlayersNum;
+                // dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
                 await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
-                // Navigator.of(context).push(
-                // MaterialPageRoute<void>(
-                // builder: (context) {
-                // return gameTable();
-                //       }
-                //       ));
+                setConnectedNum(_connectedPlayersNum);
+                updateNicknameByIndex(_playerIndex, _nicknameController.text);
+                Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                builder: (context) {
+                return GameManager(playerIndex: _playerIndex, playersNum: numPlayers,);
+                      }
+                      ));
               })))]);
   }
 
