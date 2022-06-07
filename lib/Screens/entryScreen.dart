@@ -61,8 +61,15 @@ class entryScreenState extends State<entryScreen>{
             dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
             dataUpload['matchingColorCards'] = [0,0,0,0];
             dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
+            cardsArr.insert(0, 34);
+            cardsArr.insert(0, 77);
+            cardsArr.insert(0, 77);
+            cardsArr.insert(53, 74);
+            cardsArr.insert(54, 74);
+            cardsArr.insert(54, 74);
+            cardsArr.insert(54, 74);
             for(int i = 0; i < widget.numPlayers; i++){
-              dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
+              dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)) + 3);
               dataUpload['player_${(i).toString()}_openCards'] = [];
             }
             await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
