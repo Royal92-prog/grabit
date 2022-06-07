@@ -28,7 +28,7 @@ class gameTable extends StatelessWidget {
               currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, nickname: nicknames[2],)),//2
             Positioned(left : size.width * -0.02,top: 0.22*size.height,child: Player(index: 0, deviceIndex: playerIndex,
               currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, nickname: nicknames[0],)),//0
-            Positioned(left : size.width * 0.28,top: 0.7*size.height,child: totem(index: playerIndex, winnerCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},))
+            Positioned(left : size.width * 0.28,top: 0.7*size.height,child: totem(index: playerIndex,))
           ])))
 
 

@@ -39,8 +39,13 @@ class deckState extends State<playerDeck>{
          cardsActiveUniqueArray = cloudData['cardsActiveUniqueArray']; /// 0: insideArrows, 1: color, 2: outsideArrows
        }
 
-       if(currentTurn == -1 && widget.index == 0){
-         widget.currentTurnCallback(true);
+       if (widget.index == 0) {
+         if (currentTurn == -1) {
+           widget.currentTurnCallback(true);
+         }
+         else if (currentTurn == -3) {
+           widget.currentTurnCallback(false);
+         }
        }
 
     return GestureDetector(

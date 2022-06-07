@@ -7,9 +7,8 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 
 class totem extends StatefulWidget {
-  totem({required this.index, required this.winnerCallback});
+  totem({required this.index});
   int index;
-  final Function(bool) winnerCallback;
 
   @override
   State<totem> createState() => totemState();
@@ -69,7 +68,7 @@ class totemState extends State<totem> {
                    FirebaseFirestore _firestore = FirebaseFirestore.instance;
                    await _firestore.collection('game').doc('game1').set({'totem': true,
                     'totem${widget.index}Pressed': true}, SetOptions(merge: true));
-                   await Future.delayed(const Duration(milliseconds: 500));
+                   await Future.delayed(const Duration(milliseconds: 1000));
                    for (int i=0; i<numPlayers && !isTotemPressed; i++) {
                      if (cloudData!['totem${i}Pressed']) return;
                     }
@@ -161,7 +160,8 @@ class totemState extends State<totem> {
                     margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
                     left:size.width * 0.25, bottom: size.height * 0.6) ,
                     content:Center(child: Text(finalMsg),)));
-                    widget.winnerCallback(false);
+
+                    await _firestore.collection('game').doc('game1').set({'turn' : -3,}, SetOptions(merge: true));
                   }})
                 ],));
           }
