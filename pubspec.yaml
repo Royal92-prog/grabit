@@ -111,6 +111,8 @@ flutter:
     - WoodenTable.svg
     - nickname.png
     - nameField.svg
+    - broadNameField.svg
+    - broadNameField.png
     - playButton.png
     - 1.svg
     - 2.svg

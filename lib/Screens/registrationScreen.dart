@@ -26,14 +26,14 @@ class RegistrationScreenState extends State<RegistrationScreen>{
       GestureDetector(
         child:Image.asset('assets/playButton.png',width: 0.2 * size.width, height: 0.25 * size.height)))),
       ///To do: replace All blank field to a new adjusted pic, create textField
-      Positioned(left: 0.39 * size.width, top:0.25 * size.height, child :
+      Positioned(left: 0.33 * size.width, top:0.25 * size.height, child :
         Column(children:
         [SizedBox(height: size.height * 0.11,),
-         SvgPicture.asset('assets/nameField.svg',width: size.width * 0.6,height: size.height * 0.09, fit: BoxFit.fill,),
+          Image.asset('assets/broadNameField.png',width: size.width * 0.35,height: size.height * 0.09),//,width: size.width * 0.6,height: size.height * 0.09, fit: BoxFit.fill
+         //SizedBox(height: size.height * 0.0051,),
+          Image.asset('assets/broadNameField.png',width: size.width * 0.35,height: size.height * 0.09),
          SizedBox(height: size.height * 0.01,),
-         SvgPicture.asset('assets/nameField.svg',width: size.width * 0.6,height: size.height * 0.09, fit: BoxFit.fill,),
-         SizedBox(height: size.height * 0.01,),
-         SvgPicture.asset('assets/nameField.svg',width: size.width * 0.6,height: size.height * 0.09, fit: BoxFit.fill,)
+          Image.asset('assets/broadNameField.png',width: size.width * 0.35,height: size.height * 0.09),
         ])),
      Positioned(left: size.width * 0.35, top: size.height * 0.2, child:
       Row(children:
