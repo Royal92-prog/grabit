@@ -7,7 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:grabit/Classes/player.dart';
 import 'package:grabit/Classes/totem.dart';
-class gameTable extends StatelessWidget {
+
+import '../services/animationServices.dart';
+class GameTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +26,19 @@ class gameTable extends StatelessWidget {
             Positioned(right : size.width * -0.025,top:0.25*size.height,child: Player(index: 2, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//2
             Positioned(left : size.width * -0.02,top: 0.22*size.height,child: Player(index: 0, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//0
             Positioned(left : size.width * 0.28,top: 0.7*size.height,child: totem(index: 1, winnerCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},))
-          ])))
-
-
+          ]))),
+      GameNotifications(context: context,),
     ]);
         //;
+  }
+  void showGetReadySnackBar() async{
+
 
   }
-
   void deadEndCallback(BuildContext context, bool isDeadEnd) async{
     int delay = isDeadEnd ? 15 : 3;
     await Future.delayed(Duration(seconds: delay));
-    FirebaseFirestore.instance.collection('game').doc('game1').delete();
+    FirebaseFirestore.instance.collection('game').doc('game2').delete();
     Navigator.of(context).pop();
     // if (turn == -1) {
     //   searchOnStoppedTyping = new Timer(Duration(seconds: 8), () async {

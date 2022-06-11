@@ -72,11 +72,11 @@ class entryScreenState extends State<entryScreen>{
               dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)) + 3);
               dataUpload['player_${(i).toString()}_openCards'] = [];
             }
-            await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
+            await _firestore.collection('game').doc('game2').set(dataUpload, SetOptions(merge : true));
     Navigator.of(context).push(
     MaterialPageRoute<void>(
     builder: (context) {
-    return Scaffold(backgroundColor: Colors.black, extendBody: true, body: gameTable());
+    return Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable());
           }
           ));})))]);
 }}
