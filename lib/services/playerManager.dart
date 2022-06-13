@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-void setConnectedNum(int connectedNum) async {
-  await FirebaseFirestore.instance.collection('game').doc('players1').set({'connectedPlayersNum' : connectedNum}, SetOptions(merge: true));
+void setConnectedNum(int connectedNum, int gameNum) async {
+  await FirebaseFirestore.instance.collection('game').doc('players${gameNum}').set({'connectedPlayersNum' : connectedNum}, SetOptions(merge: true));
 }
 
-void initializePlayers() async {
-  await FirebaseFirestore.instance.collection('game').doc('players1').set({
+void initializePlayers(int gameNum) async {
+  await FirebaseFirestore.instance.collection('game').doc('players${gameNum}').set({
     'player_0_nickname' : "",
     'player_1_nickname' : "",
     'player_2_nickname' : "",
@@ -13,14 +13,14 @@ void initializePlayers() async {
       }, SetOptions(merge: true));
 }
 
-void updateNicknameByIndex(int index, String nickname) async {
-  await FirebaseFirestore.instance.collection('game').doc('players1').set({
+void updateNicknameByIndex(int index, String nickname, int gameNum) async {
+  await FirebaseFirestore.instance.collection('game').doc('players${gameNum}').set({
     'player_${index.toString()}_nickname' : nickname
   }, SetOptions(merge: true));
 }
 
-Future<int> getConnectedNum() async {
-  return FirebaseFirestore.instance.collection('game').doc('players1').get().then(
+Future<int> getConnectedNum(int gameNum) async {
+  return FirebaseFirestore.instance.collection('game').doc('players${gameNum}').get().then(
           (snapshot) {
         if (snapshot.exists) {
           final data = snapshot.data();
@@ -33,8 +33,8 @@ Future<int> getConnectedNum() async {
   );
 }
 
-Future<String> getNicknameByIndex(int index) async{
-  return FirebaseFirestore.instance.collection('game').doc('game1').get().then(
+Future<String> getNicknameByIndex(int index, int gameNum) async{
+  return FirebaseFirestore.instance.collection('game').doc('game${gameNum}').get().then(
           (snapshot) {
         if (snapshot.exists) {
           final data = snapshot.data();

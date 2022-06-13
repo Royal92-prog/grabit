@@ -6,6 +6,7 @@ import 'package:grabit/Classes/gameTable.dart';
 import 'package:grabit/Classes/player.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/services.dart';
+import 'package:grabit/services/gameNumberManager.dart';
 import 'package:grabit/services/playerManager.dart';
 
 import '../Classes/card.dart';
@@ -18,9 +19,11 @@ class entryScreen extends StatelessWidget {
   int _connectedPlayersNum = 0;
   int _playerIndex = 0;
   late var cardsArr;
+  late var _gameNum;
 
   @override
   Widget build(BuildContext context) {
+    getCurrentGameNum();
     var size = MediaQuery.of(context).size;
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     return Stack(fit: StackFit.passthrough, children: [Container(child: Image.asset('assets/Background.png',
@@ -60,18 +63,18 @@ class entryScreen extends StatelessWidget {
                   height: 0.25 * size.height),
               onTap: () async{
                 FirebaseFirestore _firestore = FirebaseFirestore.instance;
-                _connectedPlayersNum = await getConnectedNum();
+                _connectedPlayersNum = await getConnectedNum(_gameNum);
                 _playerIndex = _connectedPlayersNum;
                 ++_connectedPlayersNum;
                 Map<String,dynamic> dataUpload = {};
                 if (_connectedPlayersNum == 1) {
-                  initializePlayers();
+                  initializePlayers(_gameNum);
                   cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
                   cardsArr.shuffle();
                   dataUpload['cardsData'] = cardsArr;
                 }
                 else {
-                  await _firestore.collection('game').doc('game1').get().then(
+                  await _firestore.collection('game').doc('game${_gameNum}').get().then(
                           (snapshot) {
                             if (snapshot.exists) {
                               final data = snapshot.data();
@@ -100,16 +103,20 @@ class entryScreen extends StatelessWidget {
                 dataUpload['player_${_playerIndex.toString()}_deck'] = cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1)));
                 dataUpload['player_${(_playerIndex).toString()}_openCards'] = [];
                 // dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
-                await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
-                setConnectedNum(_connectedPlayersNum);
-                updateNicknameByIndex(_playerIndex, _nicknameController.text);
+                await _firestore.collection('game').doc('game${_gameNum}').set(dataUpload, SetOptions(merge : true));
+                setConnectedNum(_connectedPlayersNum, _gameNum);
+                updateNicknameByIndex(_playerIndex, _nicknameController.text, _gameNum);
                 Navigator.of(context).push(
                 MaterialPageRoute<void>(
                 builder: (context) {
-                return GameManager(playerIndex: _playerIndex, playersNum: numPlayers,);
+                return GameManager(playerIndex: _playerIndex, playersNum: numPlayers, gameNum: _gameNum,);
                       }
                       ));
               })))]);
+  }
+
+  void getCurrentGameNum() async {
+    _gameNum = await getGameNum();
   }
 
 }

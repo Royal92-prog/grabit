@@ -17,7 +17,8 @@ class Player extends StatefulWidget {
   final int deviceIndex;
   final Function(bool) currentTurnCallback;
   final String nickname;
-  const Player({required this.index, required this.deviceIndex, required this.currentTurnCallback, required this.nickname});
+  final gameNum;
+  const Player({required this.index, required this.deviceIndex, required this.currentTurnCallback, required this.nickname, required this.gameNum});
 
 
   @override
@@ -46,10 +47,10 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback,)), Positioned(right: 0.11* size.width,
+        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,)), Positioned(right: 0.11* size.width,
             top: 0.16* size.height, child: Text(widget.nickname, style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-        Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index))]);
+        Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
     }
 //-size.height*0.01
     else if(widget.index == 0){//0
@@ -59,10 +60,10 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
           Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
-          playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback,)),
+          playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,)),
           Positioned(right: 0.11* size.width,top: 0.16* size.height,
               child: Text(widget.nickname, style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-          Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index))]);
+          Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
     }
 
     else{//Player number 2
@@ -72,11 +73,11 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback,)),
+        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,)),
         Positioned(right: 0.11* size.width,top: 0.16* size.height,
             child: Text(widget.nickname, style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-        Positioned(bottom:size.height*0.17,right:size.width*0.23,child: currentCard(index: widget.index))]);
+        Positioned(bottom:size.height*0.17,right:size.width*0.23,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
       /*
       return Container(width:size.width*0.4,height:size.height*0.3,child:Stack(children: [Positioned(
       child:Column(children:

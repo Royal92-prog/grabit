@@ -6,8 +6,9 @@ import 'package:grabit/Classes/card.dart';
 class playerDeck extends StatefulWidget {
   int index;
   int deviceIndex;
+  int gameNum;
   final Function(bool) currentTurnCallback;
-  playerDeck( {required this.index, required this.deviceIndex, required this.currentTurnCallback});
+  playerDeck( {required this.index, required this.deviceIndex, required this.currentTurnCallback, required this.gameNum});
 
   @override
   State<playerDeck> createState() => deckState();
@@ -25,7 +26,7 @@ class deckState extends State<playerDeck>{
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
+      stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
       builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
       if(snapshot.connectionState == ConnectionState.active){
        final cloudData = snapshot.data;
@@ -51,13 +52,13 @@ class deckState extends State<playerDeck>{
     return GestureDetector(
     onTap: (currentTurn != widget.index || widget.index != widget.deviceIndex) ? null : () async{
       FirebaseFirestore db = FirebaseFirestore.instance;
-      await db.collection("game").doc("game1").set({'turn' : -2},SetOptions(merge :true));
+      await db.collection("game").doc("game${widget.gameNum}").set({'turn' : -2},SetOptions(merge :true));
       if(cardsHandler[widget.index][1].length > 0) decreaseCardsArray(cardsHandler[widget.index][1][0]);
       cardsHandler[widget.index][1].insert(0,cardsHandler[widget.index][0].removeAt(0));
       ///in this case the outer errors card was exposed - let's draw a new card to all players
       if(increaseCardsArray(cardsHandler[widget.index][1][0]) == 2){
         ///update the firebase accordingly before drawing new cards
-        await db.collection("game").doc("game1").set({
+        await db.collection("game").doc("game${widget.gameNum}").set({
         'player_${widget.index}_openCards' : cardsHandler[widget.index][1],
         'player_${widget.index}_deck' : cardsHandler[widget.index][0]}, SetOptions(merge :true));
         await Future.delayed(Duration(milliseconds: 800));
@@ -80,7 +81,7 @@ class deckState extends State<playerDeck>{
       }
       if(swapped == false) nextTurn = -1;
       //remember to substract 1 from player index when using firebase
-      await db.collection("game").doc("game1").set({
+      await db.collection("game").doc("game${widget.gameNum}").set({
         'player_0_deck' : cardsHandler[0][0],
         'player_1_deck' : cardsHandler[1][0],
         'player_2_deck' : cardsHandler[2][0],
@@ -154,7 +155,7 @@ class deckState extends State<playerDeck>{
         if(cardsHandler[i][1].length > 0 && i != widget.index) decreaseCardsArray(cardsHandler[i][1][0]);
         cardsHandler[i][1].insert(0, cardsHandler[i][0].removeAt(0));
         increaseCardsArray(cardsHandler[i][1][0]);
-        await FirebaseFirestore.instance.collection("game").doc("game1").set({
+        await FirebaseFirestore.instance.collection("game").doc("game${widget.gameNum}").set({
           'player_${i}_deck' : cardsHandler[i][0],
           'player_${i}_openCards' : cardsHandler[i][1],
           'matchingCards': cardsGroupArray,

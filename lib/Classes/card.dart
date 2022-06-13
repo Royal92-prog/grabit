@@ -18,7 +18,8 @@ Map <int,Tuple2<int,String>> cardsFullDeck = <int,Tuple2<int,String>>{};
 
 class currentCard extends StatefulWidget {
   int index;
-  currentCard({required this.index});
+  int gameNum;
+  currentCard({required this.index, required this.gameNum});
   @override
   State<currentCard> createState() => cardState();
 
@@ -54,7 +55,7 @@ class cardState extends State<currentCard>{
     initializeCardsMap();
     var size = MediaQuery.of(context).size;
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
+        stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
     builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
       if(snapshot.connectionState == ConnectionState.active){
       final cloudData = snapshot.data;

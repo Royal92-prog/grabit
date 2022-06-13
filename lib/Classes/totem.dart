@@ -7,8 +7,9 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 
 class totem extends StatefulWidget {
-  totem({required this.index});
+  totem({required this.index, required this.gameNum});
   int index;
+  final int gameNum;
 
   @override
   State<totem> createState() => totemState();
@@ -36,7 +37,7 @@ class totemState extends State<totem> {
     var size = MediaQuery.of(context).size;
     double rightPosition = underTotemCards.length > 9 ? 0.008 : 0.016;
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
+        stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
         builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             final cloudData = snapshot.data;
@@ -66,7 +67,7 @@ class totemState extends State<totem> {
                 width: 0.2 * size.width, height: 0.15 * size.height, alignment: Alignment.center),
                 onTap: isTotemPressed ? null : () async {
                    FirebaseFirestore _firestore = FirebaseFirestore.instance;
-                   await _firestore.collection('game').doc('game1').set({'totem': true,
+                   await _firestore.collection('game').doc('game${widget.gameNum}').set({'totem': true,
                     'totem${widget.index}Pressed': true}, SetOptions(merge: true));
                    await Future.delayed(const Duration(milliseconds: 1000));
                    for (int i=0; i<numPlayers && !isTotemPressed; i++) {
@@ -79,7 +80,7 @@ class totemState extends State<totem> {
                     underTotemCards = [...underTotemCards, ...cardsHandler[widget.index][1]];
                     underTotemCards.shuffle();
                     cardsHandler[widget.index][1] = [];
-                    await _firestore.collection('game').doc('game1').set({
+                    await _firestore.collection('game').doc('game${widget.gameNum}').set({
                       'underTotemCards': underTotemCards,
                       'totem': false,
                       'totem${widget.index}Pressed': false,
@@ -105,7 +106,7 @@ class totemState extends State<totem> {
                       cardsHandler[loserIndex][1] = [];
                       currentTurn = loserIndex;
                     });
-                    await _firestore.collection('game').doc('game1').set({
+                    await _firestore.collection('game').doc('game${widget.gameNum}').set({
                       'totem': false,
                       'underTotemCards': [],
                       'totem${widget.index}Pressed': false,
@@ -130,7 +131,7 @@ class totemState extends State<totem> {
                     underTotemCards = [];
                     loserDeck.shuffle();
                     cardsHandler[widget.index][0] = [...cardsHandler[widget.index][0], ...loserDeck];
-                    await _firestore.collection('game').doc('game1').
+                    await _firestore.collection('game').doc('game${widget.gameNum}').
                     set({
                       'underTotemCards' : [],
                       'turn' : widget.index,
@@ -161,7 +162,7 @@ class totemState extends State<totem> {
                     left:size.width * 0.25, bottom: size.height * 0.6) ,
                     content:Center(child: Text(finalMsg),)));
 
-                    await _firestore.collection('game').doc('game1').set({'turn' : -3,}, SetOptions(merge: true));
+                    await _firestore.collection('game').doc('game${widget.gameNum}').set({'turn' : -3,}, SetOptions(merge: true));
                   }})
                 ],));
           }

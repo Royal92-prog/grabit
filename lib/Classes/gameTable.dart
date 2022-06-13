@@ -6,9 +6,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:grabit/Classes/player.dart';
 import 'package:grabit/Classes/totem.dart';
 class gameTable extends StatelessWidget {
-  gameTable({required this.playerIndex, required this.nicknames});
+  gameTable({required this.playerIndex, required this.nicknames, required this.gameNum});
 
   int playerIndex;
+  int gameNum;
   var nicknames;
 
   @override
@@ -23,12 +24,12 @@ class gameTable extends StatelessWidget {
               height: 0.65 * size.height,width:0.75 * size.width ,alignment: Alignment.centerRight))
             ,//Positioned(right: size.width * 0.08,child:Row(children:)[]
             Positioned(left : size.width * 0.22,top:-0.08*size.height,child: Player(index: 1, deviceIndex: playerIndex,
-              currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, nickname: nicknames[1],)),//1
+              currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, nickname: nicknames[1], gameNum: gameNum,)),//1
             Positioned(right : size.width * -0.025,top:0.25*size.height,child: Player(index: 2, deviceIndex: playerIndex,
-              currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, nickname: nicknames[2],)),//2
+              currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, nickname: nicknames[2], gameNum: gameNum,)),//2
             Positioned(left : size.width * -0.02,top: 0.22*size.height,child: Player(index: 0, deviceIndex: playerIndex,
-              currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, nickname: nicknames[0],)),//0
-            Positioned(left : size.width * 0.28,top: 0.7*size.height,child: totem(index: playerIndex,))
+              currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, nickname: nicknames[0], gameNum: gameNum,)),//0
+            Positioned(left : size.width * 0.28,top: 0.7*size.height,child: totem(index: playerIndex, gameNum: gameNum,))
           ])))
 
 
@@ -41,7 +42,7 @@ class gameTable extends StatelessWidget {
     int delay = isDeadEnd ? 15 : 3;
     await Future.delayed(Duration(seconds: delay));
     if (playerIndex == 0) {
-      FirebaseFirestore.instance.collection('game').doc('players1').delete();
+      FirebaseFirestore.instance.collection('game').doc('players${gameNum}').delete();
     }
     Navigator.of(context).pop();
     // if (turn == -1) {

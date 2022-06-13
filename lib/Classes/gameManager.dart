@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grabit/Screens/waitingRoomScreen.dart';
+import 'package:grabit/services/gameNumberManager.dart';
 import 'package:grabit/services/playerManager.dart';
 import '../Screens/entryScreen.dart';
 import 'card.dart';
@@ -11,17 +12,18 @@ enum GameState { waitingForPlayers, activeGame, endGame }
 
 
 class GameManager extends StatelessWidget {
-  GameManager({required this.playerIndex, required this.playersNum});
+  GameManager({required this.playerIndex, required this.playersNum, required this.gameNum});
   int playerIndex;
   int playersNum;
   GameState _gameState = GameState.waitingForPlayers;
   int _connectedNum = 0;
   int winnerIndex = -1;
+  int gameNum;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('players1').snapshots(),
+        stream: FirebaseFirestore.instance.collection('game').doc('players${gameNum}').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           var nicknames;
           if (snapshot.connectionState == ConnectionState.active) {
@@ -33,13 +35,14 @@ class GameManager extends StatelessWidget {
           }
           if (_gameState == GameState.waitingForPlayers && _connectedNum == 3) {
             _gameState = GameState.activeGame;
+            increaseGameNum(gameNum);
           }
 
           if (_gameState == GameState.waitingForPlayers) {
             return WaitingRoom(connectedNum: _connectedNum,);
           }
           else {
-            return gameTable(playerIndex: playerIndex, nicknames: nicknames,);
+            return gameTable(playerIndex: playerIndex, nicknames: nicknames, gameNum: gameNum,);
           }
         }
     );
