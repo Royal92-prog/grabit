@@ -74,7 +74,7 @@ class entryScreenState extends State<entryScreen>{
     Navigator.of(context).push(
     MaterialPageRoute<void>(
     builder: (context) {
-    return Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable());
+    return Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable(playersNumber: widget.numPlayers));
           }
           ));})))]);
 }}

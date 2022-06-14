@@ -10,31 +10,50 @@ import 'package:grabit/Classes/totem.dart';
 
 import '../services/animationServices.dart';
 class GameTable extends StatelessWidget {
+  GameTable({required this.playersNumber});
+  int playersNumber;
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    double rightTop =  playersNumber > 3 ? 0.08 : 0.21;
+    double leftTop =  playersNumber == 5 ? 0.11 : 0.24;
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     //Container(color : Colors.green),
-    return Stack(children: [Container(child: Image.asset('assets/Background.png',
+    return Stack(children:
+    [
+      Container(child: Image.asset('assets/Background.png',
       width: size.width, height: size.height,),),
-      Center(child : SizedBox(height:1 * size.height,width:0.75 * size.width,
-          child:Stack(children: <Widget>[Center(child:SvgPicture.asset('assets/WoodenTable.svg',
-              height: 0.65 * size.height,width:0.75 * size.width ,alignment: Alignment.centerRight))
-            ,//Positioned(right: size.width * 0.08,child:Row(children:)[]
-            Positioned(left : size.width * 0.22,top:-0.08*size.height,child: Player(index: 1, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//1
-            Positioned(right : size.width * -0.025,top:0.25*size.height,child: Player(index: 2, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//2
-            Positioned(left : size.width * -0.02,top: 0.22*size.height,child: Player(index: 0, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//0
-            Positioned(left : size.width * 0.28,top: 0.7*size.height,child: totem(index: 1, winnerCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},))
+      Center(child : SizedBox(height:1 * size.height,width:1 * size.width,
+          child:Stack(children: <Widget>[
+            Center(child:SvgPicture.asset('assets/WoodenTable.svg',
+                height: 0.72 * size.height,width:0.8 * size.width ,alignment: Alignment.centerRight)),
+            //player No.1: top center
+            Positioned(left : size.width * 0.34, top:-0.1 * size.height,child:
+            Player(index: 1, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//1
+            //player No.2: top right
+            Positioned(right : size.width * 0.1,top: leftTop * size.height,child:
+            Player(index: 2, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//2
+            //player No.5: bottom right
+            playersNumber == 5 ? Positioned(right : size.width * 0.09,top: 0.38 * size.height,child:
+            Player(index: 2, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)) :
+            SizedBox(),
+            //player No.0: top left corner
+            Positioned(left : size.width * 0.09, top: rightTop * size.height, child:
+            Player(index: 0, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),
+            //player No.4: bottom left corner
+            playersNumber > 3 ? Positioned(left : size.width * 0.09, top: 0.35 * size.height,child:
+            Player(index: 0, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)) :
+            SizedBox(),
+            //totem
+            Positioned(left : size.width * 0.4, top: 0.73 * size.height,child:
+            totem(index: 1, winnerCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},))
           ]))),
       GameNotifications(context: context,index: 1),
     ]);
         //;
   }
-  void showGetReadySnackBar() async{
 
-
-  }
   void deadEndCallback(BuildContext context, bool isDeadEnd) async{
     int delay = isDeadEnd ? 15 : 3;
     await Future.delayed(Duration(seconds: delay));
