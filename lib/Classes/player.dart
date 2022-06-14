@@ -15,8 +15,9 @@ enum ECardColor      { YELLOW, GREEN, RED, BLUE}
 
 class Player extends StatefulWidget {
   final int index;
+  final int playersNumber;
   final Function(bool) currentTurnCallback;
-  const Player({required this.index, required this.currentTurnCallback});
+  const Player({required this.index, required this.playersNumber, required this.currentTurnCallback});
 
 
   @override
@@ -41,7 +42,7 @@ class PlayerState extends State<Player>{
     //print(size.height);
     //print(size.width);
 
-    if (widget.index == 1){//player No.1
+    if (widget.index == 1 && widget.playersNumber != 4){//player No.1
     //Positioned(right:0.01 * size.width,child:
       return Stack(fit:StackFit.loose,children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,

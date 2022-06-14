@@ -16,8 +16,11 @@ class GameTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    double rightTop =  playersNumber > 3 ? 0.08 : 0.21;
-    double leftTop =  playersNumber == 5 ? 0.11 : 0.24;
+    double player0Top =  playersNumber > 3 ? 0.08 : 0.21;
+    double player1Top =  playersNumber == 4 ? 0.11 : -0.1;
+    double player1Left =  playersNumber == 4 ? 0.6 : 0.34;
+    double player2Top =  playersNumber > 3 ? 0.38 : 0.25;
+
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     //Container(color : Colors.green),
     return Stack(children:
@@ -29,21 +32,21 @@ class GameTable extends StatelessWidget {
             Center(child:SvgPicture.asset('assets/WoodenTable.svg',
                 height: 0.72 * size.height,width:0.8 * size.width ,alignment: Alignment.centerRight)),
             //player No.1: top center
-            Positioned(left : size.width * 0.34, top:-0.1 * size.height,child:
-            Player(index: 1, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//1
+            Positioned(left : size.width * player1Left, top: player1Top * size.height,child:
+            Player(index: 1, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//1
             //player No.2: top right
-            Positioned(right : size.width * 0.1,top: leftTop * size.height,child:
-            Player(index: 2, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//2
+            Positioned(left : size.width * 0.6, top: player2Top * size.height,child:
+            Player(index: 2, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//2
             //player No.5: bottom right
-            playersNumber == 5 ? Positioned(right : size.width * 0.09,top: 0.38 * size.height,child:
-            Player(index: 2, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)) :
+            playersNumber == 5 ? Positioned(left : size.width * 0.6,top: 0.38 * size.height,child:
+            Player(index: 2, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)) :
             SizedBox(),
             //player No.0: top left corner
-            Positioned(left : size.width * 0.09, top: rightTop * size.height, child:
-            Player(index: 0, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),
+            Positioned(left : size.width * 0.09, top: player0Top * size.height, child:
+            Player(index: 0, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),
             //player No.4: bottom left corner
             playersNumber > 3 ? Positioned(left : size.width * 0.09, top: 0.35 * size.height,child:
-            Player(index: 0, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)) :
+            Player(index: 0, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)) :
             SizedBox(),
             //totem
             Positioned(left : size.width * 0.4, top: 0.73 * size.height,child:
