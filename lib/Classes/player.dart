@@ -15,8 +15,9 @@ enum ECardColor      { YELLOW, GREEN, RED, BLUE}
 
 class Player extends StatefulWidget {
   final int index;
+  final int playersNumber;
   final Function(bool) currentTurnCallback;
-  const Player({required this.index, required this.currentTurnCallback});
+  const Player({required this.index, required this.playersNumber, required this.currentTurnCallback});
 
 
   @override
@@ -41,8 +42,8 @@ class PlayerState extends State<Player>{
     //print(size.height);
     //print(size.width);
 
-    if (widget.index == 1){//player No.1
-    //Positioned(right:0.01 * size.width,child:
+    if (widget.index == 1 && widget.playersNumber != 4){//player No.1
+      //Positioned(right:0.01 * size.width,child:
       return Stack(fit:StackFit.loose,children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
           width:0.12 * size.width,
@@ -56,16 +57,16 @@ class PlayerState extends State<Player>{
     }
 //-size.height*0.01
     else if(widget.index == 0){//0
-        return Stack(children: [
+      return Stack(children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
           width:0.12 * size.width,
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
-          Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
-          playerDeck(index:widget.index, currentTurnCallback: widget.currentTurnCallback,)),
-          Positioned(right: 0.11* size.width,top: 0.16* size.height,
-              child: Text("Player No.2",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-          Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index))]);
+        Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
+        playerDeck(index:widget.index, currentTurnCallback: widget.currentTurnCallback,)),
+        Positioned(right: 0.11* size.width,top: 0.16* size.height,
+            child: Text("Player No.2",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
+        Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index))]);
     }
 
     else{//Player number 2
@@ -93,26 +94,4 @@ class PlayerState extends State<Player>{
 
     }
 
-  }
-
-  // void turnCallback(int currentTurn) {
-  //   setState(() {
-  //     turn = currentTurn;
-  //   });
-  // }
-
-  // void deadEndHandler() {
-  //   var  searchOnStoppedTyping = new Timer(Duration(seconds: 15), () {});
-  //   if (turn == -1) {
-  //     searchOnStoppedTyping = new Timer(Duration(seconds: 8), () async {
-  //       await Future.delayed(Duration(seconds: 7));
-  //       print("after 15 seconds");
-  //       Navigator.of(context).pop();});
-  //   }
-  //   else{
-  //     searchOnStoppedTyping.cancel();
-  //   }
-  // }
-
-}
-//Container(height:20,width: 60,color: Colors.green,),
+  }}

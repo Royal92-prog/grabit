@@ -13,7 +13,6 @@ enum ECardColor      { BLUE, GREEN, RED, YELLOW}
 enum ECardIsUnique   { YES , NO}
 enum ECardUniqueType { INSIDE_ARROWS, OUTSIDE_ARROWS, COLOR_MATCH } ///TODO add: 1.swap Decks, 2.joker 3. change direction ///
 
-
 Map <int,Tuple2<int,String>> cardsFullDeck = <int,Tuple2<int,String>>{};
 
 class currentCard extends StatefulWidget {
@@ -54,25 +53,25 @@ class cardState extends State<currentCard>{
     initializeCardsMap();
     var size = MediaQuery.of(context).size;
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
-    builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
-      if(snapshot.connectionState == ConnectionState.active){
-      final cloudData = snapshot.data;
-      if(cloudData != null) {
+        stream: FirebaseFirestore.instance.collection('game').doc('game2').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
+          if(snapshot.connectionState == ConnectionState.active){
+            final cloudData = snapshot.data;
+            if(cloudData != null) {
 
-      openCards = cloudData['player_${(widget.index).toString()}_openCards'];
-      if (openCards.length == 0){
-        print("indexxxx ${widget.index.toString()}");
-      }
-      }
-      return Container(
-        child:openCards.length == 0 ? SizedBox(width: 10,height: 10,):
-        SvgPicture.asset(cardsFullDeck[openCards[0]]?.item2
-        as String,width: 0.12 * size.width, height:
-        0.12 * size .height,
-        ),);
-    }
-      else return SizedBox(width: 0.01,);
-      });
+              openCards = cloudData['player_${(widget.index).toString()}_openCards'];
+              if (openCards.length == 0){
+                print("indexxxx ${widget.index.toString()}");
+              }
+            }
+            return Container(
+              child:openCards.length == 0 ? SizedBox(width: 10,height: 10,):
+              SvgPicture.asset(cardsFullDeck[openCards[0]]?.item2
+              as String,width: 0.12 * size.width, height:
+              0.12 * size .height,
+              ),);
+          }
+          else return SizedBox(width: 0.01,);
+        });
   }
 }

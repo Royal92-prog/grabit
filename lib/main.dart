@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       ),
         debugShowCheckedModeBanner: false,
 
-        home: Scaffold(backgroundColor: Colors.black,extendBody: true, body:entryScreen(numPlayers: 3),),
+        home: Scaffold(backgroundColor: Colors.black,extendBody: true, body:entryScreen(numPlayers: 4),),
     ),);
   }
 }
