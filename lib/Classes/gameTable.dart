@@ -27,7 +27,7 @@ class GameTable extends StatelessWidget {
             Positioned(left : size.width * -0.02,top: 0.22*size.height,child: Player(index: 0, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//0
             Positioned(left : size.width * 0.28,top: 0.7*size.height,child: totem(index: 1, winnerCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},))
           ]))),
-      GameNotifications(context: context,),
+      GameNotifications(context: context,index: 1),
     ]);
         //;
   }

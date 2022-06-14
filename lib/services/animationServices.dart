@@ -19,15 +19,17 @@ extension ColorExtension on String {
   }
 }
 class  GameNotifications extends StatelessWidget {
-  GameNotifications({required this.context });
+  GameNotifications({required this.context, required this.index});
+  int index;
   var context;
-  int x = -5;
   @override
   Widget build(BuildContext context) {
-    return GameUpdatesListener(massageUpdateFunc: showSnackBar);
+    return GameUpdatesListener(massageUpdateFunc: showSnackBar, index: index);
   }
 
-showSnackBar(size)async{
+showSnackBar(var size, String msg) async{
+    await FirebaseFirestore.instance.collection('game').doc('game2').set({'Player${index}Msgs' : ""}, SetOptions(merge : true));
+    if(msg == 'outerArrows'){
   await FirebaseFirestore.instance.collection("game").doc("game2").set({'turn' : -10},SetOptions(merge :true));
   await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
       behavior: SnackBarBehavior.floating,backgroundColor: Colors.black.withOpacity(0.5),
@@ -41,6 +43,14 @@ showSnackBar(size)async{
         top: size.height * 0.25, right: size.width * 0.25, left: size.width * 0.25,
         bottom: size.height * 0.6), content: Center(child: Text("${i}",style: GoogleFonts.galindo(fontSize: 28,color: '#FFD86C'.toColor())))));
   }
+    }
+    else{
+      await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,backgroundColor: Colors.black.withOpacity(0.5),
+          margin: EdgeInsets.only(top: size.height * 0.3,right: size.width * 0.1,
+              left:size.width * 0.1, bottom: size.height * 0.4) ,
+          content:Center(child: Text(msg, style: GoogleFonts.galindo(fontSize: 24,color: '#FFD86C'.toColor())))));
+    }
 
 }
 }
@@ -48,8 +58,9 @@ showSnackBar(size)async{
 
 
 class GameUpdatesListener extends StatelessWidget {
-  int x = -5;
-  GameUpdatesListener({required this.massageUpdateFunc });
+  GameUpdatesListener({required this.massageUpdateFunc, required this.index});
+  String msg = "";
+  int index;
   Function massageUpdateFunc;
   @override
   Widget build(BuildContext context) {
@@ -61,10 +72,10 @@ class GameUpdatesListener extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.active) {
             final cloudData = snapshot.data;
             if (cloudData != null) {
-              x = cloudData['turn'];
+              msg = cloudData['Player${index}Msgs'];
               /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
-              if (x > -5) {
-                massageUpdateFunc(size);
+              if (msg != "") {
+                massageUpdateFunc(size, msg);
               }
 
             }

@@ -59,6 +59,7 @@ class totemState extends State<totem>{
             SizedBox(),GestureDetector(child:Image.asset('assets/CTAButton.png', width: 0.2 * size.width,
             height: 0.15 * size.height,alignment: Alignment.center),
             onTap: isTotemPressed ? null : () async{
+                  Map<String, dynamic> cloudMassages = {};
                   FirebaseFirestore _firestore = FirebaseFirestore.instance;
                   await _firestore.collection('game').doc('game2').set({'totem' : true}, SetOptions(merge : true));
                   ///#1st case :  totem was pressed since inner arrows is on the table
@@ -69,13 +70,20 @@ class totemState extends State<totem>{
                     underTotemCards =[...underTotemCards, ...cardsHandler[widget.index][1]];
                     underTotemCards.shuffle();
                     cardsHandler[widget.index][1] = [];
-                    await _firestore.collection('game').doc('game2').set({
+                    cloudMassages = {
                       'totem' : false,
                       'turn' : widget.index,
                       'cardsActiveUniqueArray' : uniqueArray,
                       'matchingCards': matchingRegularCards,
                       'matchingColorCards' : matchingColorCards,
-                      'player_${widget.index}_openCards' : [],}, SetOptions(merge : true));
+                      'player_${widget.index}_openCards' : [],
+                      'Player${widget.index}Msgs' : "inner arrows card - You Win!"
+                    };
+                    for(int i = 0; i < numPlayers; i++){
+                      if(i == widget.index) continue;
+                      cloudMassages['Player${i}Msgs'] = "player ${widget.index} pressed the inner button first";
+                    }
+                    await _firestore.collection('game').doc('game2').set(cloudMassages, SetOptions(merge : true));
                   }
                   ///#2nd case :  totem was pressed for the regular reason (color / regular mode)
                   else if (cardsHandler[widget.index][1].length > 0 &&
@@ -95,7 +103,7 @@ class totemState extends State<totem>{
                       currentTurn = loserIndex;
                       //print("loserIndex : ${cardsHandler[loserIndex]}");
                     });
-                    await _firestore.collection('game').doc('game2').set({
+                    cloudMassages = {
                       'totem' : false,
                       'turn' : loserIndex,
                       'player_${loserIndex}_openCards' : cardsHandler[loserIndex][1],
@@ -104,7 +112,14 @@ class totemState extends State<totem>{
                       'player_${widget.index}_deck' : cardsHandler[widget.index][0],
                       'matchingCards': matchingRegularCards,
                       'matchingColorCards' : matchingColorCards,
-                      }, SetOptions(merge : true));
+                      'Player${widget.index}Msgs' : 'you win',
+                      'Player${loserIndex}Msgs' : 'you lose',
+                      };
+                    for(int i = 0; i < numPlayers; i++){
+                      if(i == widget.index || i == loserIndex) continue;
+                      cloudMassages['Player${i}Msgs'] = "player ${widget.index} won, player ${loserIndex} lost";
+                    }
+                    await _firestore.collection('game').doc('game2').set(cloudMassages, SetOptions(merge : true));
                   }
                   ///#3rd case :  totem was pressed by mistake
                 else {
@@ -123,8 +138,7 @@ class totemState extends State<totem>{
                     loserDeck.shuffle();
                     cardsHandler[widget.index][0] = [...cardsHandler[widget.index][0], ...loserDeck];
                     print("after totem update: ${matchingRegularCards}");
-                    await _firestore.collection('game').doc('game2').
-                    set({
+                    cloudMassages = {
                       'turn' : widget.index,
                       'player_${0}_openCards' : cardsHandler[0][1],
                       'player_${0}_deck' : cardsHandler[0][0],
@@ -135,7 +149,13 @@ class totemState extends State<totem>{
                       'matchingCards': matchingRegularCards,
                       'matchingColorCards' : matchingColorCards,
                       'cardsActiveUniqueArray' : uniqueArray,
-                      'totem' : false}, SetOptions(merge : true));
+                      'Player${widget.index}Msgs' : "you were penalized",
+                      'totem' : false};
+                    for(int i = 0; i < numPlayers; i++){
+                      if(i == widget.index) continue;
+                      cloudMassages['Player${i}Msgs'] = "player ${widget.index} was penalized";
+                    }
+                    await _firestore.collection('game').doc('game2').set(cloudMassages, SetOptions(merge : true));
                 }
                 //checking whther we have a winner after this press
                   var winners = [];
@@ -147,13 +167,10 @@ class totemState extends State<totem>{
                     var finalMsg = "";
                     if(winners.length > 1) finalMsg = "there is no sole winner in this battle";
                     else  finalMsg = "Player No, ${winners[0]} won !";
-
-                    await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),behavior: SnackBarBehavior.floating,backgroundColor:
-                    Colors.black.withOpacity(0.5),
-                        margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
-                            left:size.width * 0.25, bottom: size.height * 0.6) ,
-                        content:Center(child: Text(finalMsg),)));
-
+                    for(int i = 0; i < numPlayers; i++){
+                      cloudMassages['Player${i}Msgs'] = finalMsg;
+                    }
+                    await _firestore.collection('game').doc('game2').set(cloudMassages, SetOptions(merge : true));
                     widget.winnerCallback(false);
                   }
                 }

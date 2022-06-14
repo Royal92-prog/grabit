@@ -59,11 +59,19 @@ class deckState extends State<playerDeck>{
           await db.collection("game").doc("game2").set({'player_${widget.index}_openCards' :
           cardsHandler[widget.index][1],'player_${widget.index}_deck' : cardsHandler[widget.index][0]},  SetOptions(merge :true));
           await Future.delayed(Duration(milliseconds: 500));
+          await db.collection("game").doc("game2").set({
+            'Player0Msgs' : "outerArrows",
+            'Player1Msgs' : "outerArrows",
+            'Player2Msgs' : "outerArrows"}, SetOptions(merge :true));
           await handleSpecialCardNo0();
           if((((cardsHandler[0][1][0] - 1))-numberOfRegularCards) ~/ 2 == 2 ||
              (((cardsHandler[1][1][0] - 1))-numberOfRegularCards) ~/ 2 == 2 ||
              (((cardsHandler[2][1][0] - 1))-numberOfRegularCards) ~/ 2 == 2 ){
-            await Future.delayed(Duration(seconds: 1));
+            await db.collection("game").doc("game2").set({
+              'Player0Msgs' : "outerArrows",
+              'Player1Msgs' : "outerArrows",
+              'Player2Msgs' : "outerArrows"}, SetOptions(merge :true));
+            await Future.delayed(Duration(milliseconds: 1000));
             handleSpecialCardNo0();
           }
         }
@@ -133,7 +141,7 @@ class deckState extends State<playerDeck>{
   handleSpecialCardNo0() async{
     var size = MediaQuery.of(context).size;
     ///irrelevant for final branch
-    await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
+    /*await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
     behavior: SnackBarBehavior.floating,backgroundColor: Colors.black.withOpacity(0.5),
     margin: EdgeInsets.only(top: size.height * 0.25,right: size.width * 0.25,
     left:size.width * 0.25, bottom: size.height * 0.6) ,
@@ -146,7 +154,7 @@ class deckState extends State<playerDeck>{
       backgroundColor: Colors.black.withOpacity(0.5), margin: EdgeInsets.only(
       top: size.height * 0.25, right: size.width * 0.25, left: size.width * 0.25,
       bottom: size.height * 0.6), content: Center(child: Text("${i}"),)));
-    }///till here
+    }///till here*/
     await Future.delayed(Duration(seconds: 5));
      for(int i = 0; i < numPlayers; i++) {
       if(cardsHandler[i][0].length > 0) {
