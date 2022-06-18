@@ -52,6 +52,7 @@ class entryScreenState extends State<entryScreen>{
                 int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
                 int cards = (totalCardsNum / widget.numPlayers).toInt();
                 int remainder = (totalCardsNum) % widget.numPlayers;
+                print("total:: ${totalCardsNum}, rem:: ${remainder}");
                 Map<String, dynamic> uploadData = {};
                 var cardsHandler = [];
                 Map<String,dynamic> dataUpload = {};
@@ -61,11 +62,12 @@ class entryScreenState extends State<entryScreen>{
                 dataUpload['turn'] = 0;//0
                 dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
                 dataUpload['matchingColorCards'] = [0,0,0,0];
+                dataUpload['underTotemCards'] = [];
                 dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
                 for(int i = 0; i < widget.numPlayers; i++){
                   if(remainder > 0){
                   dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1))) +
-                  cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder);
+                  cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder + 1);
                   remainder--;
                   }
                   else{
@@ -73,8 +75,10 @@ class entryScreenState extends State<entryScreen>{
                   }
                   dataUpload['player_${(i).toString()}_openCards'] = [];
                 }
-                //dataUpload['player_0_deck'][0] = 78;
-               //dataUpload['player_0_deck'][1] = 77;
+                /*dataUpload['player_0_deck'][5] = 1;
+                dataUpload['player_1_deck'][5] = 2;
+                dataUpload['player_2_deck'][5] = 75;
+                dataUpload['player_3_deck'][5] = 47;*/
                 await _firestore.collection('game').doc('game2').set(dataUpload, SetOptions(merge : true));
                 Map<String, dynamic> playersMassages = {};
                 for(int i = 0; i < widget.numPlayers; i++){

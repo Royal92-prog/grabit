@@ -60,7 +60,7 @@ class cardState extends State<currentCard>{
             if(cloudData != null) {
               openCards = cloudData['player_${(widget.index).toString()}_openCards'];
               if (openCards.length == 0){
-                print("indexxxx ${widget.index.toString()}");
+                //print("indexxxx ${widget.index.toString()}");
               }
             }
             return Container(

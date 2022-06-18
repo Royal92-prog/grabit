@@ -53,7 +53,7 @@ class GameTable extends StatelessWidget {
             SizedBox(),
             //totem
             Positioned(left : size.width * 0.4, top: 0.73 * size.height,child:
-            totem(index: 1, winnerCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},))
+            totem(index: 1, playersNumber: playersNumber, winnerCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},))
           ]))),
       GameNotifications(context: context,index: 1),
     ]);
