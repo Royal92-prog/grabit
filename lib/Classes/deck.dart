@@ -11,16 +11,16 @@ import '../main.dart';
 
 
 class playerDeck extends StatefulWidget {
-  int index;
+  final int index;
+  final int playersNumber;
   final Function(bool) currentTurnCallback;
-  playerDeck( {required this.index, required this.currentTurnCallback});
+  playerDeck( {required this.index, required this.playersNumber, required this.currentTurnCallback});
 
   @override
   State<playerDeck> createState() => deckState();
 }
 class deckState extends State<playerDeck>{
-  int numPlayers = 3;
-  late var cardsHandler;
+  late List< List< dynamic>> cardsHandler;
   double rightAlignment = 0.012;
   late int currentTurn;
   late var cardsGroupArray;
@@ -36,9 +36,15 @@ class deckState extends State<playerDeck>{
           if(snapshot.connectionState == ConnectionState.active){
             final cloudData = snapshot.data;
             if(cloudData != null) {
+              cardsHandler = [];
+              for(int i = 0; i < widget.playersNumber; i++){
+                cardsHandler.add([cloudData['player_${i}_deck'], cloudData['player_${i}_openCards']]);
+              }
+              /*print("length :: ${cardsHandler[3][0].length}");
               cardsHandler = [[cloudData['player_0_deck'], cloudData['player_0_openCards']],
                 [cloudData['player_1_deck'], cloudData['player_1_openCards']],
-                [cloudData['player_2_deck'], cloudData['player_2_openCards']]];
+                [cloudData['player_2_deck'], cloudData['player_2_openCards']],
+                [cloudData['player_3_deck'], cloudData['player_3_openCards']]];*/
               currentTurn = cloudData['turn'];
               /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
               if(currentTurn == -1 && widget.index == 0){
@@ -51,7 +57,6 @@ class deckState extends State<playerDeck>{
             }
             return GestureDetector( onTap: currentTurn != widget.index ? null : () async{
               FirebaseFirestore db = FirebaseFirestore.instance;
-              print("decks : ${cardsHandler[0][0]} ,${cardsHandler[1][0]},  ${cardsHandler[2][0]} ");
               await db.collection("game").doc("game2").set({'turn' : -2},SetOptions(merge :true));
               if(cardsHandler[widget.index][1].length > 0) decreaseCardsArray(cardsHandler[widget.index][1][0]);
               cardsHandler[widget.index][1].insert(0,cardsHandler[widget.index][0].removeAt(0));
@@ -59,44 +64,57 @@ class deckState extends State<playerDeck>{
                 await db.collection("game").doc("game2").set({'player_${widget.index}_openCards' :
                 cardsHandler[widget.index][1],'player_${widget.index}_deck' : cardsHandler[widget.index][0]},  SetOptions(merge :true));
                 await Future.delayed(Duration(milliseconds: 500));
-                await db.collection("game").doc("game2").set({
-                  'Player0Msgs' : "outerArrows",
-                  'Player1Msgs' : "outerArrows",
-                  'Player2Msgs' : "outerArrows"}, SetOptions(merge :true));
+                Map<String, dynamic> cloudMsgs = {};
+                for(int i = 0; i < widget.playersNumber; i++){
+                  cloudMsgs['Player${i}Msgs'] = "outerArrows";
+                }
+                await db.collection("game").doc("game2").set(cloudMsgs, SetOptions(merge :true));
                 await handleSpecialCardNo0();
+                for(int i = 0; i < widget.playersNumber; i++){
+                  if((((cardsHandler[i][1][0] - 1)) - numberOfRegularCards) ~/ 2 == 2){
+                    for(int i = 0; i < widget.playersNumber; i++) {
+                      cloudMsgs['Player${i}Msgs'] = "outerArrows";
+                    }
+                    await db.collection("game").doc("game2").set(cloudMsgs, SetOptions(merge :true));
+                    await Future.delayed(Duration(milliseconds: 1000));
+                    handleSpecialCardNo0();
+                    break;
+                  }
+                }
+                /*
                 if((((cardsHandler[0][1][0] - 1))-numberOfRegularCards) ~/ 2 == 2 ||
                     (((cardsHandler[1][1][0] - 1))-numberOfRegularCards) ~/ 2 == 2 ||
-                    (((cardsHandler[2][1][0] - 1))-numberOfRegularCards) ~/ 2 == 2 ){
+                    (((cardsHandler[2][1][0] - 1))-numberOfRegularCards) ~/ 2 == 2 ||
+                    (((cardsHandler[3][1][0] - 1))-numberOfRegularCards) ~/ 2 == 2){
                   await db.collection("game").doc("game2").set({
                     'Player0Msgs' : "outerArrows",
                     'Player1Msgs' : "outerArrows",
                     'Player2Msgs' : "outerArrows"}, SetOptions(merge :true));
                   await Future.delayed(Duration(milliseconds: 1000));
                   handleSpecialCardNo0();
-                }
+                }*/
               }
-              int nextTurn = (widget.index + 1) % 3;
+              int nextTurn = (widget.index + 1) % widget.playersNumber;
               bool swapped = false;
-              for(int i = 0; i < 3; i ++){
+              for(int i = 0; i < widget.playersNumber; i ++){
                 if(cardsHandler[nextTurn][0].length != 0){
                   swapped = true;
                   break;
                 }
-                nextTurn = (nextTurn + 1) % 3;
+                nextTurn = (nextTurn + 1) % widget.playersNumber;
               }
               if(swapped == false) nextTurn = -1;
               //remember to substract 1 from player index when using firebase
-              await db.collection("game").doc("game2").set({
-                'player_0_deck' : cardsHandler[0][0],
-                'player_1_deck' : cardsHandler[1][0],
-                'player_2_deck' : cardsHandler[2][0],
-                'player_0_openCards' : cardsHandler[0][1],
-                'player_1_openCards' : cardsHandler[1][1],
-                'player_2_openCards' : cardsHandler[2][1],
+              Map<String, dynamic> uploadData = {
                 'turn' : nextTurn,
                 'matchingCards': cardsGroupArray,
                 'matchingColorCards' : cardsColorArray,
-                'cardsActiveUniqueArray' : cardsActiveUniqueArray},SetOptions(merge :true));
+                'cardsActiveUniqueArray' : cardsActiveUniqueArray};
+              for(int i = 0; i < widget.playersNumber; i++){
+                uploadData['player_${i}_deck'] = cardsHandler[i][0];
+                uploadData['player_${i}_openCards'] = cardsHandler[i][1];
+              }
+              await db.collection("game").doc("game2").set(uploadData, SetOptions(merge :true));
             },
               child:Stack(clipBehavior: Clip.antiAliasWithSaveLayer, fit: StackFit.passthrough,children:
               [
@@ -156,7 +174,8 @@ class deckState extends State<playerDeck>{
       bottom: size.height * 0.6), content: Center(child: Text("${i}"),)));
     }///till here*/
     await Future.delayed(Duration(seconds: 5));
-    for(int i = 0; i < numPlayers; i++) {
+    for(int i = 0; i < widget.playersNumber; i++) {
+      print('here Line 178');
       if(cardsHandler[i][0].length > 0) {
         if(cardsHandler[i][1].length > 0 && i != widget.index) decreaseCardsArray(cardsHandler[i][1][0]);
         cardsHandler[i][1].insert(0, cardsHandler[i][0].removeAt(0));

@@ -46,11 +46,12 @@ class entryScreenState extends State<entryScreen>{
               child:Image.asset('assets/playButton.png',width: 0.2 * size.width,
                   height: 0.25 * size.height),
               onTap: () async{
-                //ScaffoldMessenger("dadada");Container(color: Colors.black.withOpacity(0.5),child:  ,height: size.height * 0.1)
                 FirebaseFirestore _firestore = FirebaseFirestore.instance;
                 var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
                 cardsArr.shuffle();
-                int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) / widget.numPlayers).toInt();
+                int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
+                int cards = (totalCardsNum / widget.numPlayers).toInt();
+                int remainder = (totalCardsNum) % widget.numPlayers;
                 Map<String, dynamic> uploadData = {};
                 var cardsHandler = [];
                 Map<String,dynamic> dataUpload = {};
@@ -62,9 +63,18 @@ class entryScreenState extends State<entryScreen>{
                 dataUpload['matchingColorCards'] = [0,0,0,0];
                 dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
                 for(int i = 0; i < widget.numPlayers; i++){
-                  dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
+                  if(remainder > 0){
+                  dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1))) +
+                  cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder);
+                  remainder--;
+                  }
+                  else{
+                    dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
+                  }
                   dataUpload['player_${(i).toString()}_openCards'] = [];
                 }
+                //dataUpload['player_0_deck'][0] = 78;
+               //dataUpload['player_0_deck'][1] = 77;
                 await _firestore.collection('game').doc('game2').set(dataUpload, SetOptions(merge : true));
                 Map<String, dynamic> playersMassages = {};
                 for(int i = 0; i < widget.numPlayers; i++){

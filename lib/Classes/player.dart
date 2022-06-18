@@ -42,7 +42,7 @@ class PlayerState extends State<Player>{
     //print(size.height);
     //print(size.width);
 
-    if (widget.index == 1 && widget.playersNumber != 4){//player No.1
+    if ((widget.index == 1 && widget.playersNumber < 4) || (widget.index == 2 && widget.playersNumber == 5) ){//player No.1
       //Positioned(right:0.01 * size.width,child:
       return Stack(fit:StackFit.loose,children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
@@ -50,22 +50,22 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, currentTurnCallback: widget.currentTurnCallback,)), Positioned(right: 0.11* size.width,
-            top: 0.16* size.height, child: Text("Player No.1",style:
+        playerDeck(index:widget.index, playersNumber: widget.playersNumber, currentTurnCallback: widget.currentTurnCallback,)), Positioned(right: 0.11* size.width,
+            top: 0.16* size.height, child: Text("Player No.${widget.index}",style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index))]);
     }
 //-size.height*0.01
-    else if(widget.index == 0){//0
+    else if(widget.index == 0 || widget.index == 1){//0
       return Stack(children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
           width:0.12 * size.width,
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, currentTurnCallback: widget.currentTurnCallback,)),
+        playerDeck(index:widget.index, playersNumber: widget.playersNumber, currentTurnCallback: widget.currentTurnCallback,)),
         Positioned(right: 0.11* size.width,top: 0.16* size.height,
-            child: Text("Player No.2",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
+            child: Text("Player No.${widget.index}",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index))]);
     }
 
@@ -76,9 +76,9 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, currentTurnCallback: widget.currentTurnCallback,)),
+        playerDeck(index:widget.index, playersNumber: widget.playersNumber,currentTurnCallback: widget.currentTurnCallback,)),
         Positioned(right: 0.11* size.width,top: 0.16* size.height,
-            child: Text("Player No.3",style:
+            child: Text("Player No.${widget.index}",style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(bottom:size.height*0.17,right:size.width*0.23,child: currentCard(index: widget.index))]);
       /*
