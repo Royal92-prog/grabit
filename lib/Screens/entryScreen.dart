@@ -43,8 +43,7 @@ class entryScreen extends StatelessWidget {
               child: TextField(
 
                 controller: _nicknameController,
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
+                decoration: new InputDecoration.collapsed(
                   hintText: 'Enter nickname',
                 ),
               ),

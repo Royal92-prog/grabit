@@ -45,6 +45,8 @@ dependencies:
   get:
   firebase_database: ^9.0.14
   animations: ^2.0.3
+  overlay_support: ^2.0.1
+  google_sign_in: ^5.3.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -216,5 +218,10 @@ flutter:
     - Special_card2.svg
     - Special_card3.svg
 
+    - Google_BTN.png
+    - Google_BTN.svg
+
+    - Register_BTN.png
+    - Register_BTN.svg
 
   #-
