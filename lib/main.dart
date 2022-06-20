@@ -14,6 +14,7 @@ import 'Classes/gameManager.dart';
 import 'Screens/entryScreen.dart';
 import 'Screens/friendlyGameScreen.dart';
 import 'Screens/gameHostScreen.dart';
+import 'Screens/infoScreen.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
       ),
         debugShowCheckedModeBanner: false,
 
-        home: FriendlyGame()//Scaffold(backgroundColor: Colors.black,extendBody: true, body: entryScreen(numPlayers: 3),),
+        home: Scaffold(backgroundColor: Colors.black,extendBody: true, body: entryScreen(numPlayers: 3),),
     );
   }
 }

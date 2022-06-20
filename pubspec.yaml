@@ -107,11 +107,16 @@ flutter:
   assets:
     - assets/HostGame/back.png
     - assets/HostGame/join.png
+    - assets/How to play/next_BTN.png
+    - assets/How to play/X.png
     - assets/HostGame/host.png
+    - assets/Lobby/Info_BTN.png
     - assets/HostGame/writingArea.svg
     - assets/HostGame/- btn.svg
     - assets/HostGame/+ btn.png
+    - assets/How to play/back.png
     - assets/HostGame/mainHeader.svg
+    - assets/Lobby/FriendlyBattle_BTN.png
     - assets/Full_pack.svg
     - WoodenTable.svg
     - nickname.png

@@ -19,6 +19,7 @@ class FriendlyGame extends StatefulWidget {
 class FriendlyGameStates extends State<FriendlyGame>{
   int playersNumber = 3;
   int gameTimeLimit = 0;
+  final _gameRoomController = TextEditingController();
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     var size = MediaQuery.of(context).size;
@@ -33,7 +34,16 @@ class FriendlyGameStates extends State<FriendlyGame>{
       ),
       Positioned(left: size.width * 0.36 , top: size.height * 0.39, child:
       SvgPicture.asset('assets/HostGame/writingArea.svg', height: 0.15 * size.height,
-          width: 0.15 * size.width)),//
+          width: 0.15 * size.width)),
+    Positioned(left: size.width * 0.36 , top: size.height * 0.39, child:
+    TextField(
+      controller: _gameRoomController,
+      maxLength: 6,
+      decoration: const InputDecoration(
+        border: UnderlineInputBorder(),
+        hintText: 'Enter nickname',
+      ),
+    )),
       Positioned(left: size.width * 0.545 , top: size.height * 0.44, child:
       Text('${playersNumber}', style: GoogleFonts.galindo( fontSize: 15, color: Colors.black,
           fontWeight:FontWeight.w300, decoration: TextDecoration.none))

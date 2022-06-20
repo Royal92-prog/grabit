@@ -6,6 +6,7 @@ import 'package:grabit/Classes/gameTable.dart';
 import 'package:grabit/Classes/player.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/services.dart';
+import 'package:grabit/Screens/infoScreen.dart';
 
 import '../Classes/card.dart';
 
@@ -36,8 +37,13 @@ class entryScreenState extends State<entryScreen>{
           width:size.width * 0.45,
           height: size.height * 0.35,
           child:Row(mainAxisAlignment: MainAxisAlignment.start,children: [SizedBox(width:size.width*0.14),
-            Text("agfgagaga",
-                style:GoogleFonts.galindo(fontSize:16,color: Colors.black87,))]))),
+            Text("agfgagaga", style:GoogleFonts.galindo(fontSize:16,color: Colors.black87,))]))),
+    Positioned(left: size.width * 0.07, top: size.height * 0.65,child: GestureDetector(child:
+    Image.asset('assets/HostGame/+ btn.png', height: 0.1 * size.height,
+        width: 0.1 * size.width))),
+      Positioned(left: size.width *0.12, bottom: size.height * -0.04, child:
+      Image.asset('assets/Lobby/FriendlyBattle_BTN.png',width: 0.2 * size.width,
+          height: 0.35 * size.height)),
       Positioned(bottom: size.height * 0.04, left: size.width * 0.37,child://18
       Container(
           width:size.width * 0.25,
@@ -46,7 +52,7 @@ class entryScreenState extends State<entryScreen>{
               child:Image.asset('assets/playButton.png',width: 0.2 * size.width,
                   height: 0.25 * size.height),
               onTap: () async{
-                FirebaseFirestore _firestore = FirebaseFirestore.instance;
+               /* FirebaseFirestore _firestore = FirebaseFirestore.instance;
                 var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
                 cardsArr.shuffle();
                 int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
@@ -77,11 +83,11 @@ class entryScreenState extends State<entryScreen>{
                 for(int i = 0; i < widget.numPlayers; i++){
                   playersMassages['Player${i}Msgs'] = "";
                 }
-                await _firestore.collection('game').doc('game2').set(playersMassages, SetOptions(merge : true));
+                await _firestore.collection('game').doc('game2').set(playersMassages, SetOptions(merge : true));*/
                 Navigator.of(context).push(
                     MaterialPageRoute<void>(
                         builder: (context) {
-                          return Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable(playersNumber: widget.numPlayers));
+                          return InfoScreen();//Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable(playersNumber: widget.numPlayers));
                         }
                     ));})))]);
   }}
