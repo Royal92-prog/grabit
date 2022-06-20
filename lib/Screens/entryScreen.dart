@@ -53,10 +53,7 @@ class entryScreenState extends State<entryScreen>{
                 int cards = (totalCardsNum / widget.numPlayers).toInt();
                 int remainder = (totalCardsNum) % widget.numPlayers;
                 print("total:: ${totalCardsNum}, rem:: ${remainder}");
-                Map<String, dynamic> uploadData = {};
-                var cardsHandler = [];
                 Map<String,dynamic> dataUpload = {};
-                //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
                 dataUpload['totem'] = false;
                 ///modification for dead end game examination
                 dataUpload['turn'] = 0;//0
@@ -75,10 +72,6 @@ class entryScreenState extends State<entryScreen>{
                   }
                   dataUpload['player_${(i).toString()}_openCards'] = [];
                 }
-                /*dataUpload['player_0_deck'][5] = 1;
-                dataUpload['player_1_deck'][5] = 2;
-                dataUpload['player_2_deck'][5] = 75;
-                dataUpload['player_3_deck'][5] = 47;*/
                 await _firestore.collection('game').doc('game2').set(dataUpload, SetOptions(merge : true));
                 Map<String, dynamic> playersMassages = {};
                 for(int i = 0; i < widget.numPlayers; i++){

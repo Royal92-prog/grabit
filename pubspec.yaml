@@ -106,6 +106,8 @@ flutter:
 
   assets:
     - assets/HostGame/back.png
+    - assets/HostGame/join.png
+    - assets/HostGame/host.png
     - assets/HostGame/writingArea.svg
     - assets/HostGame/- btn.svg
     - assets/HostGame/+ btn.png
