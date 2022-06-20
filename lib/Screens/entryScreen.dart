@@ -52,7 +52,7 @@ class entryScreenState extends State<entryScreen>{
               child:Image.asset('assets/playButton.png',width: 0.2 * size.width,
                   height: 0.25 * size.height),
               onTap: () async{
-               /* FirebaseFirestore _firestore = FirebaseFirestore.instance;
+                FirebaseFirestore _firestore = FirebaseFirestore.instance;
                 var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
                 cardsArr.shuffle();
                 int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
@@ -83,11 +83,11 @@ class entryScreenState extends State<entryScreen>{
                 for(int i = 0; i < widget.numPlayers; i++){
                   playersMassages['Player${i}Msgs'] = "";
                 }
-                await _firestore.collection('game').doc('game2').set(playersMassages, SetOptions(merge : true));*/
+                await _firestore.collection('game').doc('game2').set(playersMassages, SetOptions(merge : true));
                 Navigator.of(context).push(
                     MaterialPageRoute<void>(
                         builder: (context) {
-                          return InfoScreen();//Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable(playersNumber: widget.numPlayers));
+                          return Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable(playersNumber: widget.numPlayers));
                         }
                     ));})))]);
   }}
