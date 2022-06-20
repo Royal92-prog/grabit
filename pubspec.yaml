@@ -105,6 +105,11 @@ flutter:
 
 
   assets:
+    - assets/HostGame/back.png
+    - assets/HostGame/writingArea.svg
+    - assets/HostGame/- btn.svg
+    - assets/HostGame/+ btn.png
+    - assets/HostGame/mainHeader.svg
     - assets/Full_pack.svg
     - WoodenTable.svg
     - nickname.png

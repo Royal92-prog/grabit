@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import 'Classes/gameManager.dart';
 import 'Screens/entryScreen.dart';
+import 'Screens/gameHostScreen.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
       ),
         debugShowCheckedModeBanner: false,
 
-        home: Scaffold(backgroundColor: Colors.black,extendBody: true, body: entryScreen(numPlayers: 3),),
+        home: GameHost()//Scaffold(backgroundColor: Colors.black,extendBody: true, body: entryScreen(numPlayers: 3),),
     );
   }
 }
