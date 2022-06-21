@@ -18,15 +18,6 @@ export const updateGameNumber =
             if (data != null) {
               if (data["connectedNum"] == 3) {
                 let gameNum = 1;
-                admin.firestore().collection("game").doc("gameNumber").get().
-                    then((snapshot) => {
-                      if (snapshot.exists) {
-                        const data = snapshot.data();
-                        if (data != null) {
-                          gameNum = data["currentNum"];
-                        }
-                      }
-                    });
                 ++gameNum;
                 admin.firestore().collection("game").doc("gameNumber").set({
                   "currentNum": gameNum,
@@ -36,3 +27,14 @@ export const updateGameNumber =
           }
         }
     );
+
+//                 admin.firestore().collection("game").doc("gameNumber").get().
+//                     then((snapshot) => {
+//                       if (snapshot.exists) {
+//                         const data = snapshot.data();
+//                         if (data != null) {
+//                           gameNum = data["currentNum"];
+//                         }
+//                       }
+//                     });
+
