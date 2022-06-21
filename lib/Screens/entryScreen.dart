@@ -11,6 +11,7 @@ import 'package:grabit/Screens/infoScreen.dart';
 
 import '../Classes/card.dart';
 import '../main.dart';
+import 'loadingScreen.dart';
 
 class entryScreen extends StatefulWidget {
   entryScreen({required this.numPlayers}); //super(key: key)
@@ -22,7 +23,6 @@ class entryScreen extends StatefulWidget {
 
 class entryScreenState extends State<entryScreen>{
   bool isLoginMode = false;
-  bool container = false;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -49,69 +49,53 @@ class entryScreenState extends State<entryScreen>{
       ///friendly battle needs to be changed, add onTap
       Positioned(left: size.width *0.12, bottom: size.height * -0.04, child: GestureDetector(child:
         Image.asset('assets/Lobby/FriendlyBattle_BTN.png',width: 0.2 * size.width, height: 0.35 * size.height))),
-      Positioned(bottom: size.height * 0.04, left: size.width * 0.37,child://18
-      Container(
-          width: size.width * 0.25,
-          height: size.height * 0.25,
-          child: GestureDetector(
-              child: Image.asset('assets/playButton.png',width: 0.2 * size.width,
-                  height: 0.25 * size.height),
-              onTap: () async{
-                FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-                var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
-                cardsArr.shuffle();
-                int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
-                int cards = (totalCardsNum / widget.numPlayers).toInt();
-                int remainder = (totalCardsNum) % widget.numPlayers;
-                print("total:: ${totalCardsNum}, rem:: ${remainder}");
-                Map<String,dynamic> dataUpload = {};
-                dataUpload['totem'] = false;
-                ///modification for dead end game examination
-                dataUpload['turn'] = 0;//0
-                dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
-                dataUpload['matchingColorCards'] = [0,0,0,0];
-                dataUpload['underTotemCards'] = [];
-                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
-                for(int i = 0; i < widget.numPlayers; i++){
-                  if(remainder > 0){
-                  dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1))) +
-                  cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder + 1);
-                  remainder--;
-                  }
-                  else{
-                    dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
-                  }
-                  dataUpload['player_${(i).toString()}_openCards'] = [];
-                }
-                await _firestore.collection('game').doc('game2').set(dataUpload, SetOptions(merge : true));
-                Map<String, dynamic> playersMassages = {};
-                for(int i = 0; i < widget.numPlayers; i++){
-                  playersMassages['Player${i}Msgs'] = "";
-                }
-                await _firestore.collection('game').doc('game2').set(playersMassages, SetOptions(merge : true));
-                Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                        builder: (context) {
-                          return Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable(playersNumber: widget.numPlayers));
-                        }
-                    ));}))),container == true ? Container(height: size.height,width: size.width,color: Colors.purpleAccent,) : SizedBox()]);
+      ///play button gsture detector onTap we show a  LoadingScreen and at the same time
+      ///update the FB game document
+      Positioned(bottom: size.height * 0.04, left: size.width * 0.37,child:
+        Container(width: size.width * 0.25, height: size.height * 0.25, child:
+          GestureDetector(child: Image.asset('assets/playButton.png',width: 0.2 * size.width,
+            height: 0.25 * size.height),
+            //push loading page when uploading data on firebase
+            onTap: () async{
+              Navigator.of(context).push(MaterialPageRoute<void> (builder: (context) {
+                return LoadingScreen();
+              }));
+            await Future.delayed(Duration(seconds: 4));
+            FirebaseFirestore _firestore = FirebaseFirestore.instance;
+            var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
+            cardsArr.shuffle();
+            int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
+            int cards = (totalCardsNum / widget.numPlayers).toInt();
+            int remainder = (totalCardsNum) % widget.numPlayers;
+            print("total:: ${totalCardsNum}, rem:: ${remainder}");
+            Map<String,dynamic> dataUpload = {};
+            dataUpload['totem'] = false;
+            dataUpload['turn'] = 0;//0
+            dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
+            dataUpload['matchingColorCards'] = [0,0,0,0];
+            dataUpload['underTotemCards'] = [];
+            dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
+            for(int i = 0; i < widget.numPlayers; i++){
+              if(remainder > 0){
+              dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1))) +
+              cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder + 1);
+              remainder--;
+              }
+              else{
+                dataUpload['player_${i.toString()}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1)));
+              }
+              dataUpload['player_${(i).toString()}_openCards'] = [];
+            }
+            await _firestore.collection('game').doc('game2').set(dataUpload, SetOptions(merge : true));
+            Map<String, dynamic> playersMassages = {};
+            for(int i = 0; i < widget.numPlayers; i++){
+              playersMassages['Player${i}Msgs'] = "";
+            }
+            await _firestore.collection('game').doc('game2').set(playersMassages, SetOptions(merge : true));
+            Navigator.of(context).push(MaterialPageRoute<void> (builder: (context){
+              return Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable(playersNumber: widget.numPlayers));
+            }
+          ));})))]);
   }}
-/*
-class LoadingPage extends StatelessWidget {
-/*
-  @override
-  void initState() {
-    Timer(Duration(seconds: 3), () {
-      Navigator.of(context).pop(MaterialPageRoute(builder: (context) => Home()));
-    });
-    //super.initState();
-  }
 
-  @override
-  Widget build(BuildContext context) {
-      return Container(color: Colors.purpleAccent,);
-  }*/
-}
 
-*/
