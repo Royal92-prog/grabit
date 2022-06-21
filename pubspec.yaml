@@ -111,6 +111,9 @@ flutter:
     - assets/How to play/X.png
     - assets/HostGame/host.png
     - assets/Lobby/Info_BTN.png
+    - assets/Lobby/+ BTN.png
+    - assets/Lobby/Avatar_photo.png
+    - assets/Lobby/SignIn_BTN.png
     - assets/HostGame/writingArea.svg
     - assets/HostGame/- btn.svg
     - assets/HostGame/+ btn.png
