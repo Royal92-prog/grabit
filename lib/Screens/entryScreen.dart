@@ -11,6 +11,7 @@ import 'package:grabit/Screens/infoScreen.dart';
 
 import '../Classes/card.dart';
 import '../main.dart';
+import 'friendlyGameScreen.dart';
 import 'loadingScreen.dart';
 
 class entryScreen extends StatefulWidget {
@@ -48,7 +49,13 @@ class entryScreenState extends State<entryScreen>{
         Image.asset('assets/HostGame/+ btn.png', height: 0.1 * size.height, width: 0.1 * size.width))),
       ///friendly battle needs to be changed, add onTap
       Positioned(left: size.width *0.12, bottom: size.height * -0.04, child: GestureDetector(child:
-        Image.asset('assets/Lobby/FriendlyBattle_BTN.png',width: 0.2 * size.width, height: 0.35 * size.height))),
+        Image.asset('assets/Lobby/FriendlyBattle_BTN.png',width: 0.2 * size.width, height: 0.35 * size.height),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute<void> (builder: (context) {
+            return FriendlyGame();
+            }));
+          }
+        ,)),
       ///play button gsture detector onTap we show a  LoadingScreen and at the same time
       ///update the FB game document
       Positioned(bottom: size.height * 0.04, left: size.width * 0.37,child:

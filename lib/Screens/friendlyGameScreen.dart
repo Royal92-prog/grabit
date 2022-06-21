@@ -23,7 +23,7 @@ class FriendlyGameStates extends State<FriendlyGame>{
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     var size = MediaQuery.of(context).size;
-    return Stack(fit: StackFit.passthrough, children:
+    return Scaffold(backgroundColor: Colors.black, extendBody: true, body: Stack(fit: StackFit.passthrough, children:
     [Container(child: Image.asset('assets/Background.png', width: size.width, height: size.height,),),
       Positioned(top: 0.20 * size.height,left: 0.28 * size.width, child: SvgPicture.asset('assets/WoodenTable.svg',
           height: 0.62 * size.height,width: 0.25 * size.width ,fit: BoxFit.fitWidth)),
@@ -36,14 +36,17 @@ class FriendlyGameStates extends State<FriendlyGame>{
       SvgPicture.asset('assets/HostGame/writingArea.svg', height: 0.15 * size.height,
           width: 0.15 * size.width)),
     Positioned(left: size.width * 0.36 , top: size.height * 0.39, child:
-    TextField(
+    SizedBox(
+    width: 0.15 * size.width,
+    height: 0.13 * size.height,
+    child: TextField(
       controller: _gameRoomController,
       maxLength: 6,
       decoration: const InputDecoration(
         border: UnderlineInputBorder(),
         hintText: 'Enter nickname',
       ),
-    )),
+    ))),
       Positioned(left: size.width * 0.545 , top: size.height * 0.44, child:
       Text('${playersNumber}', style: GoogleFonts.galindo( fontSize: 15, color: Colors.black,
           fontWeight:FontWeight.w300, decoration: TextDecoration.none))
@@ -58,10 +61,12 @@ class FriendlyGameStates extends State<FriendlyGame>{
       Text('HOST A MATCH AND ASK \n YOUR FRIENDS TO JOIN', style: GoogleFonts.galindo( fontSize: 8,
           color: Colors.white, fontWeight:FontWeight.w300, decoration: TextDecoration.none))),
       Positioned(left: size.width * 0.05 , bottom: size.height * 0.05, child:
-      GestureDetector(child:  Image.asset('assets/HostGame/back.png',
-          height: 0.2 * size.height, width: 0.25 * size.width),
-          onTap: null)),
-    ]);
+      GestureDetector(child:  Image.asset('assets/HostGame/back.png', height: 0.2 * size.height,
+          width: 0.25 * size.width),
+          onTap: (){
+            Navigator.of(context).pop();
+          })),
+    ]));
   }
 }
 

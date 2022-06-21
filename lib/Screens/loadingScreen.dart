@@ -12,12 +12,12 @@ class LoadingScreen extends StatelessWidget {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     return Stack(fit: StackFit.passthrough, children: [
       Image.asset('assets/Background.png', width: size.width, height: size.height,),
-      Positioned(left: size.width * 0.36, top: 0.5 * size.height ,child:
+      Positioned(left: size.width * 0.36, top: 0.5 * size.height ,child:Card(child:
       Text('GRABIT', style: GoogleFonts.galindo( fontSize: 40,
-        color: Colors.white, fontWeight:FontWeight.w600, decoration: TextDecoration.none,))),
-      Positioned(left: size.width * 0.41, top: 0.65 * size.height ,child:
+        color: Colors.white, fontWeight:FontWeight.w600, decoration: TextDecoration.none,)))),
+      /*Positioned(left: size.width * 0.41, top: 0.65 * size.height ,child:
       Text('Loading', style: GoogleFonts.galindo( fontSize: 28,
-        color: Colors.white, fontWeight:FontWeight.w600, decoration: TextDecoration.none,))),
+        color: Colors.white, fontWeight:FontWeight.w600, decoration: TextDecoration.none,))),*/
       Positioned(left: size.width * 0.45, top: 0.63 * size.height ,child:
       CircularProgressIndicator(color: Colors.yellow,strokeWidth : 5.5))
     ]);
