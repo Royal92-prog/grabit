@@ -24,11 +24,13 @@ class entryScreen extends StatefulWidget {
 
 class entryScreenState extends State<entryScreen>{
   bool isLoginMode = false;
+  bool instructionsMode = false;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
-    return Stack(fit: StackFit.passthrough, children: [
+    return Stack(fit: StackFit.passthrough, children:
+      [
       Container(child: Image.asset('assets/Background.png', width: size.width, height: size.height,),),
       Positioned(top: size.height * 0.03, left: size.width * 0.3, child:
       Container(child: Image.asset('assets/nickname.png', width: 0.2 * size.width,
@@ -46,10 +48,12 @@ class entryScreenState extends State<entryScreen>{
           GestureDetector(child: Image.asset('assets/Lobby/SignIn_BTN.png', width: 0.15 * size.width, height: 0.15 * size.height))),
       ///replace + button with info button
       Positioned(left: size.width * 0.07, top: size.height * 0.65,child: GestureDetector(child:
-        Image.asset('assets/HostGame/+ btn.png', height: 0.1 * size.height, width: 0.1 * size.width))),
+        Image.asset('assets/HostGame/+ btn.png', height: 0.1 * size.height, width: 0.1 * size.width),
+        onTap: () => setState(() {instructionsMode = true;}),
+      )),
       ///friendly battle needs to be changed, add onTap
-      Positioned(left: size.width *0.12, bottom: size.height * -0.04, child: GestureDetector(child:
-        Image.asset('assets/Lobby/FriendlyBattle_BTN.png',width: 0.2 * size.width, height: 0.35 * size.height),
+      Positioned(left: size.width * 0.12, bottom: size.height * 0.07, child: GestureDetector(child:
+        Image.asset('assets/Lobby/FriendlyBattle_BTN.png',width: 0.2 * size.width, height: 0.12 * size.height),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute<void> (builder: (context) {
             return FriendlyGame();
@@ -102,7 +106,13 @@ class entryScreenState extends State<entryScreen>{
             Navigator.of(context).push(MaterialPageRoute<void> (builder: (context){
               return Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable(playersNumber: widget.numPlayers));
             }
-          ));})))]);
-  }}
+          ));}))), instructionsMode == true ? InfoScreen(func: setInstructionMode) : SizedBox()]);
+  }
+  setInstructionMode(){
+    setState (() {
+      this.instructionsMode = false;
+    });
+  }
+}
 
 

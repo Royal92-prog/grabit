@@ -22,7 +22,8 @@ class GameHostStates extends State<GameHost>{
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     var size = MediaQuery.of(context).size;
-    return Stack(fit: StackFit.passthrough, children:
+    return Scaffold(resizeToAvoidBottomInset: false, backgroundColor: Colors.black, extendBody: true, body:
+    Stack(fit: StackFit.passthrough, children:
     [Container(child: Image.asset('assets/Background.png', width: size.width, height: size.height,),),
       Positioned(top: 0.20 * size.height,left: 0.28 * size.width, child: SvgPicture.asset('assets/WoodenTable.svg',
           height: 0.62 * size.height,width: 0.25 * size.width ,fit: BoxFit.fitWidth)),
@@ -75,8 +76,8 @@ class GameHostStates extends State<GameHost>{
       Positioned(left: size.width * 0.05 , bottom: size.height * 0.05, child:
       GestureDetector(child:  Image.asset('assets/HostGame/back.png',
           height: 0.2 * size.height, width: 0.25 * size.width),
-          onTap: null)),
-    ]);
+          onTap: (){ Navigator.of(context).pop(); })),
+    ]));
   }
 }
 
