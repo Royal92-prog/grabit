@@ -44,8 +44,6 @@ class PlayerState extends State<Player>{
   Widget build(BuildContext context) {
 
     var size = MediaQuery.of(context).size;
-    //print(size.height);
-    //print(size.width);
 
     if ((widget.index == 1 && widget.playersNumber < 4) || (widget.index == 2 && widget.playersNumber == 5) ){//player No.1
       //Positioned(right:0.01 * size.width,child:
@@ -55,30 +53,22 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, playersNumber: widget.playersNumber, currentTurnCallback: widget.currentTurnCallback,)), Positioned(right: 0.11* size.width,
-            top: 0.16* size.height, child: Text("Player No.${widget.index}",style:
-        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,)), Positioned(right: 0.11* size.width,
-            top: 0.16* size.height, child: Text(widget.nickname, style:
+        playerDeck(index:widget.index, playersNumber: widget.playersNumber, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,deviceIndex: widget.deviceIndex,)),
+        Positioned(right: 0.11* size.width,top: 0.16* size.height, child: Text(widget.nickname, style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-        Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index))]);
+        Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
     }
-//-size.height*0.01
-    else if(widget.index == 0){//0
+
+    else if(widget.index == 0 || widget.index == 1){//0
         return Stack(children: [
-        Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
-          width:0.12 * size.width,
-          decoration: BoxDecoration(
-            color:Colors.blue, shape: BoxShape.circle,),),),
+        Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,width:0.12 * size.width,decoration: BoxDecoration(color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, playersNumber: widget.playersNumber, currentTurnCallback: widget.currentTurnCallback,)),
-        Positioned(right: 0.11* size.width,top: 0.16* size.height,
-            child: Text("Player No.${widget.index}",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-        Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index))]);
-          Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
-          playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,)),
-          Positioned(right: 0.11* size.width,top: 0.16* size.height,
-              child: Text(widget.nickname, style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-          Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
+        playerDeck(index:widget.index, playersNumber: widget.playersNumber, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum, deviceIndex: widget.deviceIndex,)),
+
+        Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index, gameNum: widget.gameNum,)),
+
+        Positioned(right: 0.11* size.width,top: 0.16* size.height,child: Text(widget.nickname, style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),))
+        ]);
     }
 
     else{//Player number 2
@@ -86,29 +76,12 @@ class PlayerState extends State<Player>{
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
           width:0.12 * size.width,
           decoration: BoxDecoration(
+            /// Todo repalce with avatar
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, playersNumber: widget.playersNumber,currentTurnCallback: widget.currentTurnCallback,)),
-        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,)),
-        Positioned(right: 0.11* size.width,top: 0.16* size.height,
-            child: Text("Player No.${widget.index}",style:
-            child: Text(widget.nickname, style:
-            GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-        Positioned(bottom:size.height*0.17,right:size.width*0.23,child: currentCard(index: widget.index))]);
-      /*
-      return Container(width:size.width*0.4,height:size.height*0.3,child:Stack(children: [Positioned(
-      child:Column(children:
-          [Text("Player No.1",style: TextStyle(fontSize: 10,color: Colors.white)
-          ,),Container(height:0.12 * size.height,
-          width:0.12 * size.width, decoration: BoxDecoration(
-          color:Colors.blue,
-          shape: BoxShape.circle,),)],),left: size.width*0.002,),
-          playerDeck(),Positioned(left:size.width*0.002,child: currentCard())]));
-      */
-
+        playerDeck(index:widget.index, playersNumber: widget.playersNumber,currentTurnCallback: widget.currentTurnCallback, deviceIndex: widget.deviceIndex, gameNum: widget.gameNum,)),
+        Positioned(right: 0.11* size.width,top: 0.16* size.height,child: Text(widget.nickname, style:GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
+        Positioned(bottom:size.height*0.17,right:size.width*0.23,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
     }
-
   }
-
 }
-//Container(height:20,width: 60,color: Colors.green,),

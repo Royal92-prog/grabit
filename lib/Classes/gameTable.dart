@@ -41,25 +41,26 @@ class GameTable extends StatelessWidget {
             //this player is always of index playersNumber -2  unless there are 5 players
             Positioned(left : size.width * player1Left, top: player1Top * size.height,child:
             Player(index: playersNumber == 5 ? 2 : playersNumber - 2, playersNumber: playersNumber,
-            currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//1
+            currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, nickname: nicknames[playersNumber == 5 ? 2 : playersNumber - 2], gameNum: gameNum, deviceIndex: playerIndex)),//1
             //this player is always of index playersNumber -1
             Positioned(left : size.width * 0.6, top: player2Top * size.height,child:
             Player(index: playersNumber -1, playersNumber: playersNumber,
-            currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),//2
+            currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, deviceIndex: playerIndex, gameNum: gameNum, nickname: nicknames[playersNumber -1],)),//2
             //this player exists in case there are 5 players and its index is 3
             playersNumber == 5 ? Positioned(left : size.width * 0.6,top: 0.12 * size.height,child:
-            Player(index: 3, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)) :
+            Player(index: 3, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, nickname: nicknames[3], gameNum: gameNum,deviceIndex: playerIndex,)) :
             SizedBox(),
             //this player is always of index 0 unless there are more than 3 players
             Positioned(left : size.width * 0.09, top: player0Top * size.height, child:
-            Player(index: playersNumber > 3 ? 1 : 0, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),
+            Player(index: playersNumber > 3 ? 1 : 0, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, deviceIndex: playerIndex, gameNum: gameNum, nickname: nicknames[playersNumber > 3 ? 1 : 0],)),
             //this player is always of index 0
             playersNumber > 3 ? Positioned(left : size.width * 0.09, top: 0.35 * size.height,child:
-            Player(index: 0, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)) :
-            SizedBox(),
+            Player(index: 0, playersNumber: playersNumber, currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}, gameNum: gameNum, nickname: nicknames[0],deviceIndex: playerIndex,)) :SizedBox(),
             //totem
             Positioned(left : size.width * 0.4, top: 0.73 * size.height,child:
-            totem(index: 1, playersNumber: playersNumber, winnerCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},))
+            totem(index: playerIndex, playersNumber: playersNumber,
+              // winnerCallback : (isDeadEnd) {deadEndCallback(context, isDeadEnd);},
+              gameNum: gameNum,))
           ]))),
       GameNotifications(context: context,index: 1),
     ]);

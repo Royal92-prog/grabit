@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:grabit/Screens/entryScreen.dart';
 import 'package:grabit/services/Login.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -139,7 +140,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 
                    MaterialPageRoute(
                      builder: (context) {
-                       return RegistrationScreen();
+                       return entryScreen(numPlayers: 3);
                      },
                    );
                }

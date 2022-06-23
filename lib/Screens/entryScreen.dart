@@ -98,7 +98,7 @@ class entryScreenState extends State<entryScreen>{
                           );
                   print(_connectedPlayersNum);
                 }
-                int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) / numPlayers).toInt();
+                int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) /  widget.numPlayers).toInt();
                 Map<String, dynamic> uploadData = {};
                 var cardsHandler = [];
                 //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
@@ -120,7 +120,7 @@ class entryScreenState extends State<entryScreen>{
                 Navigator.of(context).push(
                 MaterialPageRoute<void>(
                 builder: (context) {
-                return GameManager(playerIndex: _playerIndex, playersNum: numPlayers, gameNum: _gameNum,);
+                return GameManager(playerIndex: _playerIndex, playersNum: widget.numPlayers, gameNum: _gameNum,);
                       }
                       ));
               })))]);
