@@ -98,7 +98,6 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 
         }else if ( e.code == 'email-already-in-use') {
 
-
         } else if (e.code == 'operation-not-allowed') {
 
         } else if (e.code == 'weak-password') {
@@ -136,7 +135,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                setState(()  {
                   // user is not logged in
                    logout();
-                   Navigator.of(context).pop();
+                   Navigator.of(context).pop(Tuple3(false,"",""));
                    /*
                    MaterialPageRoute(
                      builder: (context) {
@@ -168,6 +167,8 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                       login(_usernameController.text, _passwordController.text);
                       if (Login.instance()
                           .user != null) {
+                        Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
+                        /*
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) {
@@ -176,6 +177,8 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                             },
                           ),
                         );
+
+                        */
                       }
                     }
 
@@ -244,7 +247,9 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 
       Positioned(left: size.width * 0.05 , bottom: size.height * 0.05, child:
       GestureDetector(child:  Image.asset('assets/back.png', height: 0.2 * size.height,
-          width: 0.25 * size.width),onTap: (){ Navigator.of(context).pop(); }
+          width: 0.25 * size.width),onTap: (){
+              Navigator.of(context).pop(Tuple3(_isSignedIn,_isSignedIn ? _usernameController.text: "", _isSignedIn ? _nicknameController.text: ""));
+      }
       )),
 
       Positioned(left: size.width * 0.46, top: size.height * 0.25, child: Container(
@@ -257,7 +262,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 
                     signInWithGoogle().whenComplete(() {
 
-                       Navigator.pop(context, Tuple2(_usernameController.text,_nicknameController.text));
+                       Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
                       /*
                     Navigator.of(context).push(
                     MaterialPageRoute(
