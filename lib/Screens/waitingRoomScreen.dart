@@ -13,7 +13,7 @@ class WaitingRoom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
+
     //Container(color : Colors.green),
     return Scaffold(backgroundColor: Colors.black,extendBody: true,
         body:Stack(children: [Container(child: Image.asset('assets/Background.png',
