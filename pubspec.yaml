@@ -124,11 +124,12 @@ flutter:
     - assets/Lobby/Avatar_photo.png
     - assets/Lobby/SignIn_BTN.png
     - assets/HostGame/writingArea.svg
-    - assets/HostGame/- btn.svg
+    - assets/HostGame/- btn.png
     - assets/HostGame/+ btn.png
     - assets/How to play/back.png
     - assets/HostGame/mainHeader.svg
     - assets/Lobby/FriendlyBattle_BTN.png
+    -
     - assets/Full_pack.svg
     - WoodenTable.svg
     - nickname.png
@@ -241,6 +242,7 @@ flutter:
     - Google_BTN.png
     - back.png
     - Register_BTN.png
+    - DRAW_BTN.png
 
 
   #-
