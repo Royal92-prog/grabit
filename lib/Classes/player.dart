@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:grabit/Classes/card.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grabit/services/playerManager.dart';
 
 import 'deck.dart';
 
@@ -15,6 +16,11 @@ enum ECardColor      { YELLOW, GREEN, RED, BLUE}
 
 class Player extends StatefulWidget {
   final int index;
+  final int deviceIndex;
+  final Function(bool) currentTurnCallback;
+  final String nickname;
+  final gameNum;
+  const Player({required this.index, required this.deviceIndex, required this.currentTurnCallback, required this.nickname, required this.gameNum});
   final int playersNumber;
   final Function(bool) currentTurnCallback;
   const Player({required this.index, required this.playersNumber, required this.currentTurnCallback});
@@ -34,7 +40,6 @@ class PlayerState extends State<Player>{
   var playerCurrentlyOpenedCard; ///Todo use unique identifier for cards Card.cardNumber ///
   var playerHasWon = 0 ;
 
-
   @override
   Widget build(BuildContext context) {
 
@@ -52,12 +57,14 @@ class PlayerState extends State<Player>{
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
         playerDeck(index:widget.index, playersNumber: widget.playersNumber, currentTurnCallback: widget.currentTurnCallback,)), Positioned(right: 0.11* size.width,
             top: 0.16* size.height, child: Text("Player No.${widget.index}",style:
+        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,)), Positioned(right: 0.11* size.width,
+            top: 0.16* size.height, child: Text(widget.nickname, style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index))]);
     }
 //-size.height*0.01
-    else if(widget.index == 0 || widget.index == 1){//0
-      return Stack(children: [
+    else if(widget.index == 0){//0
+        return Stack(children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
           width:0.12 * size.width,
           decoration: BoxDecoration(
@@ -67,6 +74,11 @@ class PlayerState extends State<Player>{
         Positioned(right: 0.11* size.width,top: 0.16* size.height,
             child: Text("Player No.${widget.index}",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index))]);
+          Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
+          playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,)),
+          Positioned(right: 0.11* size.width,top: 0.16* size.height,
+              child: Text(widget.nickname, style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
+          Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
     }
 
     else{//Player number 2
@@ -77,8 +89,10 @@ class PlayerState extends State<Player>{
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
         playerDeck(index:widget.index, playersNumber: widget.playersNumber,currentTurnCallback: widget.currentTurnCallback,)),
+        playerDeck(index:widget.index, deviceIndex: widget.deviceIndex, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,)),
         Positioned(right: 0.11* size.width,top: 0.16* size.height,
             child: Text("Player No.${widget.index}",style:
+            child: Text(widget.nickname, style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
         Positioned(bottom:size.height*0.17,right:size.width*0.23,child: currentCard(index: widget.index))]);
       /*
@@ -94,4 +108,7 @@ class PlayerState extends State<Player>{
 
     }
 
-  }}
+  }
+
+}
+//Container(height:20,width: 60,color: Colors.green,),

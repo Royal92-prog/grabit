@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,10 +15,17 @@ import '../services/notificationServices.dart';
 class GameTable extends StatelessWidget {
   GameTable({required this.playersNumber});
   int playersNumber;
+class gameTable extends StatelessWidget {
+  gameTable({required this.playerIndex, required this.nicknames, required this.gameNum});
+
+  int playerIndex;
+  int gameNum;
+  var nicknames;
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+
     double player0Top =  playersNumber > 3 ? 0.08 : 0.21;
     double player1Top =  playersNumber == 4 ? 0.11 : -0.1;
     double player1Left =  playersNumber == 4 ? 0.6 : 0.34;
@@ -57,13 +65,16 @@ class GameTable extends StatelessWidget {
           ]))),
       GameNotifications(context: context,index: 1),
     ]);
-    //;
+        //;
+
   }
 
   void deadEndCallback(BuildContext context, bool isDeadEnd) async{
     int delay = isDeadEnd ? 15 : 3;
     await Future.delayed(Duration(seconds: delay));
-    FirebaseFirestore.instance.collection('game').doc('game2').delete();
+    if (playerIndex == 0) {
+      FirebaseFirestore.instance.collection('game').doc('players${gameNum}').delete();
+    }
     Navigator.of(context).pop();
     // if (turn == -1) {
     //   searchOnStoppedTyping = new Timer(Duration(seconds: 8), () async {
@@ -76,3 +87,8 @@ class GameTable extends StatelessWidget {
     // }
   }
 }
+/*
+
+
+
+ */

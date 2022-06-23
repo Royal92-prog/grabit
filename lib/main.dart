@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grabit/Screens/login_page.dart';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart';
 import 'package:grabit/Classes/player.dart';
@@ -15,9 +17,14 @@ import 'Screens/entryScreen.dart';
 import 'Screens/friendlyGameScreen.dart';
 import 'Screens/gameHostScreen.dart';
 import 'Screens/infoScreen.dart';
+import 'Screens/registrationScreen.dart';
+import 'Screens/waitingRoomScreen.dart';
+import 'package:auto_orientation/auto_orientation.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  AutoOrientation.landscapeAutoMode(forceSensor: true);
   runApp(App());
 }
 
@@ -33,13 +40,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
         debugShowCheckedModeBanner: false,
-
-        home: Scaffold(resizeToAvoidBottomInset: false,backgroundColor: Colors.black,extendBody: true, body: entryScreen(numPlayers: 5),),
-    );
+        home: Scaffold(resizeToAvoidBottomInset: false, backgroundColor: Colors.black,extendBody: true,
+        body: entryScreen(numPlayers: 3,) ,),);//test2()
   }
 }
-
-
 
 class App extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();

@@ -7,10 +7,11 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 
 class totem extends StatefulWidget {
+  totem({required this.index, required this.gameNum});
   totem({required this.index,required this.playersNumber, required this.winnerCallback});
   int playersNumber;
   int index;
-  final Function(bool) winnerCallback;
+  final int gameNum;
 
   @override
   State<totem> createState() => totemState();
@@ -35,9 +36,9 @@ class totemState extends State<totem>{
     var size = MediaQuery.of(context).size;
     double rightPosition = underTotemCards.length > 9 ? 0.008 : 0.016;
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game2').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
-          if(snapshot.connectionState == ConnectionState.active){
+        stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
             final cloudData = snapshot.data;
             if(cloudData != null) {
               cardsHandler = [];
@@ -134,9 +135,69 @@ class totemState extends State<totem>{
                       cloudMassages['Player${i}Msgs'] = "player ${widget.index} won the Battle";
                     }
                     await _firestore.collection('game').doc('game2').set(cloudMassages, SetOptions(merge : true));
+            return Container(height: size.height * 0.3, width: size.width * 0.3,
+                child: Stack(children: [underTotemCards.length > 0 ?
+                Positioned(right: size.width * 0.065, child: Stack(children:
+                [SvgPicture.asset('assets/Full_pack.svg', width: 0.1 * size.width,
+                height: 0.1 * size.height,), Positioned(left: rightPosition * size.width,
+                top: 0.009 * size.height, child: Text("${underTotemCards.length}",
+                style: TextStyle(fontSize: 15, color: Colors.black)))])) : SizedBox(),
+                GestureDetector(child: Image.asset('assets/CTAButton.png',
+                width: 0.2 * size.width, height: 0.15 * size.height, alignment: Alignment.center),
+                onTap: isTotemPressed ? null : () async {
+                   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+                   await _firestore.collection('game').doc('game${widget.gameNum}').set({'totem': true,
+                    'totem${widget.index}Pressed': true}, SetOptions(merge: true));
+                   await Future.delayed(const Duration(milliseconds: 1000));
+                   for (int i=0; i<numPlayers && !isTotemPressed; i++) {
+                     if (cloudData!['totem${i}Pressed']) return;
+                    }
+                  ///#1st case :  totem was pressed since inner arrows is on the table
+                  if (uniqueArray[0] > 0 && uniqueArray[0] > uniqueArray[3]) {
+                    uniqueArray[3] += 1; // marking that the special card is used
+                    if (cardsHandler[widget.index][1].length > 0) decreaseCardsArray(cardsHandler[widget.index][1][0]);
+                    underTotemCards = [...underTotemCards, ...cardsHandler[widget.index][1]];
+                    underTotemCards.shuffle();
+                    cardsHandler[widget.index][1] = [];
+                    await _firestore.collection('game').doc('game${widget.gameNum}').set({
+                      'underTotemCards': underTotemCards,
+                      'totem': false,
+                      'totem${widget.index}Pressed': false,
+                      'turn': widget.index,
+                      'cardsActiveUniqueArray': uniqueArray,
+                      'matchingCards': matchingRegularCards,
+                      'matchingColorCards': matchingColorCards,
+                      'player_${widget.index}_openCards': [],}, SetOptions(merge: true));
                   }
-                  ///#3rd case :  totem was pressed by mistake
-                  else {
+                  ///#2nd case :  totem was pressed for the regular reason (color / regular mode)
+                  else if (cardsHandler[widget.index][1].length > 0 && ((!_isColorActive &&
+                  cardsGroupArray[(((cardsHandler[widget.index][1][0]) - 1) ~/ 4)] > 1) ||
+                  (_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0]) - 1) % 4)] > 1))) {
+                    int loserIndex = getLoserIndex();
+                    var loserCards = [...cardsHandler[loserIndex][1], ...cardsHandler[widget.index][1], ...underTotemCards];
+                    loserCards.shuffle();
+                    setState(() {
+                      underTotemCards = [];
+                      decreaseCardsArray(cardsHandler[loserIndex][1][0]);
+                      decreaseCardsArray(cardsHandler[widget.index][1][0]);
+                      cardsHandler[loserIndex][0] = [...cardsHandler[loserIndex][0], ...loserCards];
+                      cardsHandler[widget.index][1] = [];
+                      cardsHandler[loserIndex][1] = [];
+                      currentTurn = loserIndex;
+                    });
+                    await _firestore.collection('game').doc('game${widget.gameNum}').set({
+                      'totem': false,
+                      'underTotemCards': [],
+                      'totem${widget.index}Pressed': false,
+                      'turn': loserIndex,
+                      'player_${loserIndex}_openCards': cardsHandler[loserIndex][1],
+                      'player_${loserIndex}_deck': cardsHandler[loserIndex][0],
+                      'player_${widget.index}_openCards': cardsHandler[widget.index][1],
+                      'player_${widget.index}_deck': cardsHandler[widget.index][0],
+                      'matchingCards': matchingRegularCards,
+                      'matchingColorCards': matchingColorCards,}, SetOptions(merge: true));
+                  }
+                else {
                     print("penalty - ");
                     //3 is the number of players
                     for(int i = 0; i < widget.playersNumber; i ++){
@@ -192,7 +253,6 @@ class totemState extends State<totem>{
           }
           else return SizedBox(width: 0.01,);
         });
-  }
 
   List<int> getLoserIndex() {
     List<int> losingPlayers = [];
