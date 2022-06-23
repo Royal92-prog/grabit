@@ -41,8 +41,7 @@ class MyApp extends StatelessWidget {
       ),
         debugShowCheckedModeBanner: false,
         home: Scaffold(resizeToAvoidBottomInset: false, backgroundColor: Colors.black,extendBody: true,
-        body: RegistrationScreen(),),);
-        //body: entryScreen(numPlayers: 3,) ,),);//test2()
+        body: entryScreen(numPlayers: 3,) ,),);//test2()
   }
 }
 
