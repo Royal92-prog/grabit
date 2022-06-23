@@ -137,12 +137,14 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                setState(()  {
                   // user is not logged in
                    logout();
-
+                   Navigator.of(context).pop();
+                   /*
                    MaterialPageRoute(
                      builder: (context) {
                        return entryScreen(numPlayers: 3);
                      },
                    );
+                   */
                }
                );
              }
