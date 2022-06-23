@@ -11,6 +11,7 @@ import 'package:grabit/Screens/infoScreen.dart';
 
 import '../Classes/card.dart';
 import '../main.dart';
+import '../services/avatarManager.dart';
 import 'friendlyGameScreen.dart';
 import 'loadingScreen.dart';
 
@@ -25,8 +26,12 @@ class entryScreen extends StatefulWidget {
 class entryScreenState extends State<entryScreen>{
   bool isLoginMode = false;
   bool instructionsMode = false;
+  String? _avatarUrl = null;
   @override
   Widget build(BuildContext context) {
+    if (isLoginMode) {
+      getCurrentAvatar();
+    }
     var size = MediaQuery.of(context).size;
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     return Stack(fit: StackFit.passthrough, children:
@@ -36,13 +41,28 @@ class entryScreenState extends State<entryScreen>{
       Container(child: Image.asset('assets/nickname.png', width: 0.2 * size.width,
           height: 0.35 * size.height), width:size.width * 0.35, height: size.height * 0.35 )),
       ///Remain in loginMode : change avatar from monkey - replace the Sizedbox with the avatar.
-      Positioned(top: 0.13 * size.height, right:0.585 * size.width,child:
-        isLoginMode == false ? Image.asset('assets/Lobby/Avatar_photo.png', width: 0.15 * size.width,
-          height: 0.15 * size.height) : SizedBox()),
+      Positioned(top: 0.13 * size.height, right:0.62 * size.width,child:
+        CircleAvatar(
+          radius: 30,
+          backgroundImage: AssetImage('assets/Lobby/Avatar_photo.png'),
+          foregroundImage: _avatarUrl == null ? null : NetworkImage(_avatarUrl!),
+        ),
+      ),
+        // isLoginMode == false ? Image.asset('assets/Lobby/Avatar_photo.png', width: 0.15 * size.width,
+        //   height: 0.15 * size.height) : SizedBox()),
       ///Remain onTap on the + button (add onTAp): Let the user to select an avatar from gallery.
-      Positioned(top: 0.18 * size.height, left: 0.3 * size.width, child: GestureDetector(child:
-        isLoginMode == false ? Image.asset('assets/Lobby/+ BTN.png', width: 0.125 * size.width,
-        height: 0.125 * size.height) : SizedBox())),
+      Positioned(top: 0.18 * size.height, left: 0.3 * size.width, child:
+        GestureDetector(
+          child: isLoginMode == false ? Image.asset('assets/Lobby/+ BTN.png', width: 0.125 * size.width,
+              height: 0.125 * size.height) : SizedBox(),
+          onTap: () async{
+            final url = await updateAvatar();
+            setState(() {
+              _avatarUrl = url;
+            });
+          },
+        ),
+      ),
       ///Add logout case instead login + Ontap for both cases
       Positioned(top: size.height * 0.21, left: size.width * 0.41, child:
           GestureDetector(child: Image.asset('assets/Lobby/SignIn_BTN.png', width: 0.15 * size.width, height: 0.15 * size.height))),
@@ -112,6 +132,10 @@ class entryScreenState extends State<entryScreen>{
     setState (() {
       this.instructionsMode = false;
     });
+  }
+
+  void getCurrentAvatar() async{
+    _avatarUrl = await getAvatar();
   }
 }
 
