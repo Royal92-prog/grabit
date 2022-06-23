@@ -20,10 +20,10 @@ class Player extends StatefulWidget {
   final Function(bool) currentTurnCallback;
   final String nickname;
   final gameNum;
-  const Player({required this.index, required this.deviceIndex, required this.currentTurnCallback, required this.nickname, required this.gameNum});
   final int playersNumber;
-  final Function(bool) currentTurnCallback;
-  const Player({required this.index, required this.playersNumber, required this.currentTurnCallback});
+
+  const Player({required this.index, required this.deviceIndex,
+    required this.currentTurnCallback, required this.nickname, required this.gameNum, required this.playersNumber});
 
 
   @override

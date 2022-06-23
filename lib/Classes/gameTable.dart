@@ -13,11 +13,9 @@ import '../services/notificationServices.dart';
 
 
 class GameTable extends StatelessWidget {
-  GameTable({required this.playersNumber});
-  int playersNumber;
-class gameTable extends StatelessWidget {
-  gameTable({required this.playerIndex, required this.nicknames, required this.gameNum});
+  GameTable({required this.playersNumber, required this.playerIndex, required this.nicknames, required this.gameNum});
 
+  int playersNumber;
   int playerIndex;
   int gameNum;
   var nicknames;
