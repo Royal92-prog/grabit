@@ -7,8 +7,10 @@ import 'package:grabit/Classes/player.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/services.dart';
 import 'package:grabit/Screens/infoScreen.dart';
+import 'package:grabit/Screens/registrationScreen.dart';
 import 'package:grabit/services/gameNumberManager.dart';
 import 'package:grabit/services/playerManager.dart';
+import 'package:tuple/tuple.dart';
 
 import '../Classes/card.dart';
 import '../Classes/gameManager.dart';
@@ -38,40 +40,100 @@ class entryScreenState extends State<entryScreen>{
     getCurrentGameNum();
     var size = MediaQuery.of(context).size;
 
-    return Stack(fit: StackFit.passthrough, children: [Container(child: Image.asset('assets/Background.png',
-      width: size.width, height: size.height,),),Positioned(top: size.height*0.03,
-        left: size.width * 0.3, child:Container(child: Image.asset('assets/nickname.png',width: 0.2 * size.width,
-            height: 0.35 * size.height),width:size.width * 0.35, height: size.height * 0.35 )),
-      Positioned(top: 0.13 * size.height, right:0.585 * size.width,child:
-      Container(width:0.15 * size.width,height: 0.15 * size.height,
-          decoration: BoxDecoration(
-            color:Colors.blue, shape: BoxShape.circle,))),
-      Positioned(top: size.height * 0.028, left: size.width * 0.25,child://18
-      Container(
-          width:size.width * 0.45,
-          height: size.height * 0.35,
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            resizeToAvoidBottomInset: false,
-            body : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 108, vertical: 50),//108,50
-              child: TextField(
-
-                controller: _nicknameController,
-                decoration: new InputDecoration.collapsed(
-                  hintText: 'Enter nickname',
-                ),
-              ),
-            ),
-          ))
-      ),
-      Positioned(bottom: size.height * 0.04, left: size.width * 0.37,child://18
-      Container(
-          width:size.width * 0.25,
-          height: size.height * 0.25,
-          child:GestureDetector(
-              child:Image.asset('assets/playButton.png',width: 0.2 * size.width,
-                  height: 0.25 * size.height),
+    return Stack(fit: StackFit.passthrough, children:
+      [
+        Container(child:
+          Image.asset('assets/Background.png',
+            width: size.width,
+            height: size.height,),),
+    Positioned(
+          top: size.height * 0.05,
+          left: size.width * 0.31,
+          child: Container(
+            width: size.width * 0.39,
+            height: size.height * 0.32,
+            child: Image.asset('assets/Lobby/writingArea.png',
+              width: 0.2 * size.width,
+              height: 0.35 * size.height),)),
+        Positioned(
+          top: 0.11 * size.height,
+          left: 0.305 * size.width,
+          child: isLoginMode == false ?
+            Image.asset('assets/Lobby/Avatar_photo.png',
+              width: 0.15 * size.width,
+              height: 0.15 * size.height) : SizedBox()),
+        Positioned(
+          top: 0.18 * size.height,
+          left: 0.3 * size.width,
+          child: GestureDetector(
+              child: isLoginMode == true ? Image.asset('assets/Lobby/+ BTN.png',
+                width: 0.125 * size.width,
+                height: 0.125 * size.height) : SizedBox())),
+        Positioned(
+          top: size.height * 0.21,
+          left: size.width * 0.425,
+          child: GestureDetector(
+              child: Image.asset('assets/Lobby/SignIn_BTN.png',
+              width: 0.15 * size.width,
+              height: 0.15 * size.height),
+            onTap: () async {
+                print("bfbfbfbf");
+              var res = await Navigator.of(context).push(
+              MaterialPageRoute<Tuple3>(
+                builder: (context) {
+                  return RegistrationScreen();
+                }));
+              setState(() {
+                print("kalamari");
+                isLoginMode = res?.item1; });
+            },),),
+        Positioned(
+          left: size.width * 0.07,
+          top: size.height * 0.65,
+          child: GestureDetector(
+            child: Image.asset('assets/Lobby/Info_BTN.png',
+              height: 0.14 * size.height,
+              width: 0.14 * size.width),
+            onTap: () => setState(() { instructionsMode = true; }),)),
+        Positioned(
+          left: size.width * 0.13,
+          bottom: size.height * 0.09,
+          child: GestureDetector(
+            child: Image.asset('assets/Lobby/FriendlyBattle_BTN.png',
+              width: 0.2 * size.width,
+              height: 0.12 * size.height),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute<void> (builder: (context) {
+              return FriendlyGame();
+            }));})),
+        /*Positioned(
+          top: size.height * 0.04,
+          left: size.width * 0.28,
+          child: Container(
+            width:size.width * 0.45,
+            height: size.height * 0.35,
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              resizeToAvoidBottomInset: false,
+              body : Padding(
+                padding: const EdgeInsets.symmetric(
+                horizontal: 108,
+                vertical: 50),
+                child: TextField(
+                  controller: _nicknameController,
+                  decoration: new InputDecoration.collapsed(hintText: 'Enter nickname',),
+                  cursorColor: Colors.grey
+              ),),))),*/
+        Positioned(
+          bottom: size.height * 0.04,
+          left: size.width * 0.39,
+          child: Container(
+            width: size.width * 0.25,
+            height: size.height * 0.25,
+            child: GestureDetector(
+              child: Image.asset('assets/playButton.png',
+                width: 0.2 * size.width,
+                height: 0.25 * size.height),
               onTap: () async{
                 FirebaseFirestore _firestore = FirebaseFirestore.instance;
                 _connectedPlayersNum = await getConnectedNum(_gameNum);
@@ -83,6 +145,16 @@ class entryScreenState extends State<entryScreen>{
                   cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
                   cardsArr.shuffle();
                   dataUpload['cardsData'] = cardsArr;
+                  ///ADDED here - will be initialized only by player 1
+                  dataUpload['underTotemCards'] = [];
+                  dataUpload['totem'] = false;
+                  for(int i = 0; i < widget.numPlayers; i++ ){
+                    dataUpload['totem${i}Pressed'] = false;
+                  };
+                  dataUpload['turn'] = 0;
+                  dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0];
+                  dataUpload['matchingColorCards'] = [0,0,0,0];
+                  dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
                 }
                 else {
                   await _firestore.collection('game').doc('game${_gameNum}').get().then(
@@ -98,10 +170,14 @@ class entryScreenState extends State<entryScreen>{
                           );
                   print(_connectedPlayersNum);
                 }
-                int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) /  widget.numPlayers).toInt();
-                Map<String, dynamic> uploadData = {};
-                var cardsHandler = [];
+                int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
+                int cards = (totalCardsNum / widget.numPlayers).toInt();
+                int remainder = _playerIndex + 1 > (totalCardsNum) % widget.numPlayers ? 0 :
+                  (totalCardsNum) % widget.numPlayers - _playerIndex;
+                //var cardsHandler = [];
                 //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
+                ///TO DO :  all shared variables hould be initialized only once at firebase
+                /*
                 dataUpload['underTotemCards'] = [];
                 dataUpload['totem'] = false;
                 dataUpload['totem0Pressed'] = false;
@@ -110,8 +186,16 @@ class entryScreenState extends State<entryScreen>{
                 dataUpload['turn'] = 0;
                 dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
                 dataUpload['matchingColorCards'] = [0,0,0,0];
-                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
-                dataUpload['player_${_playerIndex.toString()}_deck'] = cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1)));
+                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];*/
+                if (remainder > 0){
+                  dataUpload['player_${_playerIndex.toString()}_deck'] =
+                      cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1))) +
+                      cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder + 1);
+                }
+                else{
+                  dataUpload['player_${_playerIndex.toString()}_deck'] =
+                    cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1)));
+                }
                 dataUpload['player_${(_playerIndex).toString()}_openCards'] = [];
                 // dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
                 await _firestore.collection('game').doc('game${_gameNum}').set(dataUpload, SetOptions(merge : true));
@@ -123,7 +207,13 @@ class entryScreenState extends State<entryScreen>{
                 return GameManager(playerIndex: _playerIndex, playersNum: widget.numPlayers, gameNum: _gameNum,);
                       }
                       ));
-              })))]);
+              }))),
+        instructionsMode == true ? InfoScreen(func: setInstructionMode) : SizedBox()]);
+  }
+  setInstructionMode(){
+    setState (() {
+      this.instructionsMode = false;
+    });
   }
 
   void getCurrentGameNum() async {
@@ -131,6 +221,5 @@ class entryScreenState extends State<entryScreen>{
   }
 
 }
-
 
 

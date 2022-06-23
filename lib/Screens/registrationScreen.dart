@@ -161,12 +161,24 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                 setState(()  {
                   /// user is not logged in
                     if (validateCredentials(true) == false) {
+                      print("Kalamari1");
                       return;
                     }
                     else {
+                      print("Kalamari2");
                       login(_usernameController.text, _passwordController.text);
-                      if (Login.instance()
-                          .user != null) {
+                      FirebaseAuth.instance
+                          .authStateChanges()
+                          .listen((User? user) {
+                        if (user != null) {
+                          print("HERE line 174");
+                          Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
+                        } else {
+                          print('User is signed in!');
+                        }
+                      });/*
+                      if (Login.instance().user != null) {
+                        print("Kalamari3");
                         Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
                         /*
                         Navigator.of(context).push(
@@ -179,7 +191,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                         );
 
                         */
-                      }
+                      }*/
                     }
 
                 }
