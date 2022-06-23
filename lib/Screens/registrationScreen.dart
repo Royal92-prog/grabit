@@ -112,7 +112,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
+
     var size = MediaQuery.of(context).size;
     return Stack(fit: StackFit.expand, children:
     [

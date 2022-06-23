@@ -16,9 +16,12 @@ import 'Classes/gameManager.dart';
 import 'Screens/entryScreen.dart';
 import 'Screens/registrationScreen.dart';
 import 'Screens/waitingRoomScreen.dart';
+import 'package:auto_orientation/auto_orientation.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  AutoOrientation.landscapeAutoMode(forceSensor: true);
   runApp(App());
 }
 

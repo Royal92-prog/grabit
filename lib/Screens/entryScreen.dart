@@ -22,7 +22,7 @@ class entryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
+
     return Stack(fit: StackFit.passthrough, children: [Container(child: Image.asset('assets/Background.png',
       width: size.width, height: size.height,),),Positioned(top: size.height*0.03,
         left: size.width * 0.3, child:Container(child: Image.asset('assets/nickname.png',width: 0.2 * size.width,
