@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:tuple/tuple.dart';
 
 import '../services/auth.dart';
 
@@ -39,7 +40,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
     return isNicknameRequired ? _isValidUsername && _isValidPassword && _isValidNickname : _isValidUsername && _isValidPassword;
   }
 
-  Widget createTextField(size, height,width, controller,String hintString,_validate,loggedParam ){
+  Widget createTextField(size, height,width, controller,String hintString,_validate,loggedParam,isPasswordEncrypt ){
     return Positioned(top: size.height * height, left: size.width * width,child://18
     Container(
         width:size.width * 0.25,
@@ -51,6 +52,9 @@ class RegistrationScreenState extends State<RegistrationScreen>{
           body : Padding(
             padding: EdgeInsets.only(),
             child: TextField(
+              obscureText: isPasswordEncrypt,
+              enableSuggestions: !isPasswordEncrypt,
+              autocorrect: !isPasswordEncrypt,
               style: _validate ? null : TextStyle(color: Colors.red,fontSize: 15) ,
               readOnly: _isSignedIn,
               maxLength: 25,
@@ -77,6 +81,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
   }
   void logout() async {
     await Login.instance().signOut();
+    signOutGoogle();
     _isSignedIn = false;
   }
 
@@ -125,6 +130,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                setState(()  {
                   // user is not logged in
                    logout();
+
                    MaterialPageRoute(
                      builder: (context) {
                        return RegistrationScreen();
@@ -219,12 +225,18 @@ class RegistrationScreenState extends State<RegistrationScreen>{
          SizedBox(height: size.height * 0.01,),
           Image.asset('assets/broadNameField.png',width: size.width * 0.35,height: size.height * 0.09),
         ])),
-     Positioned(left: size.width * 0.35, top: size.height * 0.2, child:
-      Row(children:
-      [Text("Sign In",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,)),
-      SizedBox(width: size.width * 0.1,),
-      Text("Register",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,))
-      ]),),
+     // Positioned(left: size.width * 0.35, top: size.height * 0.2, child:
+     //  Row(children:
+     //  [Text("Sign In",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,)),
+     //  SizedBox(width: size.width * 0.1,),
+     //  Text("Register",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,))
+     //  ]),),
+
+      Positioned(left: size.width * 0.05 , bottom: size.height * 0.05, child:
+      GestureDetector(child:  Image.asset('assets/back.png', height: 0.2 * size.height,
+          width: 0.25 * size.width),onTap: (){ Navigator.of(context).pop(); }
+      )),
+
       Positioned(left: size.width * 0.46, top: size.height * 0.25, child: Container(
           width: 0.07 * size.width,
           height: 0.12 * size.height, child:
@@ -235,7 +247,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 
                     signInWithGoogle().whenComplete(() {
                       ///TODO CHANGE TO THIS :
-                      /// Navigator.of(context).pop();
+                      /// Navigator.pop(context, Tuple2(_usernameController.text,_nicknameController.text));
                     Navigator.of(context).push(
                     MaterialPageRoute(
                     builder: (context) {
@@ -246,10 +258,9 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                     });
               },
             ))),
-          createTextField(size,0.367,0.38,_usernameController,'Email',_isValidUsername,Login.instance().user?.email),
-          createTextField(size,0.455,0.38,_passwordController,'Password',_isValidPassword,""),
-          createTextField(size,0.555,0.38,_nicknameController,'Nickname',_isValidNickname,""),
-
+          createTextField(size,0.367,0.38,_usernameController,'Email',_isValidUsername,Login.instance().user?.email,false),
+          createTextField(size,0.455,0.38,_passwordController,'Password',_isValidPassword,"",true),
+          createTextField(size,0.555,0.38,_nicknameController,'Nickname',_isValidNickname,"",false),
     ]
     );
   }
