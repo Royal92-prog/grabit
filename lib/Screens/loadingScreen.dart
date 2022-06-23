@@ -9,7 +9,6 @@ class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     return Stack(fit: StackFit.passthrough, children: [
       Image.asset('assets/Background.png', width: size.width, height: size.height,),
       Positioned(left: size.width * 0.36, top: 0.5 * size.height ,child:Card(child:

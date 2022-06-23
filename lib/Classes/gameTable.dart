@@ -28,7 +28,7 @@ class GameTable extends StatelessWidget {
     double player1Top =  playersNumber == 4 ? 0.11 : -0.1;
     double player1Left =  playersNumber == 4 ? 0.6 : 0.34;
     double player2Top =  playersNumber > 3 ? 0.38 : 0.25;
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
+
     //Container(color : Colors.green),
     return Stack(children:
     [

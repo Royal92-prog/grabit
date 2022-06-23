@@ -34,7 +34,6 @@ class InfoScreenStates extends State<InfoScreen>{
         "LOSING PLAYER'S DECK"*/
   ];
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     var size = MediaQuery.of(context).size;
     return Stack(fit: StackFit.passthrough, children:
     [

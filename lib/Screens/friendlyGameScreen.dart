@@ -23,7 +23,7 @@ class FriendlyGameStates extends State<FriendlyGame>{
   int gameTimeLimit = 0;
   final _gameRoomController = TextEditingController();
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
+
     var size = MediaQuery.of(context).size;
     return Scaffold(resizeToAvoidBottomInset: false, backgroundColor: Colors.black, extendBody: true, body:
       Stack(fit: StackFit.passthrough, children:

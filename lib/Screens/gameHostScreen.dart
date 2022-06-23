@@ -20,7 +20,6 @@ class GameHostStates extends State<GameHost>{
   int playersNumber = 3;
   int gameTimeLimit = 0;
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     var size = MediaQuery.of(context).size;
     return Scaffold(resizeToAvoidBottomInset: false, backgroundColor: Colors.black, extendBody: true, body:
     Stack(fit: StackFit.passthrough, children:
