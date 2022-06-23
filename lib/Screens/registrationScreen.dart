@@ -114,11 +114,17 @@ class RegistrationScreenState extends State<RegistrationScreen>{
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
     var size = MediaQuery.of(context).size;
-    return Stack(fit: StackFit.loose, children:
+    return Stack(fit: StackFit.expand, children:
+    [
+      Container(child: Image.asset('assets/Background.png', width: size.width, height: size.height,),),
 
-    [Container(child: Image.asset('assets/Background.png', width: size.width, height: size.height,),),
      Positioned(top: 0.20 * size.height,left: 0.28 * size.width, child:SvgPicture.asset('assets/WoodenTable.svg',
      height: 0.62 * size.height,width: 0.25 * size.width ,fit: BoxFit.fitWidth)),
+    Positioned(top: 0.15 * size.height,left: 0.272 * size.width, child: Image.asset('assets/Buttons_background.png',
+    height: 0.15 * size.height,width: 0.45 * size.width ,fit: BoxFit.fitWidth)),
+
+    Positioned(top: 0.12 * size.height,left: 0.425 * size.width, child: Image.asset('assets/sign in.png',
+    height: 0.15 * size.height,width: 0.12 * size.width ,fit: BoxFit.fitWidth)),
      Visibility(child:
      Positioned(left: size.width * 0.4, top: size.height * 0.66, child: Container(width: 0.2 * size.width,
          height: 0.25 * size.height, child:
@@ -145,7 +151,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
      ),
 
       Visibility(child:
-      Positioned(left: size.width * 0.49, top: size.height * 0.66, child: Container(width: 0.2 * size.width,
+      Positioned(left: size.width * 0.49, top: size.height * 0.58, child: Container(width: 0.2 * size.width,
           height: 0.25 * size.height, child:
           GestureDetector(
 
@@ -181,7 +187,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 
 
       Visibility(child:
-      Positioned(left: size.width * 0.295, top: size.height * 0.66, child: Container(width: 0.2 * size.width,
+      Positioned(left: size.width * 0.295, top: size.height * 0.58, child: Container(width: 0.2 * size.width,
           height: 0.25 * size.height, child:
           GestureDetector(
 
@@ -231,6 +237,8 @@ class RegistrationScreenState extends State<RegistrationScreen>{
      //  SizedBox(width: size.width * 0.1,),
      //  Text("Register",style: GoogleFonts.galindo( fontSize:14,color: Colors.white,))
      //  ]),),
+
+
 
       Positioned(left: size.width * 0.05 , bottom: size.height * 0.05, child:
       GestureDetector(child:  Image.asset('assets/back.png', height: 0.2 * size.height,
