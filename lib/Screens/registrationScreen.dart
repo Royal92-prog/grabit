@@ -121,11 +121,10 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 
      Positioned(top: 0.20 * size.height,left: 0.28 * size.width, child:SvgPicture.asset('assets/WoodenTable.svg',
      height: 0.62 * size.height,width: 0.25 * size.width ,fit: BoxFit.fitWidth)),
-    Positioned(top: 0.15 * size.height,left: 0.272 * size.width, child: Image.asset('assets/Buttons_background.png',
+
+    Positioned(top: 0.132* size.height,left: 0.272 * size.width, child: Image.asset('assets/SignInLogo.png',
     height: 0.15 * size.height,width: 0.45 * size.width ,fit: BoxFit.fitWidth)),
 
-    Positioned(top: 0.12 * size.height,left: 0.425 * size.width, child: Image.asset('assets/sign in.png',
-    height: 0.15 * size.height,width: 0.12 * size.width ,fit: BoxFit.fitWidth)),
      Visibility(child:
      Positioned(left: size.width * 0.4, top: size.height * 0.66, child: Container(width: 0.2 * size.width,
          height: 0.25 * size.height, child:
@@ -194,7 +193,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
           height: 0.25 * size.height, child:
           GestureDetector(
 
-              child: Image.asset('assets/sign in.png',width: 0.2 * size.width, height: 0.25 * size.height),
+              child: Image.asset('assets/SignInButton.png',width: 0.2 * size.width, height: 0.25 * size.height),
               onTap: () {
                 setState(()  {
                   /// user is not logged in
@@ -257,8 +256,9 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                     Container();
 
                     signInWithGoogle().whenComplete(() {
-                      ///TODO CHANGE TO THIS :
-                      /// Navigator.pop(context, Tuple2(_usernameController.text,_nicknameController.text));
+
+                       Navigator.pop(context, Tuple2(_usernameController.text,_nicknameController.text));
+                      /*
                     Navigator.of(context).push(
                     MaterialPageRoute(
                     builder: (context) {
@@ -266,6 +266,8 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                     },
                     ),
                     );
+
+                    */
                     });
               },
             ))),

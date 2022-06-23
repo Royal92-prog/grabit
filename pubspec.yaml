@@ -234,6 +234,13 @@ flutter:
     - Special_card1.svg
     - Special_card2.svg
     - Special_card3.svg
+    -
+    - SignInLogo.png
+    - SignInButton.png
+    - broadNameField.png
+    - Google_BTN.png
+    - back.png
+    - Register_BTN.png
 
 
   #-
