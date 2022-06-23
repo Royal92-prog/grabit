@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grabit/Screens/login_page.dart';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart';
 import 'package:grabit/Classes/player.dart';
@@ -12,10 +14,14 @@ import 'package:provider/provider.dart';
 
 import 'Classes/gameManager.dart';
 import 'Screens/entryScreen.dart';
+import 'Screens/registrationScreen.dart';
 import 'Screens/waitingRoomScreen.dart';
+import 'package:auto_orientation/auto_orientation.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  AutoOrientation.landscapeAutoMode(forceSensor: true);
   runApp(App());
 }
 
@@ -35,8 +41,7 @@ class MyApp extends StatelessWidget {
         body: entryScreen(numPlayers: 3,) ,),);//test2()
   }
 }
-//entryScreen(numPlayers: 3)
-//entryScreen(numPlayers: 3)
+
 class App extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override

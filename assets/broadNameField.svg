@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1077" height="172" viewBox="0 0 1077 172">
+  <defs>
+    <filter id="Rectangle_92" x="0" y="0" width="1077" height="172" filterUnits="userSpaceOnUse">
+      <feOffset dy="13" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="13" result="blur"/>
+      <feFlood flood-opacity="0.341"/>
+      <feComposite operator="in" in2="blur"/>
+    </filter>
+    <filter id="Rectangle_92-2" x="0" y="0" width="1077" height="172" filterUnits="userSpaceOnUse">
+      <feOffset dy="8" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="4.5" result="blur-2"/>
+      <feFlood flood-color="#090000" flood-opacity="0.659" result="color"/>
+      <feComposite operator="out" in="SourceGraphic" in2="blur-2"/>
+      <feComposite operator="in" in="color"/>
+      <feComposite operator="in" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g data-type="innerShadowGroup">
+    <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#Rectangle_92)">
+      <g id="Rectangle_92-3" data-name="Rectangle 92" transform="translate(39 26)" fill="#fff3cc" stroke="#59173e" stroke-width="5">
+        <rect width="999" height="94" rx="47" stroke="none"/>
+        <rect x="2.5" y="2.5" width="994" height="89" rx="44.5" fill="none"/>
+      </g>
+    </g>
+    <rect id="Rectangle_92-4" data-name="Rectangle 92" width="999" height="94" rx="47" transform="translate(39 26)" fill="#fff3cc"/>
+    <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#Rectangle_92-2)">
+      <rect id="Rectangle_92-5" data-name="Rectangle 92" width="999" height="94" rx="47" transform="translate(39 26)" fill="#fff"/>
+    </g>
+    <g id="Rectangle_92-6" data-name="Rectangle 92" transform="translate(39 26)" fill="none" stroke="#59173e" stroke-width="5">
+      <rect width="999" height="94" rx="47" stroke="none"/>
+      <rect x="2.5" y="2.5" width="994" height="89" rx="44.5" fill="none"/>
+    </g>
+  </g>
+</svg>
