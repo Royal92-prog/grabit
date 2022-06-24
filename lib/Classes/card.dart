@@ -55,7 +55,7 @@ class cardState extends State<currentCard>{
     initializeCardsMap();
     var size = MediaQuery.of(context).size;
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
+      stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
     builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
       if(snapshot.connectionState == ConnectionState.active){
       final cloudData = snapshot.data;

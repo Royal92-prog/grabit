@@ -165,7 +165,6 @@ class entryScreenState extends State<entryScreen>{
                 ++_connectedPlayersNum;
                 Map<String,dynamic> dataUpload = {};
                 Map<String, dynamic> playersMassages = {};
-                await _firestore.collection('game').doc('game2Msgs').set(playersMassages, SetOptions(merge : true));
                 if (_connectedPlayersNum == 1) {
                   initializePlayers(_gameNum);
                   cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
@@ -174,14 +173,20 @@ class entryScreenState extends State<entryScreen>{
                   ///ADDED here - will be initialized only by player 1
                   dataUpload['underTotemCards'] = [];
                   dataUpload['totem'] = false;
+                  List<bool> totemPressed = [];
                   for(int i = 0; i < widget.numPlayers; i++ ){
-                    dataUpload['totem${i}Pressed'] = false;
+                    //dataUpload['totem${i}Pressed'] = false;
+                    totemPressed.add(false);
                   };
+                  List<dynamic> messages = [];
                   for(int i = 0; i < widget.numPlayers; i++){
-                    playersMassages['Player${i}Msgs'] = "";
+                    //dataUpload['Player${i}Msgs'] = "";//playersMassages
+                    messages.add('');
                   }
-                  await _firestore.collection('game').doc('game${_gameNum}Messages').set(playersMassages, SetOptions(merge : true));
+            //      await _firestore.collection('game').doc('game${_gameNum}Messages').set(playersMassages, SetOptions(merge : true));
                   dataUpload['turn'] = 0;
+                  dataUpload['totemPressed'] = totemPressed;
+                  dataUpload['messages'] = messages;
                   dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0];
                   dataUpload['matchingColorCards'] = [0,0,0,0];
                   dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
@@ -204,8 +209,6 @@ class entryScreenState extends State<entryScreen>{
                 int cards = (totalCardsNum / widget.numPlayers).toInt();
                 int remainder = _playerIndex + 1 > (totalCardsNum) % widget.numPlayers ? 0 :
                   (totalCardsNum) % widget.numPlayers - _playerIndex;
-                //var cardsHandler = [];
-                //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
                 ///TO DO :  all shared variables hould be initialized only once at firebase
                 if (remainder > 0){
                   dataUpload['player_${_playerIndex.toString()}_deck'] =
@@ -225,9 +228,7 @@ class entryScreenState extends State<entryScreen>{
                 MaterialPageRoute<void>(
                 builder: (context) {
                 return GameManager(playerIndex: _playerIndex, playersNum: widget.numPlayers, gameNum: _gameNum,);
-                      }
-                      ));
-              }))),
+                      }));}))),
         instructionsMode == true ? InfoScreen(func: setInstructionMode) : SizedBox()]);
   }
   setInstructionMode(){

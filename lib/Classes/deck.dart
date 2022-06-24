@@ -39,21 +39,26 @@ class deckState extends State<playerDeck> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(//<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
-            final cloudData = snapshot.data;
-            if (cloudData != null) {
+            if (snapshot.data != null) {
               cardsHandler = [];
+              var cloudData = snapshot.data?.data();
               for (int i = 0; i < widget.playersNumber; i++) {
-                cardsHandler.add([
+                if ((cloudData as Map<String, dynamic>).containsKey("player_${i}_deck")){
+                  cardsHandler.add([
                   cloudData['player_${i}_deck'],
                   cloudData['player_${i}_openCards']
                 ]);
+                }
+                else cardsHandler.add([[],[]]);
               }
-              currentTurn = cloudData['turn'];
+
+              if ((cloudData as Map<String, dynamic>).containsKey('turn')) currentTurn = cloudData['turn'];
+
 
               /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
               if (widget.index == 0) {
@@ -67,16 +72,16 @@ class deckState extends State<playerDeck> {
               cardsGroupArray = cloudData['matchingCards'];
               cardsColorArray = cloudData['matchingColorCards'];
               cardsActiveUniqueArray = cloudData['cardsActiveUniqueArray'];
-
-              /// 0: insideArrows, 1: color, 2: outsideArrows
             }
+              /// 0: insideArrows, 1: color, 2: outsideArrows
+
             return GestureDetector(
               onTap: (currentTurn != widget.index || widget.index != widget.deviceIndex) ? null : () async{
-
                 bool outerArrowsRevealed = false; /// WDYT
                 FirebaseFirestore db = FirebaseFirestore.instance;
                 Map<String, dynamic> cloudMsgs = {};
                 Map<String, dynamic> dataUpload = {};
+                List<String> messages = [for(int i = 0; i < widget.playersNumber; i++) ""];
                 await db.collection("game").doc("game${widget.gameNum}").set({
                   'turn' : -2},SetOptions(merge :true));
                 if(cardsHandler[widget.index][1].length > 0) decreaseCardsArray(cardsHandler[widget.index][1][0]);
@@ -92,19 +97,21 @@ class deckState extends State<playerDeck> {
                   },SetOptions(merge: true));
                   await Future.delayed(Duration(milliseconds: 500));
                   for (int i = 0; i < widget.playersNumber; i++) {
-                    cloudMsgs['Player${i}Msgs'] = "outerArrows";
+                    //cloudMsgs['Player${i}Msgs'] = "outerArrows";
+                    messages[i] = "outerArrows";
                   }
-                  await db.collection("game").doc('game${widget.gameNum}Messages').set(
-                      cloudMsgs, SetOptions(merge: true));
+                  await db.collection("game").doc('game${widget.gameNum}').set(//Messages
+                      {'messages' : messages}, SetOptions(merge: true));
                   await handleSpecialCardNo0(widget.index);
                   for (int i = 0; i < widget.playersNumber; i++) {
                     if ((((i == widget.index && cardsHandler[widget.index][0].length > 0)) ||
                     (i != widget.index)) && (((cardsHandler[i][1][0] - 1)) - numberOfRegularCards) ~/ 2 == 2) {
                       for (int i = 0; i < widget.playersNumber; i++) {
-                        cloudMsgs['Player${i}Msgs'] = "outerArrows";
+                        //cloudMsgs['Player${i}Msgs'] = "outerArrows";
+                        messages[i] = "outerArrows";
                       }
-                      await db.collection("game").doc('game${widget.gameNum}Messages').set(
-                          cloudMsgs, SetOptions(merge: true));
+                      await db.collection("game").doc('game${widget.gameNum}').set(
+                          {'messages' : messages}, SetOptions(merge: true));
                       await Future.delayed(Duration(milliseconds: 1000));
                       handleSpecialCardNo0(i);
                       break;

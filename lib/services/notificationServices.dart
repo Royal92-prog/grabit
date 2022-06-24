@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flash/flash.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,6 +9,41 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 
 import 'package:flutter/material.dart';
+
+
+void showBasicsFlash({
+  Duration? duration,
+  required String msg,
+  flashStyle = FlashBehavior.floating,
+  var context,
+  var size
+}) {
+  showFlash(
+    context: context,
+    duration: duration,
+    builder: (context, controller) {
+      return Flash(
+        controller: controller,
+        behavior: FlashBehavior.floating,
+        position: FlashPosition.bottom,
+        backgroundColor: Colors.black.withOpacity(0.5),
+        margin: EdgeInsets.only(
+            top: size.height * 0.15,
+            right: size.width * 0.1,
+            left: size.width * 0.1,
+            bottom: size.height * 0.4),
+        //boxShadows: kElevationToShadow[4],
+        horizontalDismissDirection: HorizontalDismissDirection.horizontal,
+        child: Center(child:
+        Text(msg, style: GoogleFonts.galindo(fontSize: 24,
+            color: '#FFD86C'.toColor()))));/*FlashBar(
+          content: Text('This is a basic flash'),
+        )*/
+
+    },
+  );
+}
+
 extension ColorExtension on String {
   toColor() {
     var hexString = this;
@@ -28,12 +63,17 @@ class  GameNotifications extends StatelessWidget {
     return GameUpdatesListener(massageUpdateFunc: showSnackBar, index: index, gameIndex: gameNum,);
   }
 
-  showSnackBar(var size, String msg) async{
-    await FirebaseFirestore.instance.collection('game').doc('game${gameNum}Messages').set({
-      'Player${index}Msgs' : ""}, SetOptions(merge : true));
-    if(msg == 'outerArrows'){
-      await FirebaseFirestore.instance.collection("game").doc('game${gameNum}Messages').set({
-        'turn' : -10},SetOptions(merge :true));
+  showSnackBar(var size, List <dynamic> msg, int index, var context) async{
+    String currentMsg = msg[index];
+    print("current MSG ::  ");
+    print(currentMsg);
+    print(index);
+    msg[index] = "";
+    await FirebaseFirestore.instance.collection('game').doc('game${gameNum}').set({
+      'messages' : msg}, SetOptions(merge : true));
+    if(currentMsg == 'outerArrows'){
+      /*await FirebaseFirestore.instance.collection("game").doc('game${gameNum}').set({
+        'turn' : -10},SetOptions(merge :true));*/
       await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
@@ -66,8 +106,8 @@ class  GameNotifications extends StatelessWidget {
       }
     }
     else{
-      await ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(duration: Duration(seconds: 1),
+      /*await ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(duration: Duration(seconds: 5),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.black.withOpacity(0.5),
           margin: EdgeInsets.only(
@@ -76,10 +116,10 @@ class  GameNotifications extends StatelessWidget {
             left: size.width * 0.1,
             bottom: size.height * 0.4),
           content: Center(child:
-            Text(msg, style: GoogleFonts.galindo(fontSize: 24,
-              color: '#FFD86C'.toColor())))));
+            Text(currentMsg, style: GoogleFonts.galindo(fontSize: 24,
+              color: '#FFD86C'.toColor())))));*/
+      showBasicsFlash(duration: Duration(milliseconds: 2500),msg : currentMsg, context : context, size : size);
     }
-
   }
 }
 
@@ -87,7 +127,7 @@ class  GameNotifications extends StatelessWidget {
 
 class GameUpdatesListener extends StatelessWidget {
   GameUpdatesListener({required this.massageUpdateFunc, required this.index, required this.gameIndex});
-  String msg = "";
+  late List <dynamic> msg;
   int gameIndex;
   int index;
   Function massageUpdateFunc;
@@ -95,16 +135,17 @@ class GameUpdatesListener extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game${gameIndex}Messages').snapshots(),
+        stream: FirebaseFirestore.instance.collection('game').doc('game${gameIndex}').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             final cloudData = snapshot.data;
+            msg = [];
             if (cloudData != null) {
-              msg = cloudData['Player${index}Msgs'];
+              msg = cloudData['messages'];//Player${index}Msgs
               /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
-              if (msg != "") {
-                massageUpdateFunc(size, msg);
+              if (msg[index] != "") {
+                massageUpdateFunc(size, msg, index, context);
               }
 
             }
@@ -114,7 +155,6 @@ class GameUpdatesListener extends StatelessWidget {
   }
 
 }
-
 
 
 /*

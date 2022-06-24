@@ -109,7 +109,8 @@ class GameTable extends StatelessWidget {
             GameNotifications(
               context: context,
               index: playerIndex,
-              gameNum: gameNum,),]);
+              gameNum: gameNum,),
+    ]);
         //;
 
   }

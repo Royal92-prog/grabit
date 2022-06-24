@@ -74,8 +74,7 @@ class totemState extends State<totem> {
     var size = MediaQuery.of(context).size;
     double rightPosition = underTotemCards.length > 9 ? 0.008 : 0.016;
     return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance.collection('game').doc(
-        'game${widget.gameNum}').snapshots(),
+      stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
         builder: (
           BuildContext context,
           AsyncSnapshot <DocumentSnapshot> snapshot) {
@@ -99,6 +98,7 @@ class totemState extends State<totem> {
                 matchingRegularCards = cloudData['matchingCards'];
                 uniqueArray = cloudData['cardsActiveUniqueArray'];
                 matchingColorCards = cloudData['matchingColorCards'];
+                //messages = cloudData['messages'];
             }
             return Container(
               height: size.height * 0.3,
@@ -122,6 +122,7 @@ class totemState extends State<totem> {
                       height: 0.15 * size.height,
                       alignment: Alignment.center),
                       onTap: isTotemPressed ? null : () async {
+                        List <dynamic> messages = [for(int i = 0; i < widget.playersNumber; i++) ""];
                         Map<String, dynamic> cloudMassages = {};
                         Map<String, dynamic> uploadData = {};
                         FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -154,18 +155,19 @@ class totemState extends State<totem> {
                             'matchingColorCards': matchingColorCards,
                             'player_${widget.index}_openCards': [],
                           };
-                          cloudMassages = {
+                          /*cloudMassages = {
                             'Player${widget.index}Msgs': "inner arrows card - You Win!"
-                          };
+                          };*/
+                          messages[widget.index] = "inner arrows card - You Win!";
                           for (int i = 0; i < widget.playersNumber; i++) {
                             if (i == widget.index) continue;
-                            cloudMassages['Player${i}Msgs'] = "player ${widget.index}"
-                              " pressed the inner button first";
+                            messages[i] = "player ${widget.index} pressed the inner button first";
                           }
+                          uploadData["messages"] = messages;
                           await _firestore.collection('game').doc('game${widget.gameNum}').set(
                               uploadData, SetOptions(merge: true));
-                          await _firestore.collection('game').doc('game${widget.gameNum}Messages').set(
-                              cloudMassages, SetOptions(merge: true));
+                          /*await _firestore.collection('game').doc('game${widget.gameNum}').set(
+                              cloudMassages, SetOptions(merge: true));*/
                         }
 
                         ///#2nd case :  totem was pressed for the regular reason (color / regular mode)
@@ -198,12 +200,16 @@ class totemState extends State<totem> {
                             ...loserCards.sublist(cardsToAdd * (loserIndices.length - 1), loserCards.length)
                             ]
                           };
+                          messages[widget.index] = 'you win';
+                          messages[loserIndices[loserIndices.length - 1]] = 'you lose';
+                          /*
                           cloudMassages = {
                             'Player${widget.index}Msgs': 'you win',
                             'Player${loserIndices[loserIndices.length - 1]}Msgs': 'you lose',
-                          };
+                          };*/
                           for (int i = 0; i < loserIndices.length - 1; i++) {
-                            cloudMassages['Player${loserIndices[i]}Msgs'] = 'you lose';
+                            messages[loserIndices[i]] = 'you lose';
+                            //cloudMassages['Player${loserIndices[i]}Msgs'] = 'you lose';
                             uploadData['player_${loserIndices[i]}_openCards'] = [];
                             uploadData['player_${loserIndices[i]}_deck'] = [...cardsHandler[loserIndices[i]][0],
                             ...loserCards.sublist(cardsToAdd * i, (cardsToAdd * (i + 1)))];
@@ -215,12 +221,14 @@ class totemState extends State<totem> {
                               j++;
                               continue;
                             }
-                            cloudMassages['Player${i}Msgs'] = "player ${widget.index} won the Battle";
+                            messages[loserIndices[i]] = "player ${widget.index} won the Battle";
+                            //cloudMassages['Player${i}Msgs'] = "player ${widget.index} won the Battle";
                           }
+                          uploadData["messages"] = messages;
                           await _firestore.collection('game').doc('game${widget.gameNum}').set(
                               uploadData, SetOptions(merge: true));
-                          await _firestore.collection('game').doc('game${widget.gameNum}Messages').set(
-                              cloudMassages, SetOptions(merge: true));
+                         /* await _firestore.collection('game').doc('game${widget.gameNum}').set(
+                              cloudMassages, SetOptions(merge: true));*/
                         }
                         ///case3 penalty
                         else {
@@ -235,9 +243,11 @@ class totemState extends State<totem> {
                             'matchingColorCards' : matchingColorCards,
                             'cardsActiveUniqueArray' : uniqueArray,
                           };
+                          messages[widget.index] =  "you were penalized";
+                          /*
                           cloudMassages = {
                             'Player${widget.index}Msgs' : "you were penalized"
-                          };
+                          };*/
                           var loserDeck = [...underTotemCards];
                           for(int i = 0; i < widget.playersNumber; i++){
                             loserDeck = [...loserDeck, ...cardsHandler[i][1]];
@@ -248,12 +258,14 @@ class totemState extends State<totem> {
                           print("after totem update: ${matchingRegularCards}");
                           for(int i = 0; i < widget.playersNumber; i++){
                             if(i == widget.index) continue;
-                            cloudMassages['Player${i}Msgs'] = "player ${widget.index} was penalized";
+                            //cloudMassages['Player${i}Msgs'] = "player ${widget.index} was penalized";
+                            messages[widget.index] = "player ${widget.index} was penalized";
                           }
+                          uploadData['messages'] = messages;
                           await _firestore.collection('game').doc('game${widget.gameNum}').set(
                               uploadData, SetOptions(merge : true));
-                          await _firestore.collection('game').doc('game${widget.gameNum}Messages').
-                            set(cloudMassages, SetOptions(merge : true));
+                          /*await _firestore.collection('game').doc('game${widget.gameNum}').
+                            set(cloudMassages, SetOptions(merge : true));*/
                         }
 
                     var winners = [];
@@ -265,10 +277,11 @@ class totemState extends State<totem> {
                     if(winners.length > 1) finalMsg = "there is no sole winner in this battle";
                     else  finalMsg = "Player No, ${winners[0]} won !";
                     for(int i = 0; i < widget.playersNumber; i++){
-                      cloudMassages['Player${i}Msgs'] = finalMsg;
+                      //cloudMassages['Player${i}Msgs'] = finalMsg;
+                      messages[i] = finalMsg;
                     }
 
-                    await _firestore.collection('game').doc('game${widget.gameNum}Messages').set(cloudMassages, SetOptions(merge : true));
+                    await _firestore.collection('game').doc('game${widget.gameNum}').set({'messages' : messages}, SetOptions(merge : true));
                     await _firestore.collection('game').doc('game${widget.gameNum}').set({'turn' : -3,}, SetOptions(merge: true));
                     }})
                 ]));
