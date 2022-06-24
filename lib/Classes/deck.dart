@@ -40,7 +40,7 @@ class deckState extends State<playerDeck> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game2').snapshots(),
+        stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
@@ -75,36 +75,26 @@ class deckState extends State<playerDeck> {
 
                 bool outerArrowsRevealed = false; /// WDYT
                 FirebaseFirestore db = FirebaseFirestore.instance;
-
-                await db.collection("game").doc("game${widget.gameNum}").set({'turn' : -2},SetOptions(merge :true));
-
+                Map<String, dynamic> cloudMsgs = {};
+                Map<String, dynamic> dataUpload = {};
+                await db.collection("game").doc("game${widget.gameNum}").set({
+                  'turn' : -2},SetOptions(merge :true));
                 if(cardsHandler[widget.index][1].length > 0) decreaseCardsArray(cardsHandler[widget.index][1][0]);
-
                 cardsHandler[widget.index][1].insert(0,cardsHandler[widget.index][0].removeAt(0));
-
-                if (increaseCardsArray(cardsHandler[widget.index][1][0]) == 2)  {
+                if (increaseCardsArray(cardsHandler[widget.index][1][0]) == 2) {
                   outerArrowsRevealed = true; /// WDYT
-
                   await db.collection("game").doc("game${widget.gameNum}").set({
-
-                  'player_${widget.index}_openCards': cardsHandler[widget.index][1],
-
+                    'player_${widget.index}_openCards': cardsHandler[widget.index][1],
                     'player_${widget.index}_deck': cardsHandler[widget.index][0],
                     'matchingCards' : cardsGroupArray,
                     'matchingColorCards' : cardsColorArray,
                     'cardsActiveUniqueArray' : cardsActiveUniqueArray
                   },SetOptions(merge: true));
-
-
                   await Future.delayed(Duration(milliseconds: 500));
-
-                  Map<String, dynamic> cloudMsgs = {};
                   for (int i = 0; i < widget.playersNumber; i++) {
                     cloudMsgs['Player${i}Msgs'] = "outerArrows";
                   }
-
-
-                  await db.collection("game").doc("game${widget.gameNum}").set(
+                  await db.collection("game").doc('game${widget.gameNum}Messages').set(
                       cloudMsgs, SetOptions(merge: true));
                   await handleSpecialCardNo0(widget.index);
                   for (int i = 0; i < widget.playersNumber; i++) {
@@ -113,7 +103,7 @@ class deckState extends State<playerDeck> {
                       for (int i = 0; i < widget.playersNumber; i++) {
                         cloudMsgs['Player${i}Msgs'] = "outerArrows";
                       }
-                      await db.collection("game").doc("game${widget.gameNum}").set(
+                      await db.collection("game").doc('game${widget.gameNum}Messages').set(
                           cloudMsgs, SetOptions(merge: true));
                       await Future.delayed(Duration(milliseconds: 1000));
                       handleSpecialCardNo0(i);
@@ -132,16 +122,16 @@ class deckState extends State<playerDeck> {
                 }
                 if (swapped == false) nextTurn = -1;
                 //remember to substract 1 from player index when using firebase
-                Map<String, dynamic> uploadData = outerArrowsRevealed == false ? {
+                dataUpload = outerArrowsRevealed == false ? {
                   'turn': nextTurn,
                   'matchingCards': cardsGroupArray,
                   'matchingColorCards': cardsColorArray,
                   'cardsActiveUniqueArray': cardsActiveUniqueArray} : {'turn': nextTurn};
                 for (int i = 0; i < widget.playersNumber; i++) {
-                  uploadData['player_${i}_deck'] = cardsHandler[i][0];
-                  uploadData['player_${i}_openCards'] = cardsHandler[i][1];
+                  dataUpload['player_${i}_deck'] = cardsHandler[i][0];
+                  dataUpload['player_${i}_openCards'] = cardsHandler[i][1];
                 }
-                await db.collection("game").doc("game2").set(uploadData, SetOptions(merge: true));
+                await db.collection("game").doc('game${widget.gameNum}').set(dataUpload, SetOptions(merge: true));
                 print(
                     "matching cards: ${cardsGroupArray} ,ColorsArr: ${cardsColorArray} UniqueArr ${cardsActiveUniqueArray}");
               },
@@ -210,7 +200,7 @@ class deckState extends State<playerDeck> {
         print("(3) ${i},  matchi ng cards: ${cardsGroupArray} ,ColorsArr: ${cardsColorArray} UniqueArr ${cardsActiveUniqueArray}");
         //cardsUpload['player_${i}_deck'] = cardsHandler[i][0];
         //cardsUpload['player_${i}_openCards'] = cardsHandler[i][0];
-        await FirebaseFirestore.instance.collection("game").doc("game2").set({
+        await FirebaseFirestore.instance.collection("game").doc("game${widget.gameNum}").set({
           'matchingCards': cardsGroupArray,
           'matchingColorCards' : cardsColorArray,
           'cardsActiveUniqueArray' : cardsActiveUniqueArray,

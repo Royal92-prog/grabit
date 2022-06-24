@@ -19,37 +19,65 @@ extension ColorExtension on String {
   }
 }
 class  GameNotifications extends StatelessWidget {
-  GameNotifications({required this.context, required this.index});
-  int index;
+  GameNotifications({required this.context, required this.index, required this.gameNum});
   var context;
+  int index;
+  int gameNum;
   @override
   Widget build(BuildContext context) {
-    return GameUpdatesListener(massageUpdateFunc: showSnackBar, index: index);
+    return GameUpdatesListener(massageUpdateFunc: showSnackBar, index: index, gameIndex: gameNum,);
   }
 
   showSnackBar(var size, String msg) async{
-    await FirebaseFirestore.instance.collection('game').doc('game2').set({'Player${index}Msgs' : ""}, SetOptions(merge : true));
+    await FirebaseFirestore.instance.collection('game').doc('game${gameNum}Messages').set({
+      'Player${index}Msgs' : ""}, SetOptions(merge : true));
     if(msg == 'outerArrows'){
-      await FirebaseFirestore.instance.collection("game").doc("game2").set({'turn' : -10},SetOptions(merge :true));
-      await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating,backgroundColor: Colors.black.withOpacity(0.5),
-          margin: EdgeInsets.only(top: size.height * 0.3,right: size.width * 0.25,
-              left:size.width * 0.25, bottom: size.height * 0.5) ,
-          content:Center(child: Text("Get Ready",style: GoogleFonts.galindo(fontSize: 28,color: '#FFD86C'.toColor())))));
+      await FirebaseFirestore.instance.collection("game").doc('game${gameNum}Messages').set({
+        'turn' : -10},SetOptions(merge :true));
+      await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.black.withOpacity(0.5),
+          margin: EdgeInsets.only(
+            top: size.height * 0.3,
+            right: size.width * 0.25,
+            left: size.width * 0.25,
+            bottom: size.height * 0.5),
+          content: Center(child:
+            Text("Get Ready", style:
+              GoogleFonts.galindo(
+                  fontSize: 28,
+                  color: '#FFD86C'.toColor())))));
       for(int i = 3 ; i > 0 ; i--) {
         await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            duration: Duration(seconds: 1), behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.black.withOpacity(0.5), margin: EdgeInsets.only(
-            top: size.height * 0.25, right: size.width * 0.25, left: size.width * 0.25,
-            bottom: size.height * 0.6), content: Center(child: Text("${i}",style: GoogleFonts.galindo(fontSize: 28,color: '#FFD86C'.toColor())))));
+            duration: Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.black.withOpacity(0.5),
+            margin: EdgeInsets.only(
+              top: size.height * 0.25,
+              right: size.width * 0.25,
+              left: size.width * 0.25,
+              bottom: size.height * 0.6),
+            content: Center(child:
+              Text("${i}",style:
+                GoogleFonts.galindo(
+                    fontSize: 28,
+                    color: '#FFD86C'.toColor())))));
       }
     }
     else{
-      await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating,backgroundColor: Colors.black.withOpacity(0.5),
-          margin: EdgeInsets.only(top: size.height * 0.3,right: size.width * 0.1,
-              left:size.width * 0.1, bottom: size.height * 0.4) ,
-          content:Center(child: Text(msg, style: GoogleFonts.galindo(fontSize: 24,color: '#FFD86C'.toColor())))));
+      await ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(duration: Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.black.withOpacity(0.5),
+          margin: EdgeInsets.only(
+            top: size.height * 0.3,
+            right: size.width * 0.1,
+            left: size.width * 0.1,
+            bottom: size.height * 0.4),
+          content: Center(child:
+            Text(msg, style: GoogleFonts.galindo(fontSize: 24,
+              color: '#FFD86C'.toColor())))));
     }
 
   }
@@ -58,15 +86,16 @@ class  GameNotifications extends StatelessWidget {
 
 
 class GameUpdatesListener extends StatelessWidget {
-  GameUpdatesListener({required this.massageUpdateFunc, required this.index});
+  GameUpdatesListener({required this.massageUpdateFunc, required this.index, required this.gameIndex});
   String msg = "";
+  int gameIndex;
   int index;
   Function massageUpdateFunc;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game2').snapshots(),
+        stream: FirebaseFirestore.instance.collection('game').doc('game${gameIndex}Messages').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {

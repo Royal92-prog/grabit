@@ -164,6 +164,8 @@ class entryScreenState extends State<entryScreen>{
                 _playerIndex = _connectedPlayersNum;
                 ++_connectedPlayersNum;
                 Map<String,dynamic> dataUpload = {};
+                Map<String, dynamic> playersMassages = {};
+                await _firestore.collection('game').doc('game2Msgs').set(playersMassages, SetOptions(merge : true));
                 if (_connectedPlayersNum == 1) {
                   initializePlayers(_gameNum);
                   cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
@@ -175,6 +177,10 @@ class entryScreenState extends State<entryScreen>{
                   for(int i = 0; i < widget.numPlayers; i++ ){
                     dataUpload['totem${i}Pressed'] = false;
                   };
+                  for(int i = 0; i < widget.numPlayers; i++){
+                    playersMassages['Player${i}Msgs'] = "";
+                  }
+                  await _firestore.collection('game').doc('game${_gameNum}Messages').set(playersMassages, SetOptions(merge : true));
                   dataUpload['turn'] = 0;
                   dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0];
                   dataUpload['matchingColorCards'] = [0,0,0,0];
@@ -201,16 +207,6 @@ class entryScreenState extends State<entryScreen>{
                 //var cardsHandler = [];
                 //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
                 ///TO DO :  all shared variables hould be initialized only once at firebase
-                /*
-                dataUpload['underTotemCards'] = [];
-                dataUpload['totem'] = false;
-                dataUpload['totem0Pressed'] = false;
-                dataUpload['totem1Pressed'] = false;
-                dataUpload['totem2Pressed'] = false;
-                dataUpload['turn'] = 0;
-                dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
-                dataUpload['matchingColorCards'] = [0,0,0,0];
-                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];*/
                 if (remainder > 0){
                   dataUpload['player_${_playerIndex.toString()}_deck'] =
                       cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1))) +
