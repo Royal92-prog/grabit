@@ -69,8 +69,10 @@ class  GameNotifications extends StatelessWidget {
     print(currentMsg);
     print(index);
     msg[index] = "";
+    if(index == 0){
     await FirebaseFirestore.instance.collection('game').doc('game${gameNum}').set({
       'messages' : msg}, SetOptions(merge : true));
+    }
     if(currentMsg == 'outerArrows'){
       /*await FirebaseFirestore.instance.collection("game").doc('game${gameNum}').set({
         'turn' : -10},SetOptions(merge :true));*/
