@@ -178,15 +178,17 @@ class entryScreenState extends State<entryScreen>{
                     //dataUpload['totem${i}Pressed'] = false;
                     totemPressed.add(false);
                   };
-                  List<dynamic> messages = [];
+                  Map<String, dynamic> messages = {};
                   for(int i = 0; i < widget.numPlayers; i++){
                     //dataUpload['Player${i}Msgs'] = "";//playersMassages
-                    messages.add('');
+                    messages['player${i}MSGS'];
                   }
+                  await _firestore.collection('game').doc('game${_gameNum}MSGS').
+                    set(messages, SetOptions(merge : true));
             //      await _firestore.collection('game').doc('game${_gameNum}Messages').set(playersMassages, SetOptions(merge : true));
                   dataUpload['turn'] = 0;
                   dataUpload['totemPressed'] = totemPressed;
-                  dataUpload['messages'] = messages;
+                  //dataUpload['messages'] = messages;
                   dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0];
                   dataUpload['matchingColorCards'] = [0,0,0,0];
                   dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];

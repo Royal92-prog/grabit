@@ -63,20 +63,13 @@ class  GameNotifications extends StatelessWidget {
     return GameUpdatesListener(massageUpdateFunc: showSnackBar, index: index, gameIndex: gameNum,);
   }
 
-  showSnackBar(var size, List <dynamic> msg, int index, var context) async{
-    String currentMsg = msg[index];
-    print("current MSG ::  ");
-    print(currentMsg);
-    print(index);
-    msg[index] = "";
-    if(index == 0){
-    await FirebaseFirestore.instance.collection('game').doc('game${gameNum}').set({
-      'messages' : msg}, SetOptions(merge : true));
-    }
-    if(currentMsg == 'outerArrows'){
+  showSnackBar(var size, String msg, int index, var context) async{
+    await FirebaseFirestore.instance.collection('game').doc('game${gameNum}MSGS').set({
+      'player${index}MSGS' : ""}, SetOptions(merge : true));
+    if(msg == 'outerArrows'){
       /*await FirebaseFirestore.instance.collection("game").doc('game${gameNum}').set({
         'turn' : -10},SetOptions(merge :true));*/
-      await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      /*await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.black.withOpacity(0.5),
@@ -89,9 +82,10 @@ class  GameNotifications extends StatelessWidget {
             Text("Get Ready", style:
               GoogleFonts.galindo(
                   fontSize: 28,
-                  color: '#FFD86C'.toColor())))));
+                  color: '#FFD86C'.toColor())))));*/
+      showBasicsFlash(duration: Duration(milliseconds: 1000),msg : "Get Ready", context : context, size : size);
       for(int i = 3 ; i > 0 ; i--) {
-        await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        /*await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             duration: Duration(seconds: 1),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.black.withOpacity(0.5),
@@ -104,7 +98,8 @@ class  GameNotifications extends StatelessWidget {
               Text("${i}",style:
                 GoogleFonts.galindo(
                     fontSize: 28,
-                    color: '#FFD86C'.toColor())))));
+                    color: '#FFD86C'.toColor())))));*/
+        showBasicsFlash(duration: Duration(milliseconds: 2500),msg : "${i}", context : context, size : size);
       }
     }
     else{
@@ -120,7 +115,7 @@ class  GameNotifications extends StatelessWidget {
           content: Center(child:
             Text(currentMsg, style: GoogleFonts.galindo(fontSize: 24,
               color: '#FFD86C'.toColor())))));*/
-      showBasicsFlash(duration: Duration(milliseconds: 2500),msg : currentMsg, context : context, size : size);
+      showBasicsFlash(duration: Duration(milliseconds: 2500),msg : msg, context : context, size : size);
     }
   }
 }
@@ -129,27 +124,27 @@ class  GameNotifications extends StatelessWidget {
 
 class GameUpdatesListener extends StatelessWidget {
   GameUpdatesListener({required this.massageUpdateFunc, required this.index, required this.gameIndex});
-  late List <dynamic> msg;
+  late String msg;
   int gameIndex;
   int index;
   Function massageUpdateFunc;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game${gameIndex}').snapshots(),
+    return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance.collection('game').doc('game${gameIndex}MSGS').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
-            final cloudData = snapshot.data;
-            msg = [];
-            if (cloudData != null) {
-              msg = cloudData['messages'];//Player${index}Msgs
+            //final cloudData = snapshot.data;
+            if (snapshot.data != null) {
+              Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
+              msg = cloudData.containsKey('player${index}MSGS') == true ?
+                cloudData['player${index}MSGS'] : "";//Player${index}Msgs
               /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
-              if (msg[index] != "") {
+              if (msg != "") {
                 massageUpdateFunc(size, msg, index, context);
               }
-
             }
           }
           return SizedBox();
