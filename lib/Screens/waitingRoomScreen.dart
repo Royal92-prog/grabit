@@ -21,20 +21,20 @@ class WaitingRoom extends StatefulWidget {
 
 class _WaitingRoomState extends State<WaitingRoom> {
   int _connectedNum = 0;
-  var _waitTime = 60000;
+  var _waitTime = 30000;
   var _nicknames = [];
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.playerIndex == 0){
-      startWaiting();
-    }
-    else {
-      getWaitTime();
-    }
-    startTimer();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   if (widget.playerIndex == 0){
+  //     startWaiting();
+  //   }
+  //   else {
+  //     getWaitTime();
+  //   }
+  //   startTimer();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +50,17 @@ class _WaitingRoomState extends State<WaitingRoom> {
               _nicknames = [data['player_0_nickname'], data['player_1_nickname'], data['player_2_nickname'],
                 data['player_3_nickname'], data['player_4_nickname']];
             }
+          }
+
+          if (_connectedNum == 3) {
+            if (widget.playerIndex == 0) {
+              startWaiting();
+            }
+            startTimer();
+          }
+
+          if (_connectedNum == 4 && widget.playerIndex == 3) {
+            getWaitTime();
           }
 
           if (_connectedNum == 5) {
@@ -84,7 +95,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
   }
 
   void startTimer() {
-    Timer(Duration(milliseconds: _waitTime), timeoutHandler);
+    Timer(Duration(milliseconds: _waitTime), startGame);
   }
 
   void getWaitTime() async {
@@ -94,24 +105,28 @@ class _WaitingRoomState extends State<WaitingRoom> {
             final data = snapshot.data();
             if (data != null) {
               final timeSinceStart = DateTime.now().millisecondsSinceEpoch - data['waitingTimerStart'];
+              print(timeSinceStart);
               _waitTime = _waitTime - timeSinceStart.toInt();
+              startTimer();
             }
           }
         }
     );
   }
 
-  void timeoutHandler() {
-    if(_connectedNum < 3) {
-      startTimer();
-    }
-    else {
-      startGame();
-    }
-  }
+  // void timeoutHandler() {
+  //   if(_connectedNum < 3) {
+  //     startTimer();
+  //   }
+  //   else {
+  //     startGame();
+  //   }
+  // }
 
   void startGame() {
-    increaseGameNum(widget.gameNum);
+    if (widget.playerIndex == 0) {
+      increaseGameNum(widget.gameNum);
+    }
     Navigator.of(context).push(
         MaterialPageRoute<void>(
             builder: (context) {
