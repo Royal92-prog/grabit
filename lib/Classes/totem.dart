@@ -255,7 +255,22 @@ class totemState extends State<totem> {
                           await _firestore.collection('game').doc('game${widget.gameNum}Messages').
                             set(cloudMassages, SetOptions(merge : true));
                         }
-                      })
+
+                    var winners = [];
+                    for(int i = 0; i < widget.playersNumber; i ++){
+                    if(cardsHandler[i][0].length == 0 && cardsHandler[i][1].length == 0 ) winners.add(i);
+                    }
+                    if(winners.length > 0){
+                    var finalMsg = "";
+                    if(winners.length > 1) finalMsg = "there is no sole winner in this battle";
+                    else  finalMsg = "Player No, ${winners[0]} won !";
+                    for(int i = 0; i < widget.playersNumber; i++){
+                      cloudMassages['Player${i}Msgs'] = finalMsg;
+                    }
+
+                    await _firestore.collection('game').doc('game${widget.gameNum}Messages').set(cloudMassages, SetOptions(merge : true));
+                    await _firestore.collection('game').doc('game${widget.gameNum}').set({'turn' : -3,}, SetOptions(merge: true));
+                    }})
                 ]));
           }
           else return SizedBox(width: 0.01,);
