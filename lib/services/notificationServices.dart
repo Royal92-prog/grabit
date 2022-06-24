@@ -28,9 +28,9 @@ class  GameNotifications extends StatelessWidget {
   }
 
   showSnackBar(var size, String msg) async{
-    await FirebaseFirestore.instance.collection('game').doc('game2').set({'Player${index}Msgs' : ""}, SetOptions(merge : true));
+    await FirebaseFirestore.instance.collection('game').doc('game2Msgs').set({'Player${index}Msgs' : ""}, SetOptions(merge : true));
     if(msg == 'outerArrows'){
-      await FirebaseFirestore.instance.collection("game").doc("game2").set({'turn' : -10},SetOptions(merge :true));
+      await FirebaseFirestore.instance.collection("game").doc('game2Msgs').set({'turn' : -10},SetOptions(merge :true));
       await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,backgroundColor: Colors.black.withOpacity(0.5),
           margin: EdgeInsets.only(top: size.height * 0.3,right: size.width * 0.25,
@@ -66,7 +66,7 @@ class GameUpdatesListener extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game2').snapshots(),
+        stream: FirebaseFirestore.instance.collection('game').doc('game2Msgs').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {

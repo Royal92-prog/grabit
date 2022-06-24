@@ -68,10 +68,10 @@ class entryScreenState extends State<entryScreen>{
             height: 0.25 * size.height),
             //push loading page when uploading data on firebase
             onTap: () async{
-              Navigator.of(context).push(MaterialPageRoute<void> (builder: (context) {
+              /*Navigator.of(context).push(MaterialPageRoute<void> (builder: (context) {
                 return LoadingScreen();
               }));
-            await Future.delayed(Duration(seconds: 4));
+            await Future.delayed(Duration(seconds: 4));*/
             FirebaseFirestore _firestore = FirebaseFirestore.instance;
             var cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
             cardsArr.shuffle();
@@ -102,7 +102,7 @@ class entryScreenState extends State<entryScreen>{
             for(int i = 0; i < widget.numPlayers; i++){
               playersMassages['Player${i}Msgs'] = "";
             }
-            await _firestore.collection('game').doc('game2').set(playersMassages, SetOptions(merge : true));
+            await _firestore.collection('game').doc('game2Msgs').set(playersMassages, SetOptions(merge : true));
             Navigator.of(context).push(MaterialPageRoute<void> (builder: (context){
               return Scaffold(backgroundColor: Colors.black, extendBody: true, body: GameTable(playersNumber: widget.numPlayers));
             }

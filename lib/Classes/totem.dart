@@ -62,6 +62,7 @@ class totemState extends State<totem>{
                 height: 0.15 * size.height,alignment: Alignment.center),
                 onTap: isTotemPressed ? null : () async{
                   Map<String, dynamic> cloudMassages = {};
+                  Map<String, dynamic> uploadData = {};
                   FirebaseFirestore _firestore = FirebaseFirestore.instance;
                   await _firestore.collection('game').doc('game2').set({'totem' : true}, SetOptions(merge : true));
                   ///#1st case :  totem was pressed since inner arrows is on the table
@@ -73,6 +74,9 @@ class totemState extends State<totem>{
                     underTotemCards.shuffle();
                     cardsHandler[widget.index][1] = [];
                     cloudMassages = {
+                      'Player${widget.index}Msgs' : "inner arrows card - You Win!"
+                    };
+                    uploadData = {
                       'totem' : false,
                       'turn' : widget.index,
                       'underTotemCards' : underTotemCards,
@@ -80,21 +84,19 @@ class totemState extends State<totem>{
                       'matchingCards': matchingRegularCards,
                       'matchingColorCards' : matchingColorCards,
                       'player_${widget.index}_openCards' : [],
-                      'Player${widget.index}Msgs' : "inner arrows card - You Win!"
                     };
                     for(int i = 0; i < widget.playersNumber; i++){
                       if(i == widget.index) continue;
                       cloudMassages['Player${i}Msgs'] = "player ${widget.index} pressed the inner button first";
                     }
-                    await _firestore.collection('game').doc('game2').set(cloudMassages, SetOptions(merge : true));
+                    await _firestore.collection('game').doc('game2Msgs').set(cloudMassages, SetOptions(merge : true));
+                    await _firestore.collection('game').doc('game2').set(uploadData, SetOptions(merge : true));
                   }
                   ///#2nd case :  totem was pressed for the regular reason (color / regular mode)
-                  else if (cardsHandler[widget.index][1][0] <= 72 && cardsHandler[widget.index][1].length > 0 &&
+                  else if (cardsHandler[widget.index][1].length > 0 && cardsHandler[widget.index][1][0] <= 72 && cardsHandler[widget.index][1].length > 0 &&
                       ((!_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1)~/4 )] > 1) ||
                           (_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0])-1) % 4 )] > 1))) {
-                    print("unique ${uniqueArray} , Active ${matchingColorCards} ${_isColorActive}");
                     var loserIndices = getLoserIndex();
-                    print("indices :: ${loserIndices}");
                     var loserCards = [...cardsHandler[widget.index][1], ...underTotemCards];
                     for(int i = 0; i < loserIndices.length; i++){
                       loserCards = [...loserCards, ...cardsHandler[loserIndices[i]][1]];
@@ -103,25 +105,27 @@ class totemState extends State<totem>{
                     decreaseCardsArray(cardsHandler[widget.index][1][0]);
                     loserCards.shuffle();
                     int cardsToAdd = loserCards.length ~/ loserIndices.length;
-                    cloudMassages = {
+                    uploadData = {
                       'totem' : false,
                       'turn' : loserIndices[loserIndices.length -1],
                       'underTotemCards' : [],
                       'player_${widget.index}_openCards' : [],
                       'matchingCards': matchingRegularCards,
                       'matchingColorCards' : matchingColorCards,
-                      'Player${widget.index}Msgs' : 'you win',
-                      'Player${loserIndices[loserIndices.length -1]}Msgs' : 'you lose',
                       'player_${loserIndices[loserIndices.length - 1]}_openCards' : [],
                       'player_${loserIndices[loserIndices.length - 1]}_deck' :
                       [...cardsHandler[loserIndices[loserIndices.length - 1]][0],
-                       ...loserCards.sublist(cardsToAdd * (loserIndices.length - 1), loserCards.length)]
+                        ...loserCards.sublist(cardsToAdd * (loserIndices.length - 1), loserCards.length)]
+                    };
+                    cloudMassages = {
+                      'Player${widget.index}Msgs' : 'you win',
+                      'Player${loserIndices[loserIndices.length -1]}Msgs' : 'you lose',
                     };
                     for(int i = 0; i < loserIndices.length - 1; i++){
                       print("Line 119 ${loserIndices[i]}");
                       cloudMassages['Player${loserIndices[i]}Msgs'] = 'you lose';
-                      cloudMassages['player_${loserIndices[i]}_openCards'] = [];
-                      cloudMassages['player_${loserIndices[i]}_deck'] = [...cardsHandler[loserIndices[i]][0],
+                      uploadData['player_${loserIndices[i]}_openCards'] = [];
+                      uploadData['player_${loserIndices[i]}_deck'] = [...cardsHandler[loserIndices[i]][0],
                       ...loserCards.sublist(cardsToAdd * i, (cardsToAdd * (i + 1)))];
                     }
                     int j = 0;
@@ -133,7 +137,8 @@ class totemState extends State<totem>{
                       }
                       cloudMassages['Player${i}Msgs'] = "player ${widget.index} won the Battle";
                     }
-                    await _firestore.collection('game').doc('game2').set(cloudMassages, SetOptions(merge : true));
+                    await _firestore.collection('game').doc('game2Msgs').set(cloudMassages, SetOptions(merge : true));
+                    await _firestore.collection('game').doc('game2').set(uploadData, SetOptions(merge : true));
                   }
                   ///#3rd case :  totem was pressed by mistake
                   else {
@@ -143,18 +148,21 @@ class totemState extends State<totem>{
                       if(cardsHandler[i][1].length > 0) decreaseCardsArray(cardsHandler[i][1][0]);
                       //print("card is ${cardsHandler[i][1][0]}");
                     }
-                    Map<String, dynamic> upoloadData = {
+                    uploadData = {
                       'totem' : false,
                       'turn' : widget.index,
                       'underTotemCards' : [],
                       'matchingCards': matchingRegularCards,
                       'matchingColorCards' : matchingColorCards,
                       'cardsActiveUniqueArray' : uniqueArray,
-                      'Player${widget.index}Msgs' : "you were penalized",};
+                      };
+                    cloudMassages = {
+                      'Player${widget.index}Msgs' : "you were penalized"
+                    };
                     var loserDeck = [...underTotemCards];
                     for(int i = 0; i < widget.playersNumber; i++){
                       loserDeck = [...loserDeck, ...cardsHandler[i][1]];
-                      upoloadData['player_${i}_openCards'] = [];
+                      uploadData['player_${i}_openCards'] = [];
                     }
                     /*print("Loser ${loserDeck}");
                     cardsHandler[0][1] = [];
@@ -162,14 +170,15 @@ class totemState extends State<totem>{
                     cardsHandler[2][1] = [];
                     underTotemCards = [];*/
                     loserDeck.shuffle();
-                    upoloadData['player_${widget.index}_deck'] = [...cardsHandler[widget.index][0], ...loserDeck];
+                    uploadData['player_${widget.index}_deck'] = [...cardsHandler[widget.index][0], ...loserDeck];
                     //cardsHandler[widget.index][0] = [...cardsHandler[widget.index][0], ...loserDeck];
                     print("after totem update: ${matchingRegularCards}");
                     for(int i = 0; i < widget.playersNumber; i++){
                       if(i == widget.index) continue;
-                      upoloadData['Player${i}Msgs'] = "player ${widget.index} was penalized";
+                      cloudMassages['Player${i}Msgs'] = "player ${widget.index} was penalized";
                     }
-                    await _firestore.collection('game').doc('game2').set(upoloadData, SetOptions(merge : true));
+                    await _firestore.collection('game').doc('game2').set(uploadData, SetOptions(merge : true));
+                    await _firestore.collection('game').doc('game2Msgs').set(cloudMassages, SetOptions(merge : true));
                   }
                   //checking whther we have a winner after this press
                   var winners = [];
@@ -184,7 +193,7 @@ class totemState extends State<totem>{
                     for(int i = 0; i < widget.playersNumber; i++){
                       cloudMassages['Player${i}Msgs'] = finalMsg;
                     }
-                    await _firestore.collection('game').doc('game2').set(cloudMassages, SetOptions(merge : true));
+                    await _firestore.collection('game').doc('game2Msgs').set(cloudMassages, SetOptions(merge : true));
                     widget.winnerCallback(false);
                   }
                 }

@@ -87,7 +87,7 @@ class deckState extends State<playerDeck> {
                   for (int i = 0; i < widget.playersNumber; i++) {
                     cloudMsgs['Player${i}Msgs'] = "outerArrows";
                   }
-                  await db.collection("game").doc("game2").set(
+                  await db.collection("game").doc("game2Msgs").set(
                       cloudMsgs, SetOptions(merge: true));
                   await handleSpecialCardNo0(widget.index);
                   for (int i = 0; i < widget.playersNumber; i++) {
@@ -96,7 +96,7 @@ class deckState extends State<playerDeck> {
                       for (int i = 0; i < widget.playersNumber; i++) {
                         cloudMsgs['Player${i}Msgs'] = "outerArrows";
                       }
-                      await db.collection("game").doc("game2").set(
+                      await db.collection("game").doc("game2Msgs").set(
                           cloudMsgs, SetOptions(merge: true));
                       await Future.delayed(Duration(milliseconds: 1000));
                       handleSpecialCardNo0(i);
