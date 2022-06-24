@@ -9,6 +9,7 @@ import 'package:grabit/Classes/player.dart';
 import 'package:grabit/Classes/totem.dart';
 
 import '../services/notificationServices.dart';
+import 'drawCard.dart';
 
 
 class GameTable extends StatelessWidget {
@@ -53,7 +54,8 @@ class GameTable extends StatelessWidget {
             SizedBox(),
             //totem
             Positioned(left : size.width * 0.4, top: 0.73 * size.height,child:
-            totem(index: 1, playersNumber: playersNumber, winnerCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},))
+            totem(index: 1, playersNumber: playersNumber, winnerCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},)),
+            Positioned(bottom: size.height * 0.09, right: size.width * 0.067, child: DrawCard(index: 1)),
           ]))),
       GameNotifications(context: context,index: 1),
     ]);
@@ -76,3 +78,4 @@ class GameTable extends StatelessWidget {
     // }
   }
 }
+//assets/gameTable/DRAW_BTN.png
