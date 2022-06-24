@@ -1,37 +1,129 @@
 import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class WaitingRoom extends StatelessWidget {
-  int connectedNum;
-  WaitingRoom({required this.connectedNum});
+import '../Classes/gameTable.dart';
+import '../services/gameNumberManager.dart';
+
+class WaitingRoom extends StatefulWidget {
+  int gameNum;
+  int playerIndex;
+
+  WaitingRoom({required this.gameNum, required this.playerIndex});
+
+  @override
+  State<WaitingRoom> createState() => _WaitingRoomState();
+}
+
+class _WaitingRoomState extends State<WaitingRoom> {
+  int _connectedNum = 0;
+  var _waitTime = 60000;
+  var _nicknames = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.playerIndex == 0){
+      startWaiting();
+    }
+    else {
+      getWaitTime();
+    }
+    startTimer();
+  }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
+    return StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance.collection('game').doc('players${widget.gameNum}').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            final data = snapshot.data;
+            if (data != null) {
+              _connectedNum = data['connectedPlayersNum'];
+              _nicknames = [data['player_0_nickname'], data['player_1_nickname'], data['player_2_nickname'],
+                data['player_3_nickname'], data['player_4_nickname']];
+            }
+          }
+
+          if (_connectedNum == 5) {
+            startGame();
+          }
+
+          return Scaffold(backgroundColor: Colors.black,extendBody: true,
+              body:Stack(children: [Container(child: Image.asset('assets/Background.png',
+                width: size.width, height: size.height,),),
+                Center(child : SizedBox(height:1 * size.height,width:0.75 * size.width,
+                    child:Stack(children: <Widget>[Center(child:SvgPicture.asset('assets/WoodenTable.svg',
+                        height: 0.65 * size.height,width:0.75 * size.width ,alignment: Alignment.centerRight))]))),
+                Positioned(top: size.height * 0.3, left: size.width * 0.31, child :
+                Column(
+                    children: [
+                      Text("PREPARING FOR \n   THE BATTLE . . .",
+                        style: GoogleFonts.galindo( fontSize: 25,color: Colors.white, fontWeight: FontWeight.w800),),
+                      CircularProgressIndicator(),
+                      Text("Connected players : ${_connectedNum}",
+                        style: GoogleFonts.galindo( fontSize: 25,color: Colors.white, fontWeight: FontWeight.w800),),
+                    ])),
+              ],));
+        }
+    );
     //Container(color : Colors.green),
-    return Scaffold(backgroundColor: Colors.black,extendBody: true,
-        body:Stack(children: [Container(child: Image.asset('assets/Background.png',
-          width: size.width, height: size.height,),),
-          Center(child : SizedBox(height:1 * size.height,width:0.75 * size.width,
-              child:Stack(children: <Widget>[Center(child:SvgPicture.asset('assets/WoodenTable.svg',
-                  height: 0.65 * size.height,width:0.75 * size.width ,alignment: Alignment.centerRight))]))),
-          Positioned(top: size.height * 0.3, left: size.width * 0.31, child :
-          Column(
-              children: [
-                Text("PREPARING FOR \n   THE BATTLE . . .",
-                  style: GoogleFonts.galindo( fontSize: 25,color: Colors.white, fontWeight: FontWeight.w800),),
-                CircularProgressIndicator(),
-                Text("Connected players : ${connectedNum}",
-                  style: GoogleFonts.galindo( fontSize: 25,color: Colors.white, fontWeight: FontWeight.w800),),
-          ])),
-            ],));
   }
+
+  void startWaiting() async {
+    await FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').set({
+      'waitingTimerStart' : DateTime.now().millisecondsSinceEpoch,
+    }, SetOptions(merge: true));
+  }
+
+  void startTimer() {
+    Timer(Duration(milliseconds: _waitTime), timeoutHandler);
+  }
+
+  void getWaitTime() async {
+    return FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').get().then(
+            (snapshot) {
+          if (snapshot.exists) {
+            final data = snapshot.data();
+            if (data != null) {
+              final timeSinceStart = DateTime.now().millisecondsSinceEpoch - data['waitingTimerStart'];
+              _waitTime = _waitTime - timeSinceStart.toInt();
+            }
+          }
+        }
+    );
+  }
+
+  void timeoutHandler() {
+    if(_connectedNum < 3) {
+      startTimer();
+    }
+    else {
+      startGame();
+    }
+  }
+
+  void startGame() {
+    increaseGameNum(widget.gameNum);
+    Navigator.of(context).push(
+        MaterialPageRoute<void>(
+            builder: (context) {
+              return GameTable(playerIndex: widget.playerIndex, nicknames: _nicknames,
+                gameNum: widget.gameNum, playersNumber: _connectedNum,);
+            }
+        )
+    );
+  }
+}
+
+
   //_timeElapsed.
  /* @override
   Widget build(BuildContext context) {
@@ -39,7 +131,7 @@ class WaitingRoom extends StatelessWidget {
       color: Colors.blue,
       child: const Text('Waiting room'),
     );*/
-  }
+
 
 
 // class WaitingRoomState extends State<WaitingRoom>{

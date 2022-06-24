@@ -10,6 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter/services.dart';
 import 'package:grabit/Screens/infoScreen.dart';
 import 'package:grabit/Screens/registrationScreen.dart';
+import 'package:grabit/Screens/waitingRoomScreen.dart';
 import 'package:grabit/services/avatarManager.dart';
 import 'package:grabit/services/gameNumberManager.dart';
 import 'package:grabit/services/playerManager.dart';
@@ -248,7 +249,7 @@ class entryScreenState extends State<entryScreen>{
                 Navigator.of(context).push(
                 MaterialPageRoute<void>(
                 builder: (context) {
-                return GameManager(playerIndex: _playerIndex, playersNum: widget.numPlayers, gameNum: _gameNum,);
+                return WaitingRoom(gameNum: _gameNum, playerIndex: _playerIndex,);
                       }
                       ));
               }))),

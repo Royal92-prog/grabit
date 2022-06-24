@@ -39,7 +39,7 @@ class GameManager extends StatelessWidget {
           }
 
           if (_gameState == GameState.waitingForPlayers) {
-            return WaitingRoom(connectedNum: _connectedNum,);
+            return WaitingRoom(gameNum: gameNum, playerIndex: playerIndex,);
           }
           else {
             return GameTable(playerIndex: playerIndex, nicknames: nicknames, gameNum: gameNum, playersNumber: playersNum,);
