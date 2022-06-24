@@ -10,6 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter/services.dart';
 import 'package:grabit/Screens/infoScreen.dart';
 import 'package:grabit/Screens/registrationScreen.dart';
+import 'package:grabit/services/avatarManager.dart';
 import 'package:grabit/services/gameNumberManager.dart';
 import 'package:grabit/services/playerManager.dart';
 import 'package:tuple/tuple.dart';
@@ -37,6 +38,8 @@ class entryScreenState extends State<entryScreen>{
   int _playerIndex = 0;
   late var cardsArr;
   late var _gameNum;
+  String? _avatarUrl = null;
+  String _username = "guest";
 
   @override
   void initState() {
@@ -54,6 +57,10 @@ class entryScreenState extends State<entryScreen>{
   @override
   Widget build(BuildContext context) {
     getCurrentGameNum();
+    if (isLoginMode) {
+      getCurrentAvatar();
+      getUserNickname();
+    }
     var size = MediaQuery.of(context).size;
 
     return Stack(fit: StackFit.passthrough, children:
@@ -74,15 +81,22 @@ class entryScreenState extends State<entryScreen>{
         Positioned(
           top: 0.11 * size.height,
           left: 0.305 * size.width,
-          child: isLoginMode == false ?
-            Image.asset('assets/Lobby/Avatar_photo.png',
-              width: 0.15 * size.width,
-              height: 0.15 * size.height) : SizedBox()),
+          child: CircleAvatar(
+                  radius: 30,
+                  backgroundImage: AssetImage('assets/Lobby/Avatar_photo.png'),
+                  foregroundImage: _avatarUrl == null ? null : NetworkImage(_avatarUrl!),
+                  ),),
         Positioned(
           top: 0.18 * size.height,
           left: 0.3 * size.width,
           child: GestureDetector(
-              child: isLoginMode == true ? Image.asset('assets/Lobby/+ BTN.png',
+              onTap: isLoginMode == false ? null : () async{
+                final url = await updateAvatarByUsername(_username);
+                setState(() {
+                  _avatarUrl = url;
+                });
+              },
+              child: isLoginMode ? Image.asset('assets/Lobby/+ BTN.png',
                 width: 0.125 * size.width,
                 height: 0.125 * size.height) : SizedBox())),
         isLoginMode == true ? Positioned(
@@ -98,8 +112,14 @@ class entryScreenState extends State<entryScreen>{
                       builder: (context) {
                         return RegistrationScreen();
                       }));
-              setState(() {
-                isLoginMode = res?.item1; });
+              if (res?.item1) {
+                updateUserNickname(res?.item3);
+                setState(() {
+                  isLoginMode = res?.item1;
+                  _username = res?.item2;
+                  _nicknameController.text = res?.item3;
+                });
+              }
             },),) :
         Positioned(
           top: size.height * 0.21,
@@ -242,6 +262,27 @@ class entryScreenState extends State<entryScreen>{
 
   void getCurrentGameNum() async {
     _gameNum = await getGameNum();
+  }
+
+  void getCurrentAvatar() async{
+    _avatarUrl = await getAvatarByUsername(_username);
+  }
+
+  void updateUserNickname(nickname) async{
+    await FirebaseFirestore.instance.collection('game').doc(_username).set({'nickname' : _nicknameController.text}, SetOptions(merge: true));
+  }
+
+  void getUserNickname() async{
+    await FirebaseFirestore.instance.collection('game').doc(_username).get().then(
+            (snapshot) {
+          if (snapshot.exists) {
+            final data = snapshot.data();
+            if (data != null) {
+              _nicknameController.text = data['nickname'];
+            }
+          }
+        }
+    );
   }
 
 }
