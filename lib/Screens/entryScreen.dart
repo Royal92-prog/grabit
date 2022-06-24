@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ import 'package:tuple/tuple.dart';
 import '../Classes/card.dart';
 import '../Classes/gameManager.dart';
 import '../main.dart';
+import '../services/Login.dart';
 import 'friendlyGameScreen.dart';
 import 'loadingScreen.dart';
 
@@ -34,6 +37,19 @@ class entryScreenState extends State<entryScreen>{
   int _playerIndex = 0;
   late var cardsArr;
   late var _gameNum;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @mustCallSuper
+  @protected
+  void dispose() async{
+    print("entry Line 42");
+    await Login.instance().signOut();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,22 +85,36 @@ class entryScreenState extends State<entryScreen>{
               child: isLoginMode == true ? Image.asset('assets/Lobby/+ BTN.png',
                 width: 0.125 * size.width,
                 height: 0.125 * size.height) : SizedBox())),
+        isLoginMode == true ? Positioned(
+          top: size.height * 0.21,
+          left: size.width * 0.435,
+          child: GestureDetector(
+            child: Image.asset('assets/Lobby/Signout_BTN.png',
+                width: 0.15 * size.width,
+                height: 0.15 * size.height),
+            onTap: () async {
+              var res = await Navigator.of(context).push(
+                  MaterialPageRoute<Tuple3>(
+                      builder: (context) {
+                        return RegistrationScreen();
+                      }));
+              setState(() {
+                isLoginMode = res?.item1; });
+            },),) :
         Positioned(
           top: size.height * 0.21,
-          left: size.width * 0.425,
+          left: size.width * 0.435,
           child: GestureDetector(
               child: Image.asset('assets/Lobby/SignIn_BTN.png',
               width: 0.15 * size.width,
               height: 0.15 * size.height),
             onTap: () async {
-                print("bfbfbfbf");
               var res = await Navigator.of(context).push(
               MaterialPageRoute<Tuple3>(
                 builder: (context) {
                   return RegistrationScreen();
                 }));
               setState(() {
-                print("kalamari");
                 isLoginMode = res?.item1; });
             },),),
         Positioned(
@@ -106,24 +136,18 @@ class entryScreenState extends State<entryScreen>{
               Navigator.of(context).push(MaterialPageRoute<void> (builder: (context) {
               return FriendlyGame();
             }));})),
-        /*Positioned(
-          top: size.height * 0.04,
-          left: size.width * 0.28,
-          child: Container(
-            width:size.width * 0.45,
-            height: size.height * 0.35,
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              resizeToAvoidBottomInset: false,
-              body : Padding(
-                padding: const EdgeInsets.symmetric(
-                horizontal: 108,
-                vertical: 50),
-                child: TextField(
-                  controller: _nicknameController,
-                  decoration: new InputDecoration.collapsed(hintText: 'Enter nickname',),
-                  cursorColor: Colors.grey
-              ),),))),*/
+        Positioned(
+          top: size.height * 0.145,
+          left: size.width * 0.425,
+          child: SizedBox(
+              width: 0.235 * size.width,
+              height: 0.1 * size.height,
+              child: TextField(
+                controller: _nicknameController,
+                showCursor: false,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'YOUR NICKNAME',),))),
         Positioned(
           bottom: size.height * 0.04,
           left: size.width * 0.39,
