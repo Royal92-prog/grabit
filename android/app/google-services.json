@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "991472976804-718tj4bsaehjh1neotgcocn04c45q137.apps.googleusercontent.com",
+          "client_id": "991472976804-j1gdt752hqje4edgo447gq0nbhheekt7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.technion.android.grabit",
-            "certificate_hash": "44bee431c52a7786f59110612acc343af1ecb3f2"
+            "certificate_hash": "de73d1b0a0ff03755696fd032a98df9c1e6b7ea8"
           }
         },
         {
