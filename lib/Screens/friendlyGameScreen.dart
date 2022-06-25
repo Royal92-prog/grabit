@@ -13,7 +13,7 @@ import 'gameHostScreen.dart';
 
 
 class FriendlyGame extends StatefulWidget {
-
+  //FriendlyGame({required this.playersNumber});
   @override
   State<FriendlyGame> createState() => FriendlyGameStates();
 

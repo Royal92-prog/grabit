@@ -12,6 +12,7 @@ enum GameState { waitingForPlayers, activeGame, endGame }
 
 
 class GameManager extends StatelessWidget {
+
   GameManager({required this.playerIndex, required this.playersNum, required this.gameNum});
   int playerIndex;
   int playersNum;

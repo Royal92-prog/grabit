@@ -122,6 +122,7 @@ flutter:
     - assets/HostGame/host.png
     - assets/Lobby/Info_BTN.png
     - assets/Lobby/+ BTN.png
+    - assets/HostGame/clean+-.png
     - assets/Lobby/writingArea.png
     - assets/logout_BTN.png
     - assets/Lobby/Avatar_photo.png
