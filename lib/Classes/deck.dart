@@ -133,11 +133,18 @@ class deckState extends State<playerDeck> {
                 children:
                 [
                   SvgPicture.asset('assets/Full_pack.svg',
-                    width: 0.1 * size.width, height: 0.1 * size.height,),
-                  Positioned(top: 0.01 * size.height, right: 0.012 * size.width,
-                    child: Text(
+                    width: 0.1 * size.width,
+                    height: 0.1 * size.height,),
+                  Positioned(
+                    top: 0.017 * size.height,
+                    left: cardsHandler != null &&
+                        cardsHandler[widget.index][0].length > 9 ?
+                          0.012 * size.width : 0.02 * size.width,
+                    child: Container(child:Text(
                         "${cardsHandler[widget.index][0].length}", style:
-                    TextStyle(fontSize: 15, color: Colors.black)),)
+                    TextStyle(fontSize: 15, color: Colors.black)),
+                      width: 0.15 * size.width,
+                      height: 0.15 * size.height,))
                 ],),);
           }
           else
