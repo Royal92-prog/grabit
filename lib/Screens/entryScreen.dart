@@ -30,7 +30,7 @@ class entryScreen extends StatefulWidget {
 }
 
 class entryScreenState extends State<entryScreen>{
-  bool isLoginMode = false;
+  bool isLoginMode = !(Login.instance().user == null);
   bool instructionsMode = false;
   final _nicknameController = TextEditingController();
   int _connectedPlayersNum = 0;

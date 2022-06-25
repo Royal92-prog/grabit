@@ -35,6 +35,7 @@ class Login with ChangeNotifier {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return true;
     } catch (e) {
+      print(e.toString());
       _status = Status.Unauthenticated;
       notifyListeners();
       return false;

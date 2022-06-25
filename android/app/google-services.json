@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "991472976804-m73aaj6f1q0kp6dn9dpvl824dsq19qpc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.technion.android.grabit",
+            "certificate_hash": "2ac4bed1cdabbee8d19c59790c55d6983412d825"
+          }
+        },
+        {
           "client_id": "991472976804-d2jfv5pahidgufo9ppk82n12tmf1pr4l.apps.googleusercontent.com",
           "client_type": 3
         }

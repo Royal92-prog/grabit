@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +38,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
     _usernameController.text.isEmpty || !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(_usernameController.text) ? _isValidUsername = false : _isValidUsername = true;
     _passwordController.text.isEmpty ? _isValidPassword = false : _isValidPassword = true;
 
-    _nicknameController.text.isEmpty ? _isValidNickname = false : _isValidNickname = true;
+    _nicknameController.text.isEmpty && isNicknameRequired ? _isValidNickname = false : _isValidNickname = true;
 
     return isNicknameRequired ? _isValidUsername && _isValidPassword && _isValidNickname : _isValidUsername && _isValidPassword;
   }
@@ -78,7 +80,8 @@ class RegistrationScreenState extends State<RegistrationScreen>{
   }
 
   void signIn(email,password) async {
-    await Login.instance().signIn(email, password);
+
+    await Login.instance().signIn(email.toString().trim(), password.toString().trim());
   }
   void logout() async {
     await Login.instance().signOut();
@@ -88,9 +91,12 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 
     Future<bool> login(email,password) async {
       try{
-        await Login.instance().signUp(email, password);
-        _isSignedIn = true;
-        return true;
+
+        await Login.instance().signUp(email.toString().trim(), password.toString().trim());
+        if (Login.instance().user != null) {
+          _isSignedIn = true;
+          return true;
+        }
       }
       on FirebaseAuthException catch (e){
         print(e.toString());
@@ -103,7 +109,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
         } else if (e.code == 'weak-password') {
 
         } else {
-
+          return false;
         }
       }
       return false;
@@ -129,7 +135,6 @@ class RegistrationScreenState extends State<RegistrationScreen>{
          height: 0.25 * size.height, child:
          GestureDetector(
 
-           /// TODO: add google check if user logged in
              child: Image.asset('assets/logout_BTN.png',width: 0.2 * size.width, height: 0.25 * size.height),
              onTap: () {
                setState(()  {
@@ -157,45 +162,19 @@ class RegistrationScreenState extends State<RegistrationScreen>{
           GestureDetector(
 
               child: Image.asset('assets/Register_BTN.png',width: 0.2 * size.width, height: 0.25 * size.height),
-              onTap: () {
-                setState(()  {
+              onTap: () async {
+
                   /// user is not logged in
                     if (validateCredentials(true) == false) {
-                      print("Kalamari1");
+                      print("--------------- FAIL - Credentials have return Invalid---------------");
                       return;
                     }
                     else {
-                      print("Kalamari2");
+                      print("---------------Success - Credentials Were successful ---------------");
                       login(_usernameController.text, _passwordController.text);
-                      FirebaseAuth.instance
-                          .authStateChanges()
-                          .listen((User? user) {
-                        if (user != null) {
-                          print("HERE line 174");
-                          Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
-                        } else {
-                          print('User is signed in!');
-                        }
-                      });/*
-                      if (Login.instance().user != null) {
-                        print("Kalamari3");
-                        Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
-                        /*
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              /// TODO add return to main screen
-                              return RegistrationScreen();
-                            },
-                          ),
-                        );
-
-                        */
-                      }*/
+                      Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
                     }
 
-                }
-                );
               }
           ))),
         visible: !_isSignedIn,
@@ -209,29 +188,17 @@ class RegistrationScreenState extends State<RegistrationScreen>{
           GestureDetector(
 
               child: Image.asset('assets/SignInButton.png',width: 0.2 * size.width, height: 0.25 * size.height),
-              onTap: () {
-                setState(()  {
+              onTap: () async {
+                // setState(() {
                   /// user is not logged in
                   if (validateCredentials(false) == false) {
+                    print("--------------- FAIL - SignIn - Credentials have return Invalid---------------");
                     return;
                   }
                   else {
                     signIn(_usernameController.text, _passwordController.text);
-                    if (Login.instance()
-                        .user != null) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            /// TODO add return to main screen
-                            return RegistrationScreen();
-                          },
-                        ),
-                      );
-                    }
+                    Navigator.of(context).pop(Tuple3(true,_usernameController.text,_nicknameController.text));
                   }
-
-                }
-                );
               }
           ))),
         visible: !_isSignedIn,
@@ -273,8 +240,14 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                     Container();
 
                     signInWithGoogle().whenComplete(() {
+                      if ( googleSignIn.currentUser != null){
+                        Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
+                      }
+                      else {
+                        print("failed to sign in with google");
+                      }
+                      /// Todo add check if failed
 
-                       Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
                       /*
                     Navigator.of(context).push(
                     MaterialPageRoute(
