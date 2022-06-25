@@ -24,14 +24,19 @@ class InfoScreenStates extends State<InfoScreen>{
   int currentScreen = 0;
   bool showInfo = true;
   List<String> instructionsText = [
-    "IN TURN,PLAYERS FLIP OVER \nTHE TOP CARD ON THEIR STACK",
-    "EACH ROUND, THE NEW CARD IS FLIPPED ONTO THE PREVIOUS \n "
-     "ROUND'S STACK TO CREATE A FACE-UP DISCARDED PILE",
-    "NATALI HI HAZUYA","OR png not svg por favor"
-    /*"Whenever two players' cards show the same design (ignoring color), "
-        "a duel begins. Both players immediately try to be the first to grab "
-        "the totem. The successful player wins the duel AND HIS OPEN CARDS ARE ADDED TO THE"
-        "LOSING PLAYER'S DECK"*/
+    "The first player to get rid of all of their cards wins the game!",
+    "In turn, players flip over the top card on their stack.\n"
+    "Each round, the new card is flipped onto the previous round's\n"
+    "stack to create a face-up discard pile. Play proceeds clockwise.",
+    "Whenever two players' cards show the same design (NOT COLOR), \na duel begins! Both players immediately try to be the first to grab \nthe totem. The successful player wins the duel.",
+    "The loser must then pick up their opponent's discard pile, \ntheir own discard pile, and any cards that may be lying \nin the middle of the table.",
+    "After the duel, play continues normally \nbeginning with the loser of the duel. ",
+    "There are 3 special cards: \n1) Inside arrows\n2)Outside arrows\n3)Colored arrows",
+    "\n1/3 Inside arrows ->  The first to grab the totem wins the round.",
+    "\n2/3 Outside arrows -> All players flip the topmost card \nof their stack simultaneously.",
+    "\n3/3 Colored arrows -> From now on, duels are no longer triggered \nby matching symbols, but by matching colors. This means \nthat a duel may start immediately, until this card is covered.",
+    "Penalties ->  If a player wrongly grabs the totem, \nthey have to take all of the cards that are face-up on the table: \nEach player's discard, but also any cards in the middle of the table.",
+    "End of the Game -> When a player has flipped their last card, \nit is left face-up on the top of their discard pile and other players \ncontinue play. A player has not won until \nthey somehow get rid of their discard pile."
   ];
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -54,9 +59,9 @@ class InfoScreenStates extends State<InfoScreen>{
         width: size.width, height: size.height,
         child: Stack(fit: StackFit.passthrough,children: [Positioned(left: size.width * 0.32, top: size.height * 0.21,child: Text('HOW TO PLAY',style:
         GoogleFonts.galindo(fontSize: 36, color: Colors.white, fontWeight:
-        FontWeight.w600, decoration: TextDecoration.none))), Positioned(left: size.width * 0.23, top: size.height * 0.45,
+        FontWeight.w600, decoration: TextDecoration.none))), Positioned(left: size.width * 0.09, top: size.height * 0.40,
         child: Text(instructionsText[currentScreen],style:
-        GoogleFonts.galindo(fontSize: 24, color: Colors.white, fontWeight:
+        GoogleFonts.galindo(fontSize: 18, color: Colors.white, fontWeight:
         FontWeight.w500, decoration: TextDecoration.none))),
           currentScreen > 0 ? Positioned(left: size.width * 0.09, top: size.height * 0.7 ,child:
           GestureDetector(child: Image.asset('assets/How to play/back.png', height: 0.2 * size.height,
@@ -64,7 +69,7 @@ class InfoScreenStates extends State<InfoScreen>{
             setState((){
             currentScreen -= 1;
             })},)) : SizedBox(),
-          currentScreen < 3 ? Positioned(right: size.width * 0.09, top: size.height * 0.7 ,
+          currentScreen < instructionsText.length -1 ? Positioned(right: size.width * 0.09, top: size.height * 0.7 ,
           child: GestureDetector(child: Image.asset('assets/How to play/next_BTN.png',
           height: 0.2 * size.height,width: 0.2 * size.width ),onTap: () =>  {
             setState((){
