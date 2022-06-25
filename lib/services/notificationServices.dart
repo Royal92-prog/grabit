@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flash/flash.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ import 'package:flutter/material.dart';
 
 void showBasicsFlash({
   Duration? duration,
-  required String msg,
+  required Widget msg,
   flashStyle = FlashBehavior.floating,
   var context,
   var size
@@ -34,9 +35,7 @@ void showBasicsFlash({
             bottom: size.height * 0.4),
         //boxShadows: kElevationToShadow[4],
         horizontalDismissDirection: HorizontalDismissDirection.horizontal,
-        child: Center(child:
-        Text(msg, style: GoogleFonts.galindo(fontSize: 24,
-            color: '#FFD86C'.toColor()))));/*FlashBar(
+        child: msg);/*FlashBar(
           content: Text('This is a basic flash'),
         )*/
 
@@ -83,7 +82,55 @@ class  GameNotifications extends StatelessWidget {
               GoogleFonts.galindo(
                   fontSize: 28,
                   color: '#FFD86C'.toColor())))));*/
-      showBasicsFlash(duration: Duration(milliseconds: 1000),msg : "Get Ready", context : context, size : size);
+      showBasicsFlash(duration: Duration(milliseconds: 5700), msg : SizedBox(
+            width: size.width * 0.75,
+            height: size.height * 0.2,
+              child : Center(child: DefaultTextStyle(
+                style: GoogleFonts.galindo(
+                  fontSize: 26,
+                  color: '#FFD86C'.toColor(),
+                  fontWeight:FontWeight.w300,
+                  decoration: TextDecoration.none),
+                child: AnimatedTextKit(
+                  pause: const Duration(milliseconds: 350),
+                  animatedTexts: [
+                    ScaleAnimatedText(
+                      'GET READY',
+                      duration: Duration(milliseconds: 1000),
+                      textStyle: GoogleFonts.galindo(
+                        fontSize: 26,
+                        color: '#FFD86C'.toColor(),
+                        fontWeight:FontWeight.w300,
+                        decoration: TextDecoration.none),),
+                    ScaleAnimatedText(
+                      '3',
+                      duration : Duration(milliseconds: 800),
+                        textStyle: GoogleFonts.galindo(
+                            fontSize: 26,
+                            color: '#FFD86C'.toColor(),
+                            fontWeight:FontWeight.w300,
+                            decoration: TextDecoration.none)
+                      ),
+                    ScaleAnimatedText(
+                        '2',
+                        duration : Duration(milliseconds: 800),
+                        textStyle: GoogleFonts.galindo(
+                            fontSize: 26,
+                            color: '#FFD86C'.toColor(),
+                            fontWeight:FontWeight.w300,
+                            decoration: TextDecoration.none)
+                    ),
+                    ScaleAnimatedText(
+                        '1',
+                        duration : Duration(milliseconds: 800),
+                        textStyle: GoogleFonts.galindo(
+                            fontSize: 26,
+                            color: '#FFD86C'.toColor(),
+                            fontWeight:FontWeight.w300,
+                            decoration: TextDecoration.none)
+                    ),
+              ],
+          totalRepeatCount : 1)))), context : context, size : size);
       for(int i = 3 ; i > 0 ; i--) {
         /*await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             duration: Duration(seconds: 1),
@@ -99,23 +146,34 @@ class  GameNotifications extends StatelessWidget {
                 GoogleFonts.galindo(
                     fontSize: 28,
                     color: '#FFD86C'.toColor())))));*/
-        showBasicsFlash(duration: Duration(milliseconds: 2500),msg : "${i}", context : context, size : size);
+        //showBasicsFlash(duration: Duration(milliseconds: 2500),msg : Text(data)"${i}", context : context, size : size);
       }
     }
     else{
-      /*await ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(duration: Duration(seconds: 5),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.black.withOpacity(0.5),
-          margin: EdgeInsets.only(
-            top: size.height * 0.3,
-            right: size.width * 0.1,
-            left: size.width * 0.1,
-            bottom: size.height * 0.4),
-          content: Center(child:
-            Text(currentMsg, style: GoogleFonts.galindo(fontSize: 24,
-              color: '#FFD86C'.toColor())))));*/
-      showBasicsFlash(duration: Duration(milliseconds: 2500),msg : msg, context : context, size : size);
+      print("Line 153 -------- here");
+      showBasicsFlash(duration: Duration(milliseconds: 2400), msg : SizedBox(
+          width: size.width * 0.75,
+          height: size.height * 0.2,
+          child : Center(child: DefaultTextStyle(
+              style: GoogleFonts.galindo(
+                  fontSize: 26,
+                  color: '#FFD86C'.toColor(),
+                  fontWeight:FontWeight.w300,
+                  decoration: TextDecoration.none),
+              child: AnimatedTextKit(
+                  animatedTexts: [
+                    ScaleAnimatedText(
+                        msg,
+                        duration : Duration(milliseconds: 2300),
+                        textStyle: GoogleFonts.galindo(
+                            fontSize: 26,
+                            color: '#FFD86C'.toColor(),
+                            fontWeight:FontWeight.w300,
+                            decoration: TextDecoration.none)
+                    ),
+                  ],
+                  totalRepeatCount : 1)))), context : context, size : size);
+
     }
   }
 }

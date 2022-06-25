@@ -169,25 +169,25 @@ class entryScreenState extends State<entryScreen>{
                   initializePlayers(_gameNum);
                   cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
                   cardsArr.shuffle();
+                  cardsArr[0] = 77;
+                  cardsArr[1] = 75;
+                  cardsArr[1] = 73;
                   dataUpload['cardsData'] = cardsArr;
                   ///ADDED here - will be initialized only by player 1
                   dataUpload['underTotemCards'] = [];
                   dataUpload['totem'] = false;
-                  List<bool> totemPressed = [];
-                  for(int i = 0; i < widget.numPlayers; i++ ){
-                    //dataUpload['totem${i}Pressed'] = false;
-                    totemPressed.add(false);
-                  };
+                  //Map<String, dynamic> totemPressed = {};
                   Map<String, dynamic> messages = {};
                   for(int i = 0; i < widget.numPlayers; i++){
                     //dataUpload['Player${i}Msgs'] = "";//playersMassages
                     messages['player${i}MSGS'];
+                    //totemPressed[]
                   }
                   await _firestore.collection('game').doc('game${_gameNum}MSGS').
                     set(messages, SetOptions(merge : true));
             //      await _firestore.collection('game').doc('game${_gameNum}Messages').set(playersMassages, SetOptions(merge : true));
                   dataUpload['turn'] = 0;
-                  dataUpload['totemPressed'] = totemPressed;
+                  //dataUpload['totemPressed'] = totemPressed;
                   //dataUpload['messages'] = messages;
                   dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0];
                   dataUpload['matchingColorCards'] = [0,0,0,0];

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
+import 'dart:math';
 
 import '../main.dart';
 
@@ -73,31 +73,48 @@ class totemState extends State<totem> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     double rightPosition = underTotemCards.length > 9 ? 0.008 : 0.016;
-    return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
-        builder: (
+    return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance.collection('game').
+        doc('game${widget.gameNum}').snapshots(),
+      builder: (
           BuildContext context,
           AsyncSnapshot <DocumentSnapshot> snapshot) {
             if (snapshot.connectionState == ConnectionState.active) {
-              final cloudData = snapshot.data;
-              if (cloudData != null) {
+              if (snapshot.data != null) {
+                Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
                 cardsHandler = [];
-                isTotemPressed = cloudData['totem'];
+                isTotemPressed = cloudData.containsKey('totem') == true ?
+                  cloudData['totem'] : true;
                 for (int i = 0; i < widget.playersNumber; i++) {
+                  if(cloudData.containsKey('player_${i}_deck') == true ){
                   cardsHandler.add([
                   cloudData['player_${i}_deck'],
-                  cloudData['player_${i}_openCards']
-                ]);
+                  cloudData['player_${i}_openCards']]);
+                  }
+                  else{
+                    cardsHandler.add([[], []]);
+                  }
                 }
-                currentTurn = cloudData['turn'];
-                underTotemCards = cloudData['underTotemCards'];
+                currentTurn = cloudData.containsKey('turn') == true ?
+                  cloudData['turn'] : 0;
+
+                underTotemCards = cloudData.containsKey('underTotemCards') == true ?
+                  cloudData['underTotemCards'] : [];
+
                 _isColorActive = cloudData['cardsActiveUniqueArray'][1] > 0;
+
                 cardsGroupArray = _isColorActive ?
-                cloudData['matchingColorCards'] :
-                cloudData['matchingCards'];
-                matchingRegularCards = cloudData['matchingCards'];
-                uniqueArray = cloudData['cardsActiveUniqueArray'];
-                matchingColorCards = cloudData['matchingColorCards'];
+                  cloudData['matchingColorCards'] :
+                  cloudData['matchingCards'];
+
+                matchingRegularCards = cloudData.containsKey('matchingCards') == true ?
+                  cloudData['matchingCards'] : [];
+
+                uniqueArray = cloudData.containsKey('cardsActiveUniqueArray') == true ?
+                  cloudData['cardsActiveUniqueArray'] : [];
+
+                matchingColorCards = cloudData.containsKey('matchingColorCards') == true ?
+                  cloudData['matchingColorCards'] : [];
                 //messages = cloudData['messages'];
             }
             return Container(
@@ -122,19 +139,28 @@ class totemState extends State<totem> {
                       height: 0.15 * size.height,
                       alignment: Alignment.center),
                       onTap: isTotemPressed ? null : () async {
-                        //List <dynamic> messages = [for(int i = 0; i < widget.playersNumber; i++) ""];
-                        Map<String, dynamic> cloudMassages = {};
-                        Map<String, dynamic> uploadData = {};
                         FirebaseFirestore _firestore = FirebaseFirestore.instance;
+                        //List <dynamic> messages = [for(int i = 0; i < widget.playersNumber; i++) ""];
+                        /*await _firestore.collection('game').doc('game${widget.gameNum}')
+                            .set({'totem': true, 'turn' : -2},
+                            SetOptions(merge: true));*/
                         /// TODO problem sync
-                        await _firestore.collection('game').doc('game${widget.gameNum}')
+                       /* await _firestore.collection('game').doc('game${widget.gameNum}')
                           .set({'totem': true,
                           'totem${widget.index}Pressed': true},
-                            SetOptions(merge: true));
-                        await Future.delayed(const Duration(milliseconds: 1000));
-                        for (int i = 0; i < widget.playersNumber && !isTotemPressed; i++) {
-                          if (cloudData!['totem${i}Pressed']) return;
-                        }
+                            SetOptions(merge: true));*/
+                        Random random = new Random();
+                        int randomNumber = random.nextInt(900);
+                        await Future.delayed(Duration(milliseconds: randomNumber));
+                        if (isTotemPressed == true) return;
+                         await _firestore.collection('game').doc('game${widget.gameNum}')
+                          .set({'totem': true, 'turn' : -2},
+                          SetOptions(merge: true));
+                        Map<String, dynamic> cloudMassages = {};
+                        Map<String, dynamic> uploadData = {};
+                       /* for (int i = 0; i < widget.playersNumber && !isTotemPressed; i++) {
+                          if (uploadData['totem${i}Pressed']) return;
+                        }*/
                         ///#1st case :  totem was pressed since inner arrows is on the table
                         print("Unique array :: ${uniqueArray}");
                         if (uniqueArray[0] > 0 && uniqueArray[0] > uniqueArray[3]) {

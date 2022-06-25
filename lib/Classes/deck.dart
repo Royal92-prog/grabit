@@ -74,12 +74,13 @@ class deckState extends State<playerDeck> {
 
               cardsActiveUniqueArray = cloudData.containsKey('cardsActiveUniqueArray') ?
                 cloudData['cardsActiveUniqueArray'] : [];
-
+              print("(1)  matchi ng cards: ${cardsGroupArray} ,ColorsArr: ${cardsColorArray} UniqueArr ${cardsActiveUniqueArray}");
             }
 
               /// 0: insideArrows, 1: color, 2: outsideArrows
             return GestureDetector(
               onTap: (currentTurn != widget.index || widget.index != widget.deviceIndex) ? null : () async{
+
                 bool outerArrowsRevealed = false; /// WDYT
                 FirebaseFirestore db = FirebaseFirestore.instance;
                 Map<String, dynamic> cloudMsgs = {};
@@ -98,7 +99,7 @@ class deckState extends State<playerDeck> {
                     'matchingColorCards' : cardsColorArray,
                     'cardsActiveUniqueArray' : cardsActiveUniqueArray
                   },SetOptions(merge: true));
-                  await Future.delayed(Duration(milliseconds: 500));
+                  await Future.delayed(Duration(milliseconds: 1000));
                   for (int i = 0; i < widget.playersNumber; i++) {
                     //cloudMsgs['Player${i}Msgs'] = "outerArrows";
                     cloudMsgs['player${i}MSGS'] = "outerArrows";
@@ -196,18 +197,18 @@ class deckState extends State<playerDeck> {
   }
 
   handleSpecialCardNo0(index) async {
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 4));
     //Map<String, dynamic> cardsUpload = {};
     for (int i = 0; i < widget.playersNumber; i++) {
-      print('here Line 178 ${index} is the maniac');
-      print("(1) ${i},  matchi ng cards: ${cardsGroupArray} ,ColorsArr: ${cardsColorArray} UniqueArr ${cardsActiveUniqueArray}");
-      print('___');
+      //print('here Line 178 ${index} is the maniac');
+      //print("(1) ${i},  matchi ng cards: ${cardsGroupArray} ,ColorsArr: ${cardsColorArray} UniqueArr ${cardsActiveUniqueArray}");
+      //print('___');
       if (cardsHandler[i][0].length > 0) {
         if (cardsHandler[i][1].length > 0 && i != index) decreaseCardsArray(cardsHandler[i][1][0]);
-        print("(2) ${i},  matchi ng cards: ${cardsGroupArray} ,ColorsArr: ${cardsColorArray} UniqueArr ${cardsActiveUniqueArray}");
+        //print("(2) ${i},  matchi ng cards: ${cardsGroupArray} ,ColorsArr: ${cardsColorArray} UniqueArr ${cardsActiveUniqueArray}");
         cardsHandler[i][1].insert(0, cardsHandler[i][0].removeAt(0));
         increaseCardsArray(cardsHandler[i][1][0]);
-        print("(3) ${i},  matchi ng cards: ${cardsGroupArray} ,ColorsArr: ${cardsColorArray} UniqueArr ${cardsActiveUniqueArray}");
+        //print("(3) ${i},  matchi ng cards: ${cardsGroupArray} ,ColorsArr: ${cardsColorArray} UniqueArr ${cardsActiveUniqueArray}");
         //cardsUpload['player_${i}_deck'] = cardsHandler[i][0];
         //cardsUpload['player_${i}_openCards'] = cardsHandler[i][0];
         await FirebaseFirestore.instance.collection("game").doc("game${widget.gameNum}").set({
@@ -216,6 +217,7 @@ class deckState extends State<playerDeck> {
           'cardsActiveUniqueArray' : cardsActiveUniqueArray,
           'player_${i}_deck' : cardsHandler[i][0],
           'player_${i}_openCards' : cardsHandler[i][1],},SetOptions(merge :true));
+        await Future.delayed(Duration(milliseconds: 250));
       }
     }
   }
