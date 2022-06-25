@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../Classes/card.dart';
 import '../Classes/gameTable.dart';
 import '../services/gameNumberManager.dart';
 
@@ -23,6 +24,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
   int _connectedNum = 0;
   var _waitTime = 30000;
   var _nicknames = [];
+  late var cardsArr;
 
   // @override
   // void initState() {
@@ -47,8 +49,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
             final data = snapshot.data;
             if (data != null) {
               _connectedNum = data['connectedPlayersNum'];
-              _nicknames = [data['player_0_nickname'], data['player_1_nickname'], data['player_2_nickname'],
-                data['player_3_nickname'], data['player_4_nickname']];
+              _nicknames = [for(int i=0; i<_connectedNum; i++) data['player_${i}_nickname']];
             }
           }
 
@@ -127,6 +128,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
     if (widget.playerIndex == 0) {
       increaseGameNum(widget.gameNum);
     }
+    initializeGameData();
     Navigator.of(context).push(
         MaterialPageRoute<void>(
             builder: (context) {
@@ -135,6 +137,54 @@ class _WaitingRoomState extends State<WaitingRoom> {
             }
         )
     );
+  }
+
+  void initializeGameData() async{
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    Map<String,dynamic> dataUpload = {};
+    if (widget.playerIndex == 0) {
+      cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
+      cardsArr.shuffle();
+      dataUpload['cardsData'] = cardsArr;
+      ///ADDED here - will be initialized only by player 1
+      dataUpload['underTotemCards'] = [];
+      dataUpload['totem'] = false;
+      for(int i = 0; i < _connectedNum; i++ ){
+        dataUpload['totem${i}Pressed'] = false;
+      }
+      dataUpload['turn'] = 0;
+      dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0];
+      dataUpload['matchingColorCards'] = [0,0,0,0];
+      dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
+    }
+    else {
+      await _firestore.collection('game').doc('game${widget.gameNum}').get().then(
+              (snapshot) {
+            if (snapshot.exists) {
+              final data = snapshot.data();
+              if (data != null) {
+                cardsArr = data['cardsData'];
+              }
+            }
+            return null;
+          }
+      );
+    }
+    int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
+    int cards = (totalCardsNum / _connectedNum).toInt();
+    int remainder = widget.playerIndex + 1 > (totalCardsNum) % _connectedNum ? 0 :
+    (totalCardsNum) % _connectedNum - widget.playerIndex;
+    if (remainder > 0){
+      dataUpload['player_${widget.playerIndex.toString()}_deck'] =
+          cardsArr.sublist(cards*(widget.playerIndex), (cards * (widget.playerIndex + 1))) +
+              cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder + 1);
+    }
+    else{
+      dataUpload['player_${widget.playerIndex.toString()}_deck'] =
+          cardsArr.sublist(cards*(widget.playerIndex), (cards * (widget.playerIndex + 1)));
+    }
+    dataUpload['player_${(widget.playerIndex).toString()}_openCards'] = [];
+    await _firestore.collection('game').doc('game${widget.gameNum}').set(dataUpload, SetOptions(merge : true));
   }
 }
 

@@ -222,7 +222,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) {
-                            /// TODO add return to main screen
+                            /// TODO add return to main screen, change to  pop?
                             return RegistrationScreen();
                           },
                         ),
