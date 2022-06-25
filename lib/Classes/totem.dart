@@ -181,13 +181,12 @@ class totemState extends State<totem> {
                             'matchingColorCards': matchingColorCards,
                             'player_${widget.index}_openCards': [],
                           };
-                          /*cloudMassages = {
-                            'Player${widget.index}Msgs': "inner arrows card - You Win!"
-                          };*/
+
                           cloudMassages['player${widget.index}MSGS'] = "inner arrows card - You Win!";
                           for (int i = 0; i < widget.playersNumber; i++) {
                             if (i == widget.index) continue;
-                            cloudMassages['player${i}MSGS'] = "player ${widget.index} pressed the inner button first";
+                            cloudMassages['player${i}MSGS'] =
+                              "inner arrows card ! \n player ${widget.index} pressed the inner button first";
                           }
                           //uploadData["messages"] = messages;
                           await _firestore.collection('game').doc('game${widget.gameNum}').set(
@@ -297,6 +296,7 @@ class totemState extends State<totem> {
                     if(cardsHandler[i][0].length == 0 && cardsHandler[i][1].length == 0 ) winners.add(i);
                     }
                     if(winners.length > 0){
+                      Future.delayed(Duration(milliseconds: 1500 ));
                     var finalMsg = "";
                     if(winners.length > 1) finalMsg = "there is no sole winner in this battle";
                     else  finalMsg = "Player No, ${winners[0]} won !";

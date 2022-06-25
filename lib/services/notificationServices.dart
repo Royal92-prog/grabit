@@ -32,7 +32,7 @@ void showBasicsFlash({
             top: size.height * 0.15,
             right: size.width * 0.1,
             left: size.width * 0.1,
-            bottom: size.height * 0.4),
+            bottom: size.height * 0.3),
         //boxShadows: kElevationToShadow[4],
         horizontalDismissDirection: HorizontalDismissDirection.horizontal,
         child: msg);/*FlashBar(
@@ -66,22 +66,6 @@ class  GameNotifications extends StatelessWidget {
     await FirebaseFirestore.instance.collection('game').doc('game${gameNum}MSGS').set({
       'player${index}MSGS' : ""}, SetOptions(merge : true));
     if(msg == 'outerArrows'){
-      /*await FirebaseFirestore.instance.collection("game").doc('game${gameNum}').set({
-        'turn' : -10},SetOptions(merge :true));*/
-      /*await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          duration: Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.black.withOpacity(0.5),
-          margin: EdgeInsets.only(
-            top: size.height * 0.3,
-            right: size.width * 0.25,
-            left: size.width * 0.25,
-            bottom: size.height * 0.5),
-          content: Center(child:
-            Text("Get Ready", style:
-              GoogleFonts.galindo(
-                  fontSize: 28,
-                  color: '#FFD86C'.toColor())))));*/
       showBasicsFlash(duration: Duration(milliseconds: 5700), msg : SizedBox(
             width: size.width * 0.75,
             height: size.height * 0.2,
@@ -131,26 +115,8 @@ class  GameNotifications extends StatelessWidget {
                     ),
               ],
           totalRepeatCount : 1)))), context : context, size : size);
-      for(int i = 3 ; i > 0 ; i--) {
-        /*await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            duration: Duration(seconds: 1),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.black.withOpacity(0.5),
-            margin: EdgeInsets.only(
-              top: size.height * 0.25,
-              right: size.width * 0.25,
-              left: size.width * 0.25,
-              bottom: size.height * 0.6),
-            content: Center(child:
-              Text("${i}",style:
-                GoogleFonts.galindo(
-                    fontSize: 28,
-                    color: '#FFD86C'.toColor())))));*/
-        //showBasicsFlash(duration: Duration(milliseconds: 2500),msg : Text(data)"${i}", context : context, size : size);
-      }
     }
     else{
-      print("Line 153 -------- here");
       showBasicsFlash(duration: Duration(milliseconds: 2400), msg : SizedBox(
           width: size.width * 0.75,
           height: size.height * 0.2,
@@ -161,6 +127,7 @@ class  GameNotifications extends StatelessWidget {
                   fontWeight:FontWeight.w300,
                   decoration: TextDecoration.none),
               child: AnimatedTextKit(
+                  isRepeatingAnimation: false,
                   animatedTexts: [
                     ScaleAnimatedText(
                         msg,

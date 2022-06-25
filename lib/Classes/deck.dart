@@ -42,10 +42,17 @@ class playerDeck extends StatelessWidget {
                 [
                   SvgPicture.asset('assets/Full_pack.svg',
                     width: 0.1 * size.width, height: 0.1 * size.height,),
-                  Positioned(top: 0.01 * size.height, right: 0.012 * size.width,
+                  Positioned(
+                    top: 0.017 * size.height,
+                    left: cardsHandler != null &&
+                      cardsHandler.length > 9 ?
+                      0.012 * size.width : 0.02 * size.width,
                     child: Text(
-                        "${cardsHandler.length}", style:
-                    TextStyle(fontSize: 15, color: Colors.black)),)
+                      "${cardsHandler.length}",
+                      style: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontSize: 15,
+                        color: Colors.black),),)
                 ],);
           }
           else

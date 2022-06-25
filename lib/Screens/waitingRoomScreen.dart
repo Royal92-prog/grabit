@@ -171,20 +171,18 @@ class _WaitingRoomState extends State<WaitingRoom> {
         Map<String, dynamic> messages = {};
         int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
         int cards = (totalCardsNum / _connectedNum).toInt();
-        int remainder = widget.playerIndex + 1 >
-            (totalCardsNum) % _connectedNum ? 0 :
-            (totalCardsNum) % _connectedNum - widget.playerIndex;
+        int remainder = (totalCardsNum) % _connectedNum;
         for(int i = 0; i < _connectedNum; i++){
           dataUpload['player_${i}_openCards'] = [];
           messages['player${i}MSGS'] = "";
-          if (remainder > 0){
-            dataUpload['player_${i}_deck'] =
-              cardsArr.sublist(cards*(i), (cards * (i + 1))) +
-              cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder + 1);
+          if(remainder > 0){
+            dataUpload['player_${i}_deck'] = cardsArr.sublist(cards*i, (cards*(i+1))) +
+                cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder + 1);
+            remainder--;
           }
           else{
-            dataUpload['player_${i}_deck'] =
-              cardsArr.sublist(cards*(i), (cards * (i + 1)));
+            dataUpload['player_${i.toString()}_deck'] =
+              cardsArr.sublist(cards*i, (cards*(i+1)));
           }
         }
         await _firestore.collection('game').doc('game${widget.gameNum}MSGS').
