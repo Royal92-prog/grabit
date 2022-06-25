@@ -35,6 +35,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   firebase_core: ^1.8.0
+  animated_text_kit: ^4.2.2
+  flash: ^2.0.3+2
   firebase_auth: ^1.0.0
   cloud_firestore: ^3.1.7
   flutter_svg: ^0.22.0
@@ -116,6 +118,8 @@ flutter:
   assets:
     - assets/HostGame/back.png
     - assets/HostGame/join.png
+    - assets/game/woodenTurn.png
+    - assets/game/your_turn_text.png
     - assets/Lobby/Signout_BTN.png
     - assets/How to play/next_BTN.png
     - assets/How to play/X.png
