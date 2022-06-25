@@ -76,7 +76,8 @@ class  GameNotifications extends StatelessWidget {
                   fontWeight:FontWeight.w300,
                   decoration: TextDecoration.none),
                 child: AnimatedTextKit(
-                  pause: const Duration(milliseconds: 350),
+                  pause: const Duration(milliseconds: 1000),
+                    isRepeatingAnimation: false,
                   animatedTexts: [
                     ScaleAnimatedText(
                       'GET READY',
@@ -88,7 +89,7 @@ class  GameNotifications extends StatelessWidget {
                         decoration: TextDecoration.none),),
                     ScaleAnimatedText(
                       '3',
-                      duration : Duration(milliseconds: 800),
+                      duration : Duration(milliseconds: 1000),
                         textStyle: GoogleFonts.galindo(
                             fontSize: 26,
                             color: '#FFD86C'.toColor(),
@@ -97,7 +98,7 @@ class  GameNotifications extends StatelessWidget {
                       ),
                     ScaleAnimatedText(
                         '2',
-                        duration : Duration(milliseconds: 800),
+                        duration : Duration(milliseconds: 1000),
                         textStyle: GoogleFonts.galindo(
                             fontSize: 26,
                             color: '#FFD86C'.toColor(),
@@ -127,11 +128,12 @@ class  GameNotifications extends StatelessWidget {
                   fontWeight:FontWeight.w300,
                   decoration: TextDecoration.none),
               child: AnimatedTextKit(
+                pause: Duration(milliseconds: 2400),
                   isRepeatingAnimation: false,
                   animatedTexts: [
                     ScaleAnimatedText(
                         msg,
-                        duration : Duration(milliseconds: 2300),
+                        duration : Duration(milliseconds: 2400),
                         textStyle: GoogleFonts.galindo(
                             fontSize: 26,
                             color: '#FFD86C'.toColor(),

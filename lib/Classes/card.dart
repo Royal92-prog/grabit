@@ -51,6 +51,11 @@ class cardState extends State<currentCard>{
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     initializeCardsMap();
     var size = MediaQuery.of(context).size;

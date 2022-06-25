@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,8 +81,9 @@ class totemState extends State<totem> {
       builder: (
           BuildContext context,
           AsyncSnapshot <DocumentSnapshot> snapshot) {
+            StreamSubscription subscription = FirebaseFirestore.instance.collection('game').
+            doc('game${widget.gameNum}').snapshots().listen((event) { });
             if (snapshot.connectionState == ConnectionState.active && snapshot.data?.data() != null) {
-
                 Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
                 cardsHandler = [];
                 isTotemPressed = cloudData.containsKey('totem') == true ?
@@ -101,11 +104,16 @@ class totemState extends State<totem> {
                 underTotemCards = cloudData.containsKey('underTotemCards') == true ?
                   cloudData['underTotemCards'] : [];
 
-                _isColorActive = cloudData['cardsActiveUniqueArray'][1] > 0;
+                _isColorActive = cloudData.containsKey('cardsActiveUniqueArray') == true &&
+                    cloudData['cardsActiveUniqueArray'][1] > 0;
 
-                cardsGroupArray = _isColorActive ?
+                if(cloudData.containsKey('matchingColorCards') == true
+                && cloudData.containsKey('matchingCards') == true) {
+                  cardsGroupArray = _isColorActive ?
                   cloudData['matchingColorCards'] :
                   cloudData['matchingCards'];
+                }
+                else cardsGroupArray = [];
 
                 matchingRegularCards = cloudData.containsKey('matchingCards') == true ?
                   cloudData['matchingCards'] : [];
@@ -115,6 +123,9 @@ class totemState extends State<totem> {
 
                 matchingColorCards = cloudData.containsKey('matchingColorCards') == true ?
                   cloudData['matchingColorCards'] : [];
+                if(currentTurn == -1 || currentTurn == -3){
+                  subscription.cancel();
+                }
                 //messages = cloudData['messages'];
 
             return Container(

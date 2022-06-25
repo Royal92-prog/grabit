@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +22,16 @@ class TurnAlert extends StatelessWidget {
         doc('game${gameNum}').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
+          StreamSubscription subscription = FirebaseFirestore.instance.collection('game').
+          doc('game${gameNum}').snapshots().listen((event) { });
           if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.data != null) {
               Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
               currentTurn = (cloudData.containsKey('turn')) == true ?
                 cloudData['turn'] : 0;
+              if(currentTurn == -1 || currentTurn == -3){
+                subscription.cancel();
+              }
             }
 
             return Stack(children: [Image.asset('assets/game/woodenTurn.png',

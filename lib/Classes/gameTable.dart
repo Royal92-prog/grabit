@@ -128,7 +128,31 @@ class GameTable extends StatelessWidget {
               child: TurnAlert(
                 index: playerIndex,
                 gameNum: gameNum,
-          ))
+          )),
+          Positioned(
+            left: size.width * 0.05 ,
+            bottom: size.height * 0.05,
+            child: GestureDetector(
+              child: Image.asset('assets/HostGame/back.png',
+                height: 0.2 * size.height,
+                width: 0.25 * size.width),
+              onTap: () async{
+                Map<String, dynamic> cloudMessasges = {};
+                FirebaseFirestore _firestore = FirebaseFirestore.instance;
+                await _firestore.collection('game').doc('game${gameNum}').set(
+                    {'turn' : -2}, SetOptions(merge : true));
+                cloudMessasges['player${playerIndex}MSGS'] = " Bye Bye :)";
+                for(int i = 0; i < playersNumber; i++){
+                  if(i == playerIndex) continue;
+                  cloudMessasges['player${i}MSGS'] = "player ${playerIndex} ended the game \n"
+                      "see you next time :)";
+                }
+                await _firestore.collection('game').doc('game${gameNum}MSGS').
+                set(cloudMessasges, SetOptions(merge : true));
+                await _firestore.collection('game').doc('game${gameNum}').set(
+                    {'turn' : -1}, SetOptions(merge : true));
+              }
+      )),
     ]);
         //;
 
@@ -138,7 +162,8 @@ class GameTable extends StatelessWidget {
     int delay = isDeadEnd ? 15 : 3;
     await Future.delayed(Duration(seconds: delay));
     if (playerIndex == 0) {
-      FirebaseFirestore.instance.collection('game').doc('players${gameNum}').delete();
+      print("Line 165 ---------- operational");
+      await FirebaseFirestore.instance.collection('game').doc('players${gameNum}').delete();
     }
     Navigator.of(context).popUntil((route) => route.isFirst);
     //Navigator.of(context).pop();

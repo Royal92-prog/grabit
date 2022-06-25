@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,8 @@ class DrawCard extends StatelessWidget {
     doc('game${gameNum}').snapshots(),
   builder: (BuildContext context,
     AsyncSnapshot <DocumentSnapshot> snapshot) {
+    StreamSubscription subscription = FirebaseFirestore.instance.collection('game').
+    doc('game${gameNum}').snapshots().listen((event) { });
       if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
           cardsHandler = [];
           Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
@@ -44,14 +48,28 @@ class DrawCard extends StatelessWidget {
             else cardsHandler.add([[],[]]);
           }
         currentTurn = cloudData.containsKey('turn') == true ? cloudData['turn'] : 0;
-        if (index == 0) {
-          if (currentTurn == -1) {
-            currentTurnCallback(true);
+
+        if (currentTurn == -1 || currentTurn == -3) {
+          subscription.cancel();
+          Future.delayed(Duration.zero, () async {
+            //print("players${gameNum}");
+            if(playersNumber != 0) {
+              await Future.delayed(Duration(seconds: 8));
+            }
+            else {
+              await Future.delayed(Duration(seconds: 10));
+              await FirebaseFirestore.instance.collection('game').doc(
+                  'players${gameNum}').delete();
+              await FirebaseFirestore.instance.collection('game').doc(
+                  'players${gameNum}MSGS').delete();
+            }
+            Navigator.of(context).popUntil((route) => route.isFirst);
+          });//currentTurnCallback(true);
           }
-          else if (currentTurn == -3) {
+          /*else if (currentTurn == -3) {
             currentTurnCallback(false);
-          }
-        }
+          }*/
+
 
         cardsGroupArray = cloudData.containsKey('matchingCards') == true ?
           cloudData['matchingCards'] : [];

@@ -46,11 +46,8 @@ class entryScreenState extends State<entryScreen>{
     super.initState();
   }
 
-  @mustCallSuper
-  @protected
+  @override
   void dispose() async{
-    print("entry Line 42");
-    await Login.instance().signOut();
     super.dispose();
   }
 
@@ -67,7 +64,7 @@ class entryScreenState extends State<entryScreen>{
             height: size.height,),),
     Positioned(
           top: size.height * 0.05,
-          left: size.width * 0.31,
+          left: size.width * 0.315,
           child: Container(
             width: size.width * 0.39,
             height: size.height * 0.32,
@@ -76,16 +73,16 @@ class entryScreenState extends State<entryScreen>{
               height: 0.35 * size.height),)),
         Positioned(
           top: 0.11 * size.height,
-          left: 0.305 * size.width,
+          left: 0.32 * size.width,
           child: CircleAvatar(
-                  radius: 30,
+                  radius: size.width * 0.045,
                   backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
                   foregroundImage: _avatarUrl == null ? null : NetworkImage(_avatarUrl!),
                   ),
         ),
         Positioned(
           top: 0.18 * size.height,
-          left: 0.3 * size.width,
+          left: 0.32 * size.width,
           child: GestureDetector(
               onTap: isLoginMode == false ? null : () async{
                 final url = await updateAvatarByUsername(_username);
@@ -183,68 +180,6 @@ class entryScreenState extends State<entryScreen>{
                 _connectedPlayersNum = await getConnectedNum(_gameNum);
                 _playerIndex = _connectedPlayersNum;
                 ++_connectedPlayersNum;
-                // if (_connectedPlayersNum == 1) {
-                //   initializePlayers(_gameNum);
-                // }
-                // Map<String,dynamic> dataUpload = {};
-                // if (_connectedPlayersNum == 1) {
-                //   initializePlayers(_gameNum);
-                  // cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
-                  // cardsArr.shuffle();
-                  // dataUpload['cardsData'] = cardsArr;
-                  // ///ADDED here - will be initialized only by player 1
-                  // dataUpload['underTotemCards'] = [];
-                  // dataUpload['totem'] = false;
-                  // for(int i = 0; i < widget.numPlayers; i++ ){
-                  //   dataUpload['totem${i}Pressed'] = false;
-                  // }
-                  // dataUpload['turn'] = 0;
-                  // dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0];
-                  // dataUpload['matchingColorCards'] = [0,0,0,0];
-                  // dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
-                // }
-                // else {
-                //   await _firestore.collection('game').doc('game${_gameNum}').get().then(
-                //           (snapshot) {
-                //             if (snapshot.exists) {
-                //               final data = snapshot.data();
-                //               if (data != null) {
-                //                 cardsArr = data['cardsData'];
-                //               }
-                //             }
-                //             return null;
-                //           }
-                //           );
-                // }
-                // int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
-                // int cards = (totalCardsNum / widget.numPlayers).toInt();
-                // int remainder = _playerIndex + 1 > (totalCardsNum) % widget.numPlayers ? 0 :
-                //   (totalCardsNum) % widget.numPlayers - _playerIndex;
-                //var cardsHandler = [];
-                //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
-                ///TO DO :  all shared variables hould be initialized only once at firebase
-                /*
-                dataUpload['underTotemCards'] = [];
-                dataUpload['totem'] = false;
-                dataUpload['totem0Pressed'] = false;
-                dataUpload['totem1Pressed'] = false;
-                dataUpload['totem2Pressed'] = false;
-                dataUpload['turn'] = 0;
-                dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
-                dataUpload['matchingColorCards'] = [0,0,0,0];
-                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];*/
-                // if (remainder > 0){
-                //   dataUpload['player_${_playerIndex.toString()}_deck'] =
-                //       cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1))) +
-                //       cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder + 1);
-                // }
-                // else{
-                //   dataUpload['player_${_playerIndex.toString()}_deck'] =
-                //     cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1)));
-                // }
-                // dataUpload['player_${(_playerIndex).toString()}_openCards'] = [];
-                // dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
-                // await _firestore.collection('game').doc('game${_gameNum}').set(dataUpload, SetOptions(merge : true));
                 setConnectedNum(_connectedPlayersNum, _gameNum);
                 updateNicknameByIndex(_playerIndex, _nicknameController.text, _gameNum);
                 setAvatarForGame(_gameNum, _avatarUrl, _playerIndex);

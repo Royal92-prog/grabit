@@ -59,7 +59,7 @@ class InfoScreenStates extends State<InfoScreen>{
         width: size.width, height: size.height,
         child: Stack(fit: StackFit.passthrough,children: [Positioned(left: size.width * 0.32, top: size.height * 0.21,child: Text('HOW TO PLAY',style:
         GoogleFonts.galindo(fontSize: 36, color: Colors.white, fontWeight:
-        FontWeight.w600, decoration: TextDecoration.none))), Positioned(left: size.width * 0.09, top: size.height * 0.40,
+        FontWeight.w600, decoration: TextDecoration.none))), Positioned(left: size.width * 0.075, top: size.height * 0.40,
         child: Text(instructionsText[currentScreen],style:
         GoogleFonts.galindo(fontSize: 18, color: Colors.white, fontWeight:
         FontWeight.w500, decoration: TextDecoration.none))),

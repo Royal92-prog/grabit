@@ -18,6 +18,7 @@ class playerDeck extends StatelessWidget {
   late var cardsHandler;
   final int index;
   final int gameNum;
+  int currentTurn = 0;
   double rightAlignment = 0.012;
 
 
@@ -31,10 +32,15 @@ class playerDeck extends StatelessWidget {
           doc('game${gameNum}').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
+          StreamSubscription subscription = FirebaseFirestore.instance.collection('game').
+          doc('game${gameNum}').snapshots().listen((event) { });
           if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
               Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
               if(cloudData.containsKey("player_${index}_deck")) cardsHandler = cloudData['player_${index}_deck'];
               else cardsHandler = [];
+              if(currentTurn == -1 || currentTurn == -3){
+                subscription.cancel();
+              }
 
           return Stack(clipBehavior: Clip.antiAliasWithSaveLayer,
                 fit: StackFit.passthrough,

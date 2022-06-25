@@ -177,8 +177,6 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                     }
 
                 }
-
-              }
           ))),
         visible: !_isSignedIn,
 

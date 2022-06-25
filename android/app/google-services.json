@@ -15,19 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "991472976804-j1gdt752hqje4edgo447gq0nbhheekt7.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.technion.android.grabit",
-            "certificate_hash": "de73d1b0a0ff03755696fd032a98df9c1e6b7ea8"
-          }
-        },
-        {
-          "client_id": "991472976804-m73aaj6f1q0kp6dn9dpvl824dsq19qpc.apps.googleusercontent.com",
+          "client_id": "991472976804-gc65mu5e2ggn4oahoae100mjfb9k2h40.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.technion.android.grabit",
             "certificate_hash": "2ac4bed1cdabbee8d19c59790c55d6983412d825"
+          }
+        },
+        {
+          "client_id": "991472976804-ljckif6uh8adt6oo3rg85ke947bosper.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.technion.android.grabit",
+            "certificate_hash": "de73d1b0a0ff03755696fd032a98df9c1e6b7ea8"
           }
         },
         {
