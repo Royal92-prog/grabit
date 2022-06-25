@@ -11,7 +11,7 @@ class DrawCard extends StatelessWidget {
   final int gameNum;
   final int deviceIndex;
   final Function(bool) currentTurnCallback;
-  late var openCards;
+  //var openCards = [];
   late var deck;
   late int currentTurn;
   late var cardsGroupArray;
@@ -31,8 +31,7 @@ class DrawCard extends StatelessWidget {
     doc('game${gameNum}').snapshots(),
   builder: (BuildContext context,
     AsyncSnapshot <DocumentSnapshot> snapshot) {
-      if (snapshot.connectionState == ConnectionState.active) {
-        if (snapshot.data != null) {
+      if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
           cardsHandler = [];
           Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
           for (int i = 0; i < playersNumber; i++) {
@@ -44,7 +43,7 @@ class DrawCard extends StatelessWidget {
             }
             else cardsHandler.add([[],[]]);
           }
-        if (cloudData.containsKey('turn')) currentTurn = cloudData['turn'];
+        currentTurn = cloudData.containsKey('turn') == true ? cloudData['turn'] : 0;
         if (index == 0) {
           if (currentTurn == -1) {
             currentTurnCallback(true);
@@ -62,7 +61,6 @@ class DrawCard extends StatelessWidget {
 
         cardsActiveUniqueArray = cloudData.containsKey('cardsActiveUniqueArray') ?
           cloudData['cardsActiveUniqueArray'] : [];
-  }
 
   /// 0: insideArrows, 1: color, 2: outsideArrows
   return GestureDetector(

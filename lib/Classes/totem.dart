@@ -79,8 +79,8 @@ class totemState extends State<totem> {
       builder: (
           BuildContext context,
           AsyncSnapshot <DocumentSnapshot> snapshot) {
-            if (snapshot.connectionState == ConnectionState.active) {
-              if (snapshot.data != null) {
+            if (snapshot.connectionState == ConnectionState.active && snapshot.data?.data() != null) {
+
                 Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
                 cardsHandler = [];
                 isTotemPressed = cloudData.containsKey('totem') == true ?
@@ -116,7 +116,7 @@ class totemState extends State<totem> {
                 matchingColorCards = cloudData.containsKey('matchingColorCards') == true ?
                   cloudData['matchingColorCards'] : [];
                 //messages = cloudData['messages'];
-            }
+
             return Container(
               height: size.height * 0.3,
               width: size.width * 0.3,

@@ -15,7 +15,7 @@ Map <int,String> cardsDic = {1 : 'assets/1.svg', 2 : 'assets/2.svg', 3 : 'assets
 
 
 class playerDeck extends StatelessWidget {
-  var cardsHandler = [];
+  late var cardsHandler;
   final int index;
   final int gameNum;
   double rightAlignment = 0.012;
@@ -31,11 +31,10 @@ class playerDeck extends StatelessWidget {
           doc('game${gameNum}').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            if (snapshot.data != null) {
+          if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
               Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
               if(cloudData.containsKey("player_${index}_deck")) cardsHandler = cloudData['player_${index}_deck'];
-            }
+              else cardsHandler = [];
 
           return Stack(clipBehavior: Clip.antiAliasWithSaveLayer,
                 fit: StackFit.passthrough,

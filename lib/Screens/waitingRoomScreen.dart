@@ -24,7 +24,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
   int _connectedNum = 0;
   var _waitTime = 30000;
   var _nicknames = [];
-  late var cardsArr;
+  var cardsArr = [];
 
   // @override
   // void initState() {
@@ -42,17 +42,28 @@ class _WaitingRoomState extends State<WaitingRoom> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance.collection('game').doc('players${widget.gameNum}').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            final data = snapshot.data;
-            if (data != null) {
-              _connectedNum = data['connectedPlayersNum'];
-              _nicknames = [for(int i=0; i<_connectedNum; i++) data['player_${i}_nickname']];
+          if (snapshot.connectionState == ConnectionState.active && snapshot.data?.data() != null) {
+            //final data = snapshot.data;
+            //if (data != null) {
+            Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
+            _connectedNum = cloudData.containsKey('connectedPlayersNum')
+                ? cloudData['connectedPlayersNum'] : 0;
+            _nicknames =[];
+            for(int i = 0; i < _connectedNum; i++){
+              if(cloudData.containsKey('player_${i}_nickname')){
+                _nicknames.add(cloudData['player_${i}_nickname']);
+              }
+              else{
+                _nicknames.add("");
+              }
             }
+            //_nicknames = cloudData.containsKey('player_${i}_nickname') ? [for(int i = 0; i < _connectedNum; i++) data['player_${i}_nickname']];
+            //}
+            // }
           }
-
           if (_connectedNum == 3) {
             if (widget.playerIndex == 0) {
               startWaiting();
@@ -141,6 +152,67 @@ class _WaitingRoomState extends State<WaitingRoom> {
     );
   }
 
+    void initializeGameData() async{
+      FirebaseFirestore _firestore = FirebaseFirestore.instance;
+      Map<String,dynamic> dataUpload = {};
+      if (widget.playerIndex == 0) {
+        cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
+        cardsArr.shuffle();
+        dataUpload['cardsData'] = cardsArr;
+        ///ADDED here - will be initialized only by player 1
+        //dataUpload['underTotemCards'] = [];
+        dataUpload['totem'] = false;
+        dataUpload['turn'] = 0;
+        dataUpload['matchingCards'] =
+          [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0];
+        dataUpload['matchingColorCards'] = [0,0,0,0];
+        dataUpload['cardsActiveUniqueArray'] =
+          [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
+        Map<String, dynamic> messages = {};
+        int totalCardsNum = cardsArr.length;//(numberOfRegularCards + ((numberOfUniqueCards)*numberOfUniqueCardsRepeats))
+        int cards = (totalCardsNum / _connectedNum).toInt();
+        int remainder = widget.playerIndex + 1 >
+            (totalCardsNum) % _connectedNum ? 0 :
+            (totalCardsNum) % _connectedNum - widget.playerIndex;
+        for(int i = 0; i < _connectedNum; i++){
+          dataUpload['player_${i}_openCards'] = [];
+          messages['player${i}MSGS'] = "";
+          if (remainder > 0){
+            dataUpload['player_${i}_deck'] =
+              cardsArr.sublist(cards*(i), (cards * (i + 1))) +
+              cardsArr.sublist(totalCardsNum - remainder, totalCardsNum - remainder + 1);
+          }
+          else{
+            dataUpload['player_${i}_deck'] =
+              cardsArr.sublist(cards*(i), (cards * (i + 1)));
+          }
+        }
+        await _firestore.collection('game').doc('game${widget.gameNum}MSGS').
+        set(messages, SetOptions(merge : true));
+        await _firestore.collection('game').doc('game${widget.gameNum}')
+            .set(dataUpload, SetOptions(merge : true));
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ///nofar's version
+  /*
   void initializeGameData() async{
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
     Map<String,dynamic> dataUpload = {};
@@ -195,7 +267,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
           cardsArr.sublist(cards*(widget.playerIndex), (cards * (widget.playerIndex + 1)));
     }
     await _firestore.collection('game').doc('game${widget.gameNum}').set(dataUpload, SetOptions(merge : true));
-  }
+  }*/
 }
 
 

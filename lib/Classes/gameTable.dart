@@ -140,7 +140,8 @@ class GameTable extends StatelessWidget {
     if (playerIndex == 0) {
       FirebaseFirestore.instance.collection('game').doc('players${gameNum}').delete();
     }
-    Navigator.of(context).pop();
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    //Navigator.of(context).pop();
     // if (turn == -1) {
     //   searchOnStoppedTyping = new Timer(Duration(seconds: 8), () async {
     //     await Future.delayed(Duration(seconds: 7));
