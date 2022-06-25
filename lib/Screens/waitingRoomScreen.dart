@@ -124,11 +124,13 @@ class _WaitingRoomState extends State<WaitingRoom> {
   //   }
   // }
 
-  void startGame() {
+  void startGame() async{
     if (widget.playerIndex == 0) {
       increaseGameNum(widget.gameNum);
     }
     initializeGameData();
+    await Future.delayed(
+        const Duration(milliseconds: 8000));
     Navigator.of(context).push(
         MaterialPageRoute<void>(
             builder: (context) {
@@ -151,6 +153,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
       dataUpload['totem'] = false;
       for(int i = 0; i < _connectedNum; i++ ){
         dataUpload['totem${i}Pressed'] = false;
+        dataUpload['player_${i}_openCards'] = [];
       }
       dataUpload['turn'] = 0;
       dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0];
@@ -183,7 +186,6 @@ class _WaitingRoomState extends State<WaitingRoom> {
       dataUpload['player_${widget.playerIndex.toString()}_deck'] =
           cardsArr.sublist(cards*(widget.playerIndex), (cards * (widget.playerIndex + 1)));
     }
-    dataUpload['player_${(widget.playerIndex).toString()}_openCards'] = [];
     await _firestore.collection('game').doc('game${widget.gameNum}').set(dataUpload, SetOptions(merge : true));
   }
 }
