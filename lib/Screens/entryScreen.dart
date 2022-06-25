@@ -35,8 +35,8 @@ class entryScreenState extends State<entryScreen>{
   final _nicknameController = TextEditingController();
   int _connectedPlayersNum = 0;
   int _playerIndex = 0;
-  late var cardsArr;
-  late var _gameNum;
+  var cardsArr = [];
+  var _gameNum = 0;
 
   @override
   void initState() {

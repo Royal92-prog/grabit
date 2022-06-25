@@ -10,6 +10,7 @@ import 'package:grabit/Classes/player.dart';
 import 'package:grabit/Classes/totem.dart';
 
 import '../services/notificationServices.dart';
+import 'drawCard.dart';
 
 
 class GameTable extends StatelessWidget {
@@ -110,6 +111,16 @@ class GameTable extends StatelessWidget {
               context: context,
               index: playerIndex,
               gameNum: gameNum,),
+            Positioned(
+              bottom: size.height * 0.09,
+              right: size.width * 0.067,
+              child: DrawCard(
+                index: playerIndex,
+                playersNumber: playersNumber,
+                gameNum: gameNum,
+                deviceIndex: playerIndex,
+                currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}
+                  )),
     ]);
         //;
 
