@@ -135,6 +135,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
          height: 0.25 * size.height, child:
          GestureDetector(
 
+           /// TODO: add google check if user logged in
              child: Image.asset('assets/logout_BTN.png',width: 0.2 * size.width, height: 0.25 * size.height),
              onTap: () {
                setState(()  {
@@ -175,6 +176,8 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                       Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
                     }
 
+                }
+
               }
           ))),
         visible: !_isSignedIn,
@@ -192,7 +195,6 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                 // setState(() {
                   /// user is not logged in
                   if (validateCredentials(false) == false) {
-                    print("--------------- FAIL - SignIn - Credentials have return Invalid---------------");
                     return;
                   }
                   else {

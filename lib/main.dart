@@ -40,8 +40,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
         debugShowCheckedModeBanner: false,
-        home: Scaffold(resizeToAvoidBottomInset: false, backgroundColor: Colors.black,extendBody: true,
-        body: entryScreen(numPlayers: 3,) ,),);//test2()
+        home: const Scaffold(resizeToAvoidBottomInset: false, backgroundColor: Colors.black,extendBody: true,
+        body: entryScreen() ,),);//test2()
   }
 }
 
