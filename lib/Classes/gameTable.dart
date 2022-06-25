@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:grabit/Classes/player.dart';
 import 'package:grabit/Classes/totem.dart';
+import 'package:grabit/Classes/turnAlert.dart';
 
 import '../services/notificationServices.dart';
 import 'drawCard.dart';
@@ -121,6 +122,13 @@ class GameTable extends StatelessWidget {
                 deviceIndex: playerIndex,
                 currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}
                   )),
+            Positioned(
+              bottom: size.height * 0.07,
+              right: size.width * 0.073,
+              child: TurnAlert(
+                index: playerIndex,
+                gameNum: gameNum,
+          ))
     ]);
         //;
 
