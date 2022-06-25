@@ -37,7 +37,7 @@ class entryScreenState extends State<entryScreen>{
   int _connectedPlayersNum = 0;
   int _playerIndex = 0;
   // late var cardsArr;
-  late var _gameNum;
+  var _gameNum = 0;
   String? _avatarUrl = null;
   String _username = "guest";
 
@@ -57,12 +57,6 @@ class entryScreenState extends State<entryScreen>{
   @override
   Widget build(BuildContext context) {
     getCurrentGameNum();
-
-    if (isLoginMode) {
-      getCurrentAvatar();
-      getUserNickname();
-    }
-
     var size = MediaQuery.of(context).size;
 
     return Stack(fit: StackFit.passthrough, children:
