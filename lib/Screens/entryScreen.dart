@@ -85,9 +85,10 @@ class entryScreenState extends State<entryScreen>{
           left: 0.305 * size.width,
           child: CircleAvatar(
                   radius: 30,
-                  backgroundImage: AssetImage('assets/Lobby/Avatar_photo.png'),
+                  backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
                   foregroundImage: _avatarUrl == null ? null : NetworkImage(_avatarUrl!),
-                  ),),
+                  ),
+        ),
         Positioned(
           top: 0.18 * size.height,
           left: 0.3 * size.width,
@@ -114,14 +115,11 @@ class entryScreenState extends State<entryScreen>{
                       builder: (context) {
                         return RegistrationScreen();
                       }));
-              if (res?.item1) {
-                updateUserNickname(res?.item3);
-                setState(() {
-                  isLoginMode = res?.item1;
-                  _username = res?.item2;
-                  _nicknameController.text = res?.item3;
-                });
-              }
+              setState(() {
+                isLoginMode = false;
+                _nicknameController.clear();
+                _avatarUrl = null;
+              });
             },),) :
         Positioned(
           top: size.height * 0.21,
@@ -136,8 +134,14 @@ class entryScreenState extends State<entryScreen>{
                 builder: (context) {
                   return RegistrationScreen();
                 }));
-              setState(() {
-                isLoginMode = res?.item1; });
+              if (res?.item1) {
+                updateUserNickname(res?.item3);
+                setState(() {
+                  isLoginMode = res?.item1;
+                  _username = res?.item2;
+                  _nicknameController.text = res?.item3;
+                });
+              }
             },),),
         Positioned(
           left: size.width * 0.07,
@@ -249,6 +253,7 @@ class entryScreenState extends State<entryScreen>{
                 // await _firestore.collection('game').doc('game${_gameNum}').set(dataUpload, SetOptions(merge : true));
                 setConnectedNum(_connectedPlayersNum, _gameNum);
                 updateNicknameByIndex(_playerIndex, _nicknameController.text, _gameNum);
+                setAvatarForGame(_gameNum, _avatarUrl, _playerIndex);
                 Navigator.of(context).push(
                 MaterialPageRoute<void>(
                 builder: (context) {
@@ -273,11 +278,11 @@ class entryScreenState extends State<entryScreen>{
   }
 
   void updateUserNickname(nickname) async{
-    await FirebaseFirestore.instance.collection('game').doc(_username).set({'nickname' : _nicknameController.text}, SetOptions(merge: true));
+    await FirebaseFirestore.instance.collection('usersData').doc(_username).set({'nickname' : _nicknameController.text}, SetOptions(merge: true));
   }
 
   void getUserNickname() async{
-    await FirebaseFirestore.instance.collection('game').doc(_username).get().then(
+    await FirebaseFirestore.instance.collection('usersData').doc(_username).get().then(
             (snapshot) {
           if (snapshot.exists) {
             final data = snapshot.data();
