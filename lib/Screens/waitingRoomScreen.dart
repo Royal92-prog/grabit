@@ -129,8 +129,8 @@ class _WaitingRoomState extends State<WaitingRoom> {
       increaseGameNum(widget.gameNum);
     }
     initializeGameData();
-    await Future.delayed(
-        const Duration(milliseconds: 8000));
+    // await Future.delayed(
+    //     const Duration(milliseconds: 8000));
     Navigator.of(context).push(
         MaterialPageRoute<void>(
             builder: (context) {
@@ -159,6 +159,14 @@ class _WaitingRoomState extends State<WaitingRoom> {
       dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0];
       dataUpload['matchingColorCards'] = [0,0,0,0];
       dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards + 1); i++) 0];
+      Map<String, dynamic> messages = {};
+      for(int i = 0; i < _connectedNum; i++){
+        //dataUpload['Player${i}Msgs'] = "";//playersMassages
+        messages['player${i}MSGS'] = "";
+        //totemPressed[]
+      }
+      await _firestore.collection('game').doc('game${widget.gameNum}MSGS').
+      set(messages, SetOptions(merge : true));
     }
     else {
       await _firestore.collection('game').doc('game${widget.gameNum}').get().then(

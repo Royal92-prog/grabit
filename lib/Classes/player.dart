@@ -44,6 +44,7 @@ class PlayerState extends State<Player>{
   @override
   void initState() {
     super.initState();
+    getAvatar();
   }
 
   @override
@@ -55,10 +56,15 @@ class PlayerState extends State<Player>{
       //Positioned(right:0.01 * size.width,child:
       return Stack(fit:StackFit.loose,children: [
         Positioned(
-          child: CircleAvatar(
-            radius: 30,
-            backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
-            foregroundImage: avatarUrl == null ? null : NetworkImage(avatarUrl!),
+          child: Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
+            width:0.12 * size.width,
+            decoration: const BoxDecoration(
+              color:Colors.blue, shape: BoxShape.circle,),
+            child: CircleAvatar(
+              radius: 40,
+              backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
+              foregroundImage: avatarUrl == null ? null : NetworkImage(avatarUrl!),
+            ),
           ),
         ),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
@@ -71,10 +77,15 @@ class PlayerState extends State<Player>{
     else if(widget.index == 0 || widget.index == 1){//0
         return Stack(children: [
         Positioned(
-          child: CircleAvatar(
-            radius: 30,
-            backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
-            foregroundImage: avatarUrl == null ? null : NetworkImage(avatarUrl!),
+          child: Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
+            width:0.12 * size.width,
+            decoration: const BoxDecoration(
+              color:Colors.blue, shape: BoxShape.circle,),
+            child: CircleAvatar(
+              radius: 40,
+              backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
+              foregroundImage: avatarUrl == null ? null : NetworkImage(avatarUrl!),
+            ),
           ),
         ),
         Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
@@ -89,10 +100,15 @@ class PlayerState extends State<Player>{
     else{//Player number 2
       return Stack(children: [
         Positioned(
-          child: CircleAvatar(
-            radius: 30,
-            backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
-            foregroundImage: avatarUrl == null ? null : NetworkImage(avatarUrl!),
+          child: Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,
+            width:0.12 * size.width,
+            decoration: const BoxDecoration(
+              color:Colors.blue, shape: BoxShape.circle,),
+            child: CircleAvatar(
+              radius: 40,
+              backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
+              foregroundImage: avatarUrl == null ? null : NetworkImage(avatarUrl!),
+            ),
           ),
         ),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
