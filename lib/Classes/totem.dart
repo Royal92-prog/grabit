@@ -1,28 +1,20 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
+import 'dart:math';
 
 import '../main.dart';
 
 class totem extends StatefulWidget {
-<<<<<<< Updated upstream
-  totem({required this.index, required this.gameNum, required this.playersNumber});
-  int playersNumber;
-  int index;
-  final int gameNum;
-=======
-
   final String collectionName;
   final int gameNum;
   int playersNumber;
   int index;
-
   totem({required this.index, required this.gameNum,
     required this.playersNumber,required this.collectionName});
->>>>>>> Stashed changes
-
   @override
   State<totem> createState() => totemState();
 }
@@ -51,7 +43,6 @@ class totemState extends State<totem> {
         if (cardsHandler[i][1][0] <= 72 &&
             ((((cardsHandler[i][1][0]) - 1) % 4) ==
                 (cardsHandler[widget.index][1][0] - 1) % 4)) {
-          print("HERE Line 197");
           losingPlayers.add(i);
         }
       }
@@ -68,12 +59,10 @@ class totemState extends State<totem> {
 
   decreaseCardsArray(int card) {
     if ((card - 1) ~/ 4 < matchingRegularCards.length) {
-      matchingRegularCards[(card - 1) ~/ 4] -=
-      1; // add new front number to array
+      matchingRegularCards[(card - 1) ~/ 4] -= 1; // add new front number to array
       matchingColorCards[((card - 1) % 4)] -= 1;
     }
     else { //unique card
-      print("card is :: line 186 :: ${card}");
       uniqueArray[(((card - 1)) - numberOfRegularCards) ~/ 2] -= 1;
       if ((((card - 1)) - numberOfRegularCards) ~/ 2 == 0 &&
           uniqueArray[3] > 0) {
@@ -85,125 +74,107 @@ class totemState extends State<totem> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery
-        .of(context)
-        .size;
+    var size = MediaQuery.of(context).size;
     double rightPosition = underTotemCards.length > 9 ? 0.008 : 0.016;
-<<<<<<< Updated upstream
-    return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc(
-            'game${widget.gameNum}').snapshots(),
-        builder: (BuildContext context,
-            AsyncSnapshot <DocumentSnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            final cloudData = snapshot.data;
-            if (cloudData != null) {
-              cardsHandler = [];
-              isTotemPressed = cloudData['totem'];
-              for (int i = 0; i < widget.playersNumber; i++) {
-                cardsHandler.add([
-=======
     return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
-      stream: FirebaseFirestore.instance.collection(widget.collectionName).
+        stream: FirebaseFirestore.instance.collection(widget.collectionName).
         doc('game${widget.gameNum}').snapshots(),
-      builder: (
-          BuildContext context,
-          AsyncSnapshot <DocumentSnapshot> snapshot) {
-            StreamSubscription subscription = FirebaseFirestore.instance.collection(widget.collectionName).
-            doc('game${widget.gameNum}').snapshots().listen((event) { });
-            if (snapshot.connectionState == ConnectionState.active && snapshot.data?.data() != null) {
-                Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
-                cardsHandler = [];
-                isTotemPressed = cloudData.containsKey('totem') == true ?
-                  cloudData['totem'] : true;
-                for (int i = 0; i < widget.playersNumber; i++) {
-                  if(cloudData.containsKey('player_${i}_deck') == true ){
-                  cardsHandler.add([
->>>>>>> Stashed changes
+        builder: (
+            BuildContext context,
+            AsyncSnapshot <DocumentSnapshot> snapshot) {
+          StreamSubscription subscription = FirebaseFirestore.instance.collection(widget.collectionName).
+          doc('game${widget.gameNum}').snapshots().listen((event) { });
+          if (snapshot.connectionState == ConnectionState.active && snapshot.data?.data() != null) {
+            Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
+            cardsHandler = [];
+            isTotemPressed = cloudData.containsKey('totem') == true ?
+            cloudData['totem'] : true;
+            for (int i = 0; i < widget.playersNumber; i++) {
+              if(cloudData.containsKey('player_${i}_deck') == true ){
+                cardsHandler.add([
                   cloudData['player_${i}_deck'],
-                  cloudData['player_${i}_openCards']
-                ]);
+                  cloudData['player_${i}_openCards']]);
               }
-              currentTurn = cloudData['turn'];
-              underTotemCards = cloudData['underTotemCards'];
-              _isColorActive = cloudData['cardsActiveUniqueArray'][1] > 0;
-              cardsGroupArray = _isColorActive
-                  ? cloudData['matchingColorCards']
-                  : cloudData['matchingCards'];
-              matchingRegularCards = cloudData['matchingCards'];
-              uniqueArray = cloudData['cardsActiveUniqueArray'];
-              matchingColorCards = cloudData['matchingColorCards'];
+              else{
+                cardsHandler.add([[], []]);
+              }
             }
-            return Container(height: size.height * 0.3,
+            currentTurn = cloudData.containsKey('turn') == true ?
+            cloudData['turn'] : 0;
+
+            underTotemCards = cloudData.containsKey('underTotemCards') == true ?
+            cloudData['underTotemCards'] : [];
+
+            _isColorActive = cloudData.containsKey('cardsActiveUniqueArray') == true &&
+                cloudData['cardsActiveUniqueArray'][1] > 0;
+
+            if(cloudData.containsKey('matchingColorCards') == true
+                && cloudData.containsKey('matchingCards') == true) {
+              cardsGroupArray = _isColorActive ?
+              cloudData['matchingColorCards'] :
+              cloudData['matchingCards'];
+            }
+            else cardsGroupArray = [];
+
+            matchingRegularCards = cloudData.containsKey('matchingCards') == true ?
+            cloudData['matchingCards'] : [];
+
+            uniqueArray = cloudData.containsKey('cardsActiveUniqueArray') == true ?
+            cloudData['cardsActiveUniqueArray'] : [];
+
+            matchingColorCards = cloudData.containsKey('matchingColorCards') == true ?
+            cloudData['matchingColorCards'] : [];
+            if(currentTurn == -1 || currentTurn == -3){
+              subscription.cancel();
+            }
+            //messages = cloudData['messages'];
+
+            return Container(
+                height: size.height * 0.3,
                 width: size.width * 0.3,
-                child: Stack(children:
-                [
+                child: Stack(children: [
                   underTotemCards.length > 0 ? Positioned(
-                      right: size.width * 0.065, child: Stack(children:
-                  [
-                    SvgPicture.asset(
-                      'assets/Full_pack.svg', width: 0.1 * size.width,
-                      height: 0.1 * size.height,)
-                    ,
-                    Positioned(left: rightPosition * size.width,
-                        top: 0.009 * size.height,
-                        child: Text("${underTotemCards.length}",
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.black)))
-                  ])) :
+                      right: size.width * 0.065,
+                      child: Stack(children: [
+                        SvgPicture.asset('assets/Full_pack.svg',
+                          width: 0.1 * size.width,
+                          height: 0.1 * size.height,),
+                        Positioned(left: rightPosition * size.width,
+                            top: 0.009 * size.height,
+                            child: Text("${underTotemCards.length}",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black)))])) :
                   SizedBox(),
-                  GestureDetector(child: Image.asset(
-                      'assets/CTAButton.png', width: 0.2 * size.width,
-                      height: 0.15 * size.height, alignment: Alignment.center),
+                  GestureDetector(child: Image.asset('assets/CTAButton.png',
+                      width: 0.2 * size.width,
+                      height: 0.15 * size.height,
+                      alignment: Alignment.center),
                       onTap: isTotemPressed ? null : () async {
-                        Map<String, dynamic> cloudMassages = {};
-                        FirebaseFirestore _firestore = FirebaseFirestore
-                            .instance;
-
-                        /// TODO problem sync
-                        await _firestore.collection('game').doc(
-                            'game${widget.gameNum}').set({'totem': true,
-                          'totem${widget.index}Pressed': true},
-<<<<<<< Updated upstream
-                            SetOptions(merge: true));
-                        await Future.delayed(
-                            const Duration(milliseconds: 1000));
-                        for (int i = 0; i < widget.playersNumber &&
-                            !isTotemPressed; i++) {
-                          if (cloudData!['totem${i}Pressed']) return;
-                        }
-
-=======
-                            SetOptions(merge: true));*/
+                        FirebaseFirestore _firestore = FirebaseFirestore.instance;
                         Random random = new Random();
                         int randomNumber = random.nextInt(900);
                         await Future.delayed(Duration(milliseconds: randomNumber));
                         if (isTotemPressed == true) return;
-                         await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}')
-                          .set({'totem': true, 'turn' : -2},
-                          SetOptions(merge: true));
+                        await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}')
+                            .set({'totem': true, 'turn' : -2},
+                            SetOptions(merge: true));
                         Map<String, dynamic> cloudMassages = {};
                         Map<String, dynamic> uploadData = {};
-                       /* for (int i = 0; i < widget.playersNumber && !isTotemPressed; i++) {
+                        /* for (int i = 0; i < widget.playersNumber && !isTotemPressed; i++) {
                           if (uploadData['totem${i}Pressed']) return;
                         }*/
->>>>>>> Stashed changes
                         ///#1st case :  totem was pressed since inner arrows is on the table
                         print("Unique array :: ${uniqueArray}");
-                        if (uniqueArray[0] > 0 &&
-                            uniqueArray[0] > uniqueArray[3]) {
-                          uniqueArray[3] +=
-                          1; // marking that the special card is used
-                          if (cardsHandler[widget.index][1].length >
-                              0) decreaseCardsArray(
-                              cardsHandler[widget.index][1][0]);
-                          underTotemCards = [
-                            ...underTotemCards,
-                            ...cardsHandler[widget.index][1]
-                          ];
+                        if (uniqueArray[0] > 0 && uniqueArray[0] > uniqueArray[3]) {
+                          uniqueArray[3] += 1; // marking that the special card is used
+                          if (cardsHandler[widget.index][1].length > 0){
+                            decreaseCardsArray(cardsHandler[widget.index][1][0]);
+                          }
+                          underTotemCards = [...underTotemCards, ...cardsHandler[widget.index][1]];
                           underTotemCards.shuffle();
                           cardsHandler[widget.index][1] = [];
-                          cloudMassages = {
+                          uploadData = {
                             'totem': false,
                             'totem${widget.index}Pressed': false,
                             'turn': widget.index,
@@ -212,62 +183,41 @@ class totemState extends State<totem> {
                             'matchingCards': matchingRegularCards,
                             'matchingColorCards': matchingColorCards,
                             'player_${widget.index}_openCards': [],
-                            'Player${widget
-                                .index}Msgs': "inner arrows card - You Win!"
                           };
+
+                          cloudMassages['player${widget.index}MSGS'] = "inner arrows card - You Win!";
                           for (int i = 0; i < widget.playersNumber; i++) {
                             if (i == widget.index) continue;
-                            cloudMassages['Player${i}Msgs'] = "player ${widget
-                                .index} pressed the inner button first";
+                            cloudMassages['player${i}MSGS'] =
+                            "inner arrows card ! \n player ${widget.index} pressed the inner button first";
                           }
-<<<<<<< Updated upstream
-                          await _firestore.collection('game').doc('game${widget
-                              .gameNum}').set(
-=======
                           //uploadData["messages"] = messages;
                           await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}').set(
                               uploadData, SetOptions(merge: true));
                           await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}MSGS').set(
->>>>>>> Stashed changes
                               cloudMassages, SetOptions(merge: true));
                         }
 
                         ///#2nd case :  totem was pressed for the regular reason (color / regular mode)
-                        else if (cardsHandler[widget.index][1][0] <= 72 &&
+                        else if (cardsHandler[widget.index][1].length > 0 &&
+                            cardsHandler[widget.index][1][0] <= 72 &&
                             cardsHandler[widget.index][1].length > 0 &&
-                            ((!_isColorActive &&
-                                cardsGroupArray[(((cardsHandler[widget
-                                    .index][1][0]) - 1) ~/ 4)] > 1) ||
-                                (_isColorActive &&
-                                    cardsGroupArray[(((cardsHandler[widget
-                                        .index][1][0]) - 1) % 4)] > 1))) {
-                          print(
-                              "unique ${uniqueArray} , Active ${matchingColorCards} ${_isColorActive}");
+                            ((!_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0]) - 1) ~/ 4)] > 1) ||
+                                (_isColorActive && cardsGroupArray[(((cardsHandler[widget.index][1][0]) - 1) % 4)] > 1))) {
+                          print("unique ${uniqueArray} , Active ${matchingColorCards} ${_isColorActive}");
                           var loserIndices = getLoserIndex();
                           print("indices :: ${loserIndices}");
-                          var loserCards = [
-                            ...cardsHandler[widget.index][1],
-                            ...underTotemCards
-                          ];
+                          var loserCards = [...cardsHandler[widget.index][1], ...underTotemCards];
                           for (int i = 0; i < loserIndices.length; i++) {
-                            loserCards = [
-                              ...loserCards,
-                              ...cardsHandler[loserIndices[i]][1]
-                            ];
-                            decreaseCardsArray(
-                                cardsHandler[loserIndices[i]][1][0]);
+                            loserCards = [...loserCards, ...cardsHandler[loserIndices[i]][1]];
+                            decreaseCardsArray(cardsHandler[loserIndices[i]][1][0]);
                           }
                           decreaseCardsArray(cardsHandler[widget.index][1][0]);
                           loserCards.shuffle();
-                          int cardsToAdd = loserCards.length ~/
-                              loserIndices.length;
-                          cloudMassages = {
+                          int cardsToAdd = loserCards.length ~/ loserIndices.length;
+                          uploadData = {
                             'totem': false,
                             'turn': loserIndices[loserIndices.length - 1],
-<<<<<<< Updated upstream
-                            'underTotemCards': [],
-                            'player_${widget.index}_openCards': [],
-=======
                             'underTotemCards' : [],
                             'player_${widget.index}_openCards' : [],
                             'matchingCards' : matchingRegularCards,
@@ -275,7 +225,7 @@ class totemState extends State<totem> {
                             'player_${loserIndices[loserIndices.length - 1]}_openCards': [],
                             'player_${loserIndices[loserIndices.length - 1]}_deck':
                             [...cardsHandler[loserIndices[loserIndices.length - 1]][0],
-                            ...loserCards.sublist(cardsToAdd * (loserIndices.length - 1), loserCards.length)
+                              ...loserCards.sublist(cardsToAdd * (loserIndices.length - 1), loserCards.length)
                             ]
                           };
                           cloudMassages['player${widget.index}MSGS'] = 'you win';
@@ -286,28 +236,28 @@ class totemState extends State<totem> {
                             'Player${widget.index}Msgs': 'you win',
                             'Player${loserIndices[loserIndices.length - 1]}Msgs': 'you lose',
                           };*/
-                            for (int i = 0; i < loserIndices.length - 1; i++) {
-                              cloudMassages['player${loserIndices[i]}MSGS'] = 'you lose';
-                              uploadData['player_${loserIndices[i]}_openCards'] = [];
-                              uploadData['player_${loserIndices[i]}_deck'] = [...cardsHandler[loserIndices[i]][0],
-                                ...loserCards.sublist(cardsToAdd * i, (cardsToAdd * (i + 1)))];
+                          for (int i = 0; i < loserIndices.length - 1; i++) {
+                            cloudMassages['player${loserIndices[i]}MSGS'] = 'you lose';
+                            uploadData['player_${loserIndices[i]}_openCards'] = [];
+                            uploadData['player_${loserIndices[i]}_deck'] = [...cardsHandler[loserIndices[i]][0],
+                              ...loserCards.sublist(cardsToAdd * i, (cardsToAdd * (i + 1)))];
+                          }
+                          int j = 0;
+                          for (int i = 0; i < widget.playersNumber; i++) {
+                            if (i == widget.index) continue;
+                            if (j < loserIndices.length && i == loserIndices[j]) {
+                              j++;
+                              continue;
                             }
-                            int j = 0;
-                            for (int i = 0; i < widget.playersNumber; i++) {
-                              if (i == widget.index) continue;
-                              if (j < loserIndices.length && i == loserIndices[j]) {
-                                j++;
-                                continue;
-                              }
-                              cloudMassages['player${i}MSGS'] = "player ${widget.index} won the Battle";
-                              //cloudMassages['Player${i}Msgs'] = "player ${widget.index} won the Battle";
-                            }
+                            cloudMassages['player${i}MSGS'] = "player ${widget.index} won the Battle";
+                            //cloudMassages['Player${i}Msgs'] = "player ${widget.index} won the Battle";
+                          }
 
-                        await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}').set(
-                          uploadData, SetOptions(merge: true));
-                        await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}MSGS').set(
-                          cloudMassages, SetOptions(merge: true));
-                              }
+                          await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}').set(
+                              uploadData, SetOptions(merge: true));
+                          await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}MSGS').set(
+                              cloudMassages, SetOptions(merge: true));
+                        }
 
                         ///case3 penalty
                         else {
@@ -318,81 +268,53 @@ class totemState extends State<totem> {
                             'totem' : false,
                             'turn' : widget.index,
                             'underTotemCards' : [],
->>>>>>> Stashed changes
                             'matchingCards': matchingRegularCards,
-                            'matchingColorCards': matchingColorCards,
-                            'Player${widget.index}Msgs': 'you win',
-                            'Player${loserIndices[loserIndices.length -
-                                1]}Msgs': 'you lose',
-                            'player_${loserIndices[loserIndices.length -
-                                1]}_openCards': [],
-                            'player_${loserIndices[loserIndices.length -
-                                1]}_deck':
-                            [...cardsHandler[loserIndices[loserIndices.length -
-                                1]][0],
-                              ...loserCards.sublist(
-                                  cardsToAdd * (loserIndices.length - 1),
-                                  loserCards.length)
-                            ]
+                            'matchingColorCards' : matchingColorCards,
+                            'cardsActiveUniqueArray' : uniqueArray,
                           };
-                          for (int i = 0; i < loserIndices.length - 1; i++) {
-                            print("Line 119 ${loserIndices[i]}");
-                            cloudMassages['Player${loserIndices[i]}Msgs'] =
-                            'you lose';
-                            cloudMassages['player_${loserIndices[i]}_openCards'] =
-                            [];
-                            cloudMassages['player_${loserIndices[i]}_deck'] =
-                            [...cardsHandler[loserIndices[i]][0],
-                              ...loserCards.sublist(
-                                  cardsToAdd * i, (cardsToAdd * (i + 1)))
-                            ];
+                          cloudMassages['player${widget.index}MSGS'] =  "you were penalized";
+                          /*
+                          cloudMassages = {
+                            'Player${widget.index}Msgs' : "you were penalized"
+                          };*/
+                          var loserDeck = [...underTotemCards];
+                          for(int i = 0; i < widget.playersNumber; i++){
+                            loserDeck = [...loserDeck, ...cardsHandler[i][1]];
+                            uploadData['player_${i}_openCards'] = [];
                           }
-                          int j = 0;
-                          for (int i = 0; i < widget.playersNumber; i++) {
-                            if (i == widget.index) continue;
-                            if (j < loserIndices.length &&
-                                i == loserIndices[j]) {
-                              j++;
-                              continue;
-                            }
-                            cloudMassages['Player${i}Msgs'] =
-                            "player ${widget.index} won the Battle";
+                          loserDeck.shuffle();
+                          uploadData['player_${widget.index}_deck'] = [...cardsHandler[widget.index][0], ...loserDeck];
+                          print("after totem update: ${matchingRegularCards}");
+                          for(int i = 0; i < widget.playersNumber; i++){
+                            if(i == widget.index) continue;
+                            cloudMassages['player${i}MSGS'] = "player ${widget.index} was penalized";
                           }
-<<<<<<< Updated upstream
-                        }
-                        await _firestore.collection('game').doc(
-                            'game${widget.gameNum}').set(
-                            cloudMassages, SetOptions(merge: true));
-                      })
-=======
                           await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}').set(
                               uploadData, SetOptions(merge : true));
                           await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}MSGS').
-                            set(cloudMassages, SetOptions(merge : true));
+                          set(cloudMassages, SetOptions(merge : true));
                         }
-                    var winners = [];
-                    for(int i = 0; i < widget.playersNumber; i ++){
-                    if(cardsHandler[i][0].length == 0 && cardsHandler[i][1].length == 0 ) winners.add(i);
-                    }
-                    if(winners.length > 0){
-                      Future.delayed(Duration(milliseconds: 1500 ));
-                    var finalMsg = "";
-                    if(winners.length > 1) finalMsg = "there is no sole winner in this battle";
-                    else  finalMsg = "Player No, ${winners[0]} won !";
-                    for(int i = 0; i < widget.playersNumber; i++){
-                      //cloudMassages['Player${i}Msgs'] = finalMsg;
-                      cloudMassages['player${i}MSGS'] = finalMsg;
-                    }
-                    await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}MSGS').
-                      set(cloudMassages, SetOptions(merge : true));
-                    await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}').
-                      set({'turn' : -3,}, SetOptions(merge: true));
-                    }})
->>>>>>> Stashed changes
+                        var winners = [];
+                        for(int i = 0; i < widget.playersNumber; i ++){
+                          if(cardsHandler[i][0].length == 0 && cardsHandler[i][1].length == 0 ) winners.add(i);
+                        }
+                        if(winners.length > 0){
+                          Future.delayed(Duration(milliseconds: 1500 ));
+                          var finalMsg = "";
+                          if(winners.length > 1) finalMsg = "there is no sole winner in this battle";
+                          else  finalMsg = "Player No, ${winners[0]} won !";
+                          for(int i = 0; i < widget.playersNumber; i++){
+                            //cloudMassages['Player${i}Msgs'] = finalMsg;
+                            cloudMassages['player${i}MSGS'] = finalMsg;
+                          }
+                          await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}MSGS').
+                          set(cloudMassages, SetOptions(merge : true));
+                          await _firestore.collection(widget.collectionName).doc('game${widget.gameNum}').
+                          set({'turn' : -3,}, SetOptions(merge: true));
+                        }})
                 ]));
           }
           else return SizedBox(width: 0.01,);
-        }
-        );
+        });
   }
 }

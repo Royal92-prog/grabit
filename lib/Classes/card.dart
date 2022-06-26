@@ -56,17 +56,12 @@ class cardState extends State<currentCard>{
   Widget build(BuildContext context) {
     initializeCardsMap();
     var size = MediaQuery.of(context).size;
-<<<<<<< Updated upstream
-    return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').snapshots(),
-=======
     return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance.collection(widget.collectionName).doc('game${widget.gameNum}').snapshots(),
->>>>>>> Stashed changes
-    builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
-      if(snapshot.connectionState == ConnectionState.active){
-      final cloudData = snapshot.data;
-      if(cloudData != null) {
+      builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
+        if(snapshot.connectionState == ConnectionState.active){
+          final cloudData = snapshot.data;
+          if(cloudData != null) {
       openCards = cloudData['player_${(widget.index).toString()}_openCards'];
       if (openCards.length == 0){
         print("indexxxx ${widget.index.toString()}");

@@ -19,25 +19,15 @@ extension ColorExtension on String {
   }
 }
 class  GameNotifications extends StatelessWidget {
-<<<<<<< Updated upstream
-  GameNotifications({required this.context, required this.index});
-=======
+
   GameNotifications({required this.context, required this.index,
     required this.gameNum,required this.collectionName});
   var context;
   final String collectionName;
->>>>>>> Stashed changes
   int index;
-  var context;
+  int gameNum;
   @override
   Widget build(BuildContext context) {
-<<<<<<< Updated upstream
-    return GameUpdatesListener(massageUpdateFunc: showSnackBar, index: index);
-  }
-
-  showSnackBar(var size, String msg) async{
-    await FirebaseFirestore.instance.collection('game').doc('game2').set({'Player${index}Msgs' : ""}, SetOptions(merge : true));
-=======
     return GameUpdatesListener(massageUpdateFunc: showSnackBar, index: index,
       gameIndex: gameNum, collectionName: collectionName);
   }
@@ -45,7 +35,6 @@ class  GameNotifications extends StatelessWidget {
   showSnackBar(var size, String msg, int index, var context, String collectionName) async{
     await FirebaseFirestore.instance.collection('game').doc('game${gameNum}MSGS').set({
       'player${index}MSGS' : ""}, SetOptions(merge : true));
->>>>>>> Stashed changes
     if(msg == 'outerArrows'){
       await FirebaseFirestore.instance.collection("game").doc("game2").set({'turn' : -10},SetOptions(merge :true));
       await ScaffoldMessenger.of(context).showSnackBar(SnackBar( duration:Duration(seconds: 1),
@@ -75,30 +64,20 @@ class  GameNotifications extends StatelessWidget {
 
 
 class GameUpdatesListener extends StatelessWidget {
-<<<<<<< Updated upstream
-  GameUpdatesListener({required this.massageUpdateFunc, required this.index});
-  String msg = "";
-=======
   GameUpdatesListener({required this.massageUpdateFunc, required this.index,
     required this.gameIndex, required this.collectionName});
 
   late String msg;
   final String collectionName;
   int gameIndex;
->>>>>>> Stashed changes
   int index;
   Function massageUpdateFunc;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-<<<<<<< Updated upstream
-    return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game2').snapshots(),
-=======
     return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance.collection(collectionName)
             .doc('game${gameIndex}MSGS').snapshots(),
->>>>>>> Stashed changes
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
@@ -107,11 +86,8 @@ class GameUpdatesListener extends StatelessWidget {
               msg = cloudData['Player${index}Msgs'];
               /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
               if (msg != "") {
-<<<<<<< Updated upstream
-                massageUpdateFunc(size, msg);
-=======
                 massageUpdateFunc(size, msg, index, context, collectionName);
->>>>>>> Stashed changes
+
               }
 
             }

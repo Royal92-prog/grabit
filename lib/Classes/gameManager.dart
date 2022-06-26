@@ -23,14 +23,17 @@ class GameManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance.collection('game').doc('players${gameNum}').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           var nicknames;
-          if (snapshot.connectionState == ConnectionState.active) {
-            final data = snapshot.data;
+          if (snapshot.connectionState == ConnectionState.active
+          && snapshot.data?.data() != null) {
+            Map<String, dynamic> data = (snapshot.data?.data() as Map<String, dynamic>);
             if (data != null) {
-              _connectedNum = data['connectedPlayersNum'];
+              _connectedNum = data.containsKey('connectedPlayersNum') == true ?
+                data['connectedPlayersNum'] : 0;
+              /// to do change to loops
               nicknames = [data['player_0_nickname'], data['player_1_nickname'], data['player_2_nickname']];
             }
           }
@@ -40,7 +43,7 @@ class GameManager extends StatelessWidget {
           }
 
           if (_gameState == GameState.waitingForPlayers) {
-            return WaitingRoom(connectedNum: _connectedNum,);
+            return WaitingRoom(playerIndex: playerIndex, gameNum: gameNum,);
           }
           else {
             return GameTable(playerIndex: playerIndex,
