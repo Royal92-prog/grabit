@@ -126,7 +126,6 @@ class entryScreenState extends State<entryScreen>{
                   return RegistrationScreen();
                 }));
               if (res?.item1) {
-                updateUserNickname(res?.item3);
                 setState(() {
                   isLoginMode = res?.item1;
                   _username = res?.item2;
@@ -176,6 +175,9 @@ class entryScreenState extends State<entryScreen>{
                 width: 0.2 * size.width,
                 height: 0.25 * size.height),
               onTap: () async{
+                if (isLoginMode) {
+                  updateUserNickname(_nicknameController.text);
+                }
                 // FirebaseFirestore _firestore = FirebaseFirestore.instance;
                 _connectedPlayersNum = await getConnectedNum(_gameNum);
                 _playerIndex = _connectedPlayersNum;

@@ -124,6 +124,7 @@ class PlayerState extends State<Player>{
   }
 
   void getAvatar() async{
+    print("getting avatar");
     avatarUrl = await getAvatarByGameIndex(widget.index, widget.gameNum);
   }
 }
