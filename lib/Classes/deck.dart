@@ -19,6 +19,7 @@ class playerDeck extends StatefulWidget {
   int gameNum;
   final Function(bool) currentTurnCallback;
   final int index;
+<<<<<<< Updated upstream
   final int playersNumber;
 
   playerDeck({required this.index, required this.deviceIndex, required this.currentTurnCallback, required this.gameNum, required this.playersNumber});
@@ -35,10 +36,21 @@ class deckState extends State<playerDeck> {
   late var cardsGroupArray;
   late var cardsColorArray ;
   late var cardsActiveUniqueArray;
+=======
+  final int gameNum;
+  final String collectionName;
+  int currentTurn = 0;
+  double rightAlignment = 0.012;
+
+
+  playerDeck({required this.index, required this.gameNum,
+    required this.collectionName});
+>>>>>>> Stashed changes
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+<<<<<<< Updated upstream
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('game').doc('game2').snapshots(),
         builder: (BuildContext context,
@@ -63,6 +75,21 @@ class deckState extends State<playerDeck> {
                 else if (currentTurn == -3) {
                   widget.currentTurnCallback(false);
                 }
+=======
+    return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(//<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance.collection(collectionName).
+          doc('game${gameNum}').snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot <DocumentSnapshot> snapshot) {
+          StreamSubscription subscription = FirebaseFirestore.instance.collection(collectionName).
+          doc('game${gameNum}').snapshots().listen((event) { });
+          if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
+              Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
+              if(cloudData.containsKey("player_${index}_deck")) cardsHandler = cloudData['player_${index}_deck'];
+              else cardsHandler = [];
+              if(currentTurn == -1 || currentTurn == -3){
+                subscription.cancel();
+>>>>>>> Stashed changes
               }
               cardsGroupArray = cloudData['matchingCards'];
               cardsColorArray = cloudData['matchingColorCards'];

@@ -115,6 +115,7 @@ flutter:
 
   assets:
     - assets/HostGame/back.png
+    - assets/HostGame/got it_BTN.png
     - assets/HostGame/join.png
     - assets/Lobby/Signout_BTN.png
     - assets/How to play/next_BTN.png

@@ -3,13 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grabit/Screens/privateGameWaitingRoom.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
 import 'package:tuple_dart/tuple.dart';
 
 import 'gameHostScreen.dart';
+import 'hostGamePopUp.dart';
 
 
 class FriendlyGame extends StatefulWidget {
@@ -21,6 +24,9 @@ class FriendlyGame extends StatefulWidget {
 class FriendlyGameStates extends State<FriendlyGame>{
   int playersNumber = 3;
   int gameTimeLimit = 0;
+  int gameIp = -1;
+  bool hostScreen = false;
+  late int _playerIndex;
   final _gameRoomController = TextEditingController();
   Widget build(BuildContext context) {
 
@@ -51,13 +57,40 @@ class FriendlyGameStates extends State<FriendlyGame>{
       Text('${playersNumber}', style: GoogleFonts.galindo( fontSize: 15, color: Colors.black,
           fontWeight:FontWeight.w300, decoration: TextDecoration.none))
       ),
-      Positioned(left: size.width * 0.53 , top: size.height * 0.4, child:
-          GestureDetector(child: Image.asset('assets/HostGame/join.png', width: 0.15 * size.width,
-          height: 0.1 * size.height))),
+      Positioned(
+        left: size.width * 0.53 ,
+        top: size.height * 0.4,
+        child: GestureDetector(child:
+          Image.asset('assets/HostGame/join.png',
+            width: 0.15 * size.width,
+            height: 0.1 * size.height),
+        onTap:(() async {
+          int gameNum = int.parse(_gameRoomController.toString());
+          await FirebaseFirestore.instance.collection('privateGame').
+          doc('game${gameNum}').get().then((snapshot) async {
+            if (snapshot.exists) {
+              final data = snapshot.data();
+              if (data != null) {
+                int playersNumber = data['playersNumber'];
+                _playerIndex = data['connectedPlayersNum'];//data['currentNum'];
+                await FirebaseFirestore.instance.collection('privateGame').
+                doc('gameNumber').set({'connectedPlayersNum' : data['connectedPlayersNum'] +1 ,},
+                    SetOptions(merge: true));
+                Navigator.of(context).push(MaterialPageRoute<void>(
+                    builder: (context) {
+                      return PrivateGameWaitingRoom(
+                          gameNum : gameNum,
+                          playerIndex: _playerIndex,
+                          playersNumber: playersNumber);
+                    }));
+              }
+            }
+          });}),
+        )),
       Positioned(left: size.width * 0.53 , top: size.height * 0.53, child:
       GestureDetector(child: Image.asset('assets/HostGame/host.png', width: 0.15 * size.width,
           height: 0.1 * size.height),
-          onTap: () {
+          onTap: () async{
             Navigator.of(context).push(MaterialPageRoute<void> (builder: (context) {
               return GameHost();
             }));
@@ -69,8 +102,10 @@ class FriendlyGameStates extends State<FriendlyGame>{
       GestureDetector(child:  Image.asset('assets/HostGame/back.png', height: 0.2 * size.height,
           width: 0.25 * size.width),onTap: (){ Navigator.of(context).pop(); }
       )),
-    ]));
+
+      ]));
   }
+
 }
 
 

@@ -21,9 +21,12 @@ class Player extends StatefulWidget {
   final String nickname;
   final gameNum;
   final int playersNumber;
+  final String collectionName;
 
   const Player({required this.index, required this.deviceIndex,
-    required this.currentTurnCallback, required this.nickname, required this.gameNum, required this.playersNumber});
+    required this.currentTurnCallback, required this.nickname,
+    required this.gameNum, required this.playersNumber,
+    required this.collectionName});
 
 
   @override
@@ -53,19 +56,29 @@ class PlayerState extends State<Player>{
           decoration: BoxDecoration(
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
+<<<<<<< Updated upstream
         playerDeck(index:widget.index, playersNumber: widget.playersNumber, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum,deviceIndex: widget.deviceIndex,)),
+=======
+        playerDeck(index:widget.index, gameNum: widget.gameNum, collectionName: widget.collectionName,)),
+>>>>>>> Stashed changes
         Positioned(right: 0.11* size.width,top: 0.16* size.height, child: Text(widget.nickname, style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-        Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
+        Positioned(top: size.height*0.37,right:size.width*0.13,child:
+        currentCard(index: widget.index, gameNum: widget.gameNum,collectionName: widget.collectionName))]);
     }
 
     else if(widget.index == 0 || widget.index == 1){//0
         return Stack(children: [
         Positioned(child:Container(margin:EdgeInsets.all(0.1*size.width),height:0.12 * size.height,width:0.12 * size.width,decoration: BoxDecoration(color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
+<<<<<<< Updated upstream
         playerDeck(index:widget.index, playersNumber: widget.playersNumber, currentTurnCallback: widget.currentTurnCallback, gameNum: widget.gameNum, deviceIndex: widget.deviceIndex,)),
+=======
+        playerDeck(index:widget.index, gameNum: widget.gameNum,collectionName: widget.collectionName)),
+>>>>>>> Stashed changes
 
-        Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index, gameNum: widget.gameNum,)),
+        Positioned(bottom:size.height*0.15,left:size.width*0.23,child:
+        currentCard(index: widget.index, gameNum: widget.gameNum,collectionName: widget.collectionName)),
 
         Positioned(right: 0.11* size.width,top: 0.16* size.height,child: Text(widget.nickname, style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),))
         ]);
@@ -79,9 +92,14 @@ class PlayerState extends State<Player>{
             /// Todo repalce with avatar
             color:Colors.blue, shape: BoxShape.circle,),),),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
+<<<<<<< Updated upstream
         playerDeck(index:widget.index, playersNumber: widget.playersNumber,currentTurnCallback: widget.currentTurnCallback, deviceIndex: widget.deviceIndex, gameNum: widget.gameNum,)),
+=======
+        playerDeck(index:widget.index, gameNum: widget.gameNum,collectionName: widget.collectionName)),
+>>>>>>> Stashed changes
         Positioned(right: 0.11* size.width,top: 0.16* size.height,child: Text(widget.nickname, style:GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-        Positioned(bottom:size.height*0.17,right:size.width*0.23,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
+        Positioned(bottom:size.height*0.17,right:size.width*0.23,child:
+        currentCard(index: widget.index, gameNum: widget.gameNum,collectionName: widget.collectionName))]);
     }
   }
 }
