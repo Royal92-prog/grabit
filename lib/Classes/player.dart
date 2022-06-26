@@ -16,6 +16,7 @@ enum ECardColor      { YELLOW, GREEN, RED, BLUE}
 
 
 class Player extends StatefulWidget {
+  final avatarUrl;
   final int index;
   final int deviceIndex;
   final Function(bool) currentTurnCallback;
@@ -24,7 +25,8 @@ class Player extends StatefulWidget {
   final int playersNumber;
 
   const Player({required this.index, required this.deviceIndex,
-    required this.currentTurnCallback, required this.nickname, required this.gameNum, required this.playersNumber});
+    required this.currentTurnCallback, required this.nickname,
+    required this.gameNum, required this.playersNumber, required this.avatarUrl});
 
 
   @override
@@ -33,19 +35,11 @@ class Player extends StatefulWidget {
 }
 
 class PlayerState extends State<Player>{
-
-  var avatarUrl;
   var playerUnopenedCards;
   var playerOpenedCards; /// Todo front not included ///
   var playerRemaniningCardsCount;
   var playerCurrentlyOpenedCard; ///Todo use unique identifier for cards Card.cardNumber ///
   var playerHasWon = 0 ;
-
-  @override
-  void initState() {
-    super.initState();
-    getAvatar();
-  }
 
   @override
   void dispose() {
@@ -68,7 +62,7 @@ class PlayerState extends State<Player>{
             child: CircleAvatar(
               radius: 40,
               backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
-              foregroundImage: avatarUrl == null ? null : NetworkImage(avatarUrl!),
+              foregroundImage: widget.avatarUrl == null ? null : NetworkImage(widget.avatarUrl!),
             ),
           ),
         ),
@@ -89,7 +83,7 @@ class PlayerState extends State<Player>{
             child: CircleAvatar(
               radius: 40,
               backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
-              foregroundImage: avatarUrl == null ? null : NetworkImage(avatarUrl!),
+              foregroundImage: widget.avatarUrl == null ? null : NetworkImage(widget.avatarUrl!),
             ),
           ),
         ),
@@ -112,7 +106,7 @@ class PlayerState extends State<Player>{
             child: CircleAvatar(
               radius: 40,
               backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
-              foregroundImage: avatarUrl == null ? null : NetworkImage(avatarUrl!),
+              foregroundImage: widget.avatarUrl == null ? null : NetworkImage(widget.avatarUrl!),
             ),
           ),
         ),
@@ -123,8 +117,8 @@ class PlayerState extends State<Player>{
     }
   }
 
-  void getAvatar() async{
-    print("getting avatar");
-    avatarUrl = await getAvatarByGameIndex(widget.index, widget.gameNum);
-  }
+  // void getAvatar() async{
+  //   print("getting avatar");
+  //   widget.avatarUrl = await getAvatarByGameIndex(widget.index, widget.gameNum);
+  // }
 }

@@ -240,8 +240,9 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                     Container();
 
                     signInWithGoogle().whenComplete(() {
-                      if ( googleSignIn.currentUser != null){
-                        Navigator.pop(context, Tuple3(true,_usernameController.text,_nicknameController.text));
+                      var googleUser = googleSignIn.currentUser;
+                      if ( googleUser != null){
+                        Navigator.pop(context, Tuple3(true, googleUser.email, _nicknameController.text));
                       }
                       else {
                         print("failed to sign in with google");

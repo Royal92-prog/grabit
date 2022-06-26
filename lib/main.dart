@@ -12,7 +12,6 @@ import 'package:grabit/Classes/card.dart';
 import 'package:grabit/test1.dart';
 import 'package:provider/provider.dart';
 
-import 'Classes/gameManager.dart';
 import 'Screens/entryScreen.dart';
 import 'Screens/friendlyGameScreen.dart';
 import 'Screens/gameHostScreen.dart';

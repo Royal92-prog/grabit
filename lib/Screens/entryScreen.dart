@@ -17,7 +17,6 @@ import 'package:grabit/services/playerManager.dart';
 import 'package:tuple/tuple.dart';
 
 import '../Classes/card.dart';
-import '../Classes/gameManager.dart';
 import '../main.dart';
 import '../services/Login.dart';
 import 'friendlyGameScreen.dart';

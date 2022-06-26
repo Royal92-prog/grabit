@@ -22,8 +22,9 @@ class WaitingRoom extends StatefulWidget {
 
 class _WaitingRoomState extends State<WaitingRoom> {
   int _connectedNum = 0;
-  var _waitTime = 30000;
+  var _waitTime = 15000;
   var _nicknames = [];
+  var _avatars = [];
   var cardsArr = [];
 
   // @override
@@ -58,6 +59,16 @@ class _WaitingRoomState extends State<WaitingRoom> {
               }
               else{
                 _nicknames.add("");
+              }
+            }
+
+            _avatars =[];
+            for(int i = 0; i < _connectedNum; i++){
+              if(cloudData.containsKey('player_${i}_avatar')){
+                _avatars.add(cloudData['player_${i}_avatar']);
+              }
+              else{
+                _avatars.add("");
               }
             }
             //_nicknames = cloudData.containsKey('player_${i}_nickname') ? [for(int i = 0; i < _connectedNum; i++) data['player_${i}_nickname']];
@@ -146,7 +157,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
         MaterialPageRoute<void>(
             builder: (context) {
               return GameTable(playerIndex: widget.playerIndex, nicknames: _nicknames,
-                gameNum: widget.gameNum, playersNumber: _connectedNum,);
+                gameNum: widget.gameNum, playersNumber: _connectedNum, avatars: _avatars,);
             }
         )
     );

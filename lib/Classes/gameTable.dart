@@ -15,12 +15,14 @@ import 'drawCard.dart';
 
 
 class GameTable extends StatelessWidget {
-  GameTable({required this.playersNumber, required this.playerIndex, required this.nicknames, required this.gameNum});
+  GameTable({required this.playersNumber, required this.playerIndex,
+    required this.nicknames, required this.gameNum, required this.avatars});
 
   int playersNumber;
   int playerIndex;
   int gameNum;
   var nicknames;
+  var avatars;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,9 @@ class GameTable extends StatelessWidget {
                 currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},
                 nickname: nicknames[playersNumber == 5 ? 2 : playersNumber - 2],
                 gameNum: gameNum,
-                deviceIndex: playerIndex)),//1
+                deviceIndex: playerIndex,
+                avatarUrl: avatars[(playersNumber == 5 ? 2 : playersNumber - 2)],
+              )),//1
             //this player is always of index playersNumber -1
             Positioned(
               left : size.width * 0.6,
@@ -65,7 +69,9 @@ class GameTable extends StatelessWidget {
                 currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},
                 deviceIndex: playerIndex,
                 gameNum: gameNum,
-                nickname: nicknames[playersNumber -1],)),//2
+                nickname: nicknames[playersNumber -1],
+                avatarUrl: avatars[(playersNumber -1)],
+              )),//2
             //this player exists in case there are 5 players and its index is 3
             playersNumber == 5 ? Positioned(
               left : size.width * 0.6,
@@ -76,7 +82,9 @@ class GameTable extends StatelessWidget {
                 currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},
                 nickname: nicknames[3],
                 gameNum: gameNum,
-                deviceIndex: playerIndex,)) :
+                deviceIndex: playerIndex,
+                avatarUrl: avatars[3],
+              )) :
                 SizedBox(),
             //this player is always of index 0 unless there are more than 3 players
             Positioned(
@@ -88,7 +96,9 @@ class GameTable extends StatelessWidget {
                 currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},
                 deviceIndex: playerIndex,
                 gameNum: gameNum,
-                nickname: nicknames[playersNumber > 3 ? 1 : 0],)),
+                nickname: nicknames[playersNumber > 3 ? 1 : 0],
+                avatarUrl: avatars[(playersNumber > 3 ? 1 : 0)],
+              )),
             //this player is always of index 0
             playersNumber > 3 ? Positioned(
               left : size.width * 0.09,
@@ -99,7 +109,9 @@ class GameTable extends StatelessWidget {
                 currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},
                 gameNum: gameNum,
                 nickname: nicknames[0],
-                deviceIndex: playerIndex,)) : SizedBox(),
+                deviceIndex: playerIndex,
+                avatarUrl: avatars[0],
+              )) : SizedBox(),
             //totem
             Positioned(
               left : size.width * 0.4,
