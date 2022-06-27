@@ -10,19 +10,21 @@ const numberOfUniqueCardsRepeats = 2 ;
 class TurnAlert extends StatelessWidget {
   final int index;
   final int gameNum;
+  String collectionType;
   late int currentTurn;
 
-  TurnAlert({required this.index, required this.gameNum});
+  TurnAlert({required this.index, required this.gameNum,
+    required this.collectionType});
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(//<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').
+        stream: FirebaseFirestore.instance.collection(collectionType).
         doc('game${gameNum}').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
-          StreamSubscription subscription = FirebaseFirestore.instance.collection('game').
+          StreamSubscription subscription = FirebaseFirestore.instance.collection(collectionType).
           doc('game${gameNum}').snapshots().listen((event) { });
           if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.data != null) {

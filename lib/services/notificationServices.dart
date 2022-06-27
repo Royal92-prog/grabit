@@ -53,17 +53,25 @@ extension ColorExtension on String {
   }
 }
 class  GameNotifications extends StatelessWidget {
-  GameNotifications({required this.context, required this.index, required this.gameNum});
   var context;
   int index;
   int gameNum;
+  String collectionType;
+  GameNotifications({required this.context, required this.index,
+    required this.gameNum, required this.collectionType});
+
+
   @override
   Widget build(BuildContext context) {
-    return GameUpdatesListener(massageUpdateFunc: showSnackBar, index: index, gameIndex: gameNum,);
+    return GameUpdatesListener(massageUpdateFunc: showSnackBar,
+      index: index,
+      gameIndex: gameNum,
+      collectionType: collectionType,);
   }
 
   showSnackBar(var size, String msg, int index, var context) async{
-    await FirebaseFirestore.instance.collection('game').doc('game${gameNum}MSGS').set({
+    await FirebaseFirestore.instance.collection(collectionType).
+      doc('game${gameNum}MSGS').set({
       'player${index}MSGS' : ""}, SetOptions(merge : true));
     if(msg == 'outerArrows'){
       showBasicsFlash(duration: Duration(milliseconds: 5700), msg : SizedBox(
@@ -150,16 +158,19 @@ class  GameNotifications extends StatelessWidget {
 
 
 class GameUpdatesListener extends StatelessWidget {
-  GameUpdatesListener({required this.massageUpdateFunc, required this.index, required this.gameIndex});
+  GameUpdatesListener({required this.massageUpdateFunc, required this.index,
+    required this.gameIndex, required this.collectionType});
   late String msg;
   int gameIndex;
   int index;
   Function massageUpdateFunc;
+  String collectionType;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game${gameIndex}MSGS').snapshots(),
+        stream: FirebaseFirestore.instance.collection(collectionType).
+          doc('game${gameIndex}MSGS').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {

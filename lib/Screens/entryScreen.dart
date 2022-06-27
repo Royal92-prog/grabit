@@ -187,7 +187,8 @@ class entryScreenState extends State<entryScreen>{
                 Navigator.of(context).push(
                 MaterialPageRoute<void>(
                 builder: (context) {
-                return WaitingRoom(gameNum: _gameNum, playerIndex: _playerIndex,);
+                return WaitingRoom(gameNum: _gameNum, playerIndex: _playerIndex,
+                  collectionType: 'game', playersNumber: -1,);
                       }
                       ));
               }))),

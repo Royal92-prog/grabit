@@ -20,21 +20,23 @@ class playerDeck extends StatelessWidget {
   final int gameNum;
   int currentTurn = 0;
   double rightAlignment = 0.012;
+  String collectionType;
 
 
-  playerDeck({required this.index, required this.gameNum});
+  playerDeck({required this.index, required this.gameNum,
+    required this.collectionType});
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(//<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').
+        stream: FirebaseFirestore.instance.collection(collectionType).
           doc('game${gameNum}').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
-          StreamSubscription subscription = FirebaseFirestore.instance.collection('game').
+          StreamSubscription subscription = FirebaseFirestore.instance.collection(collectionType).
           doc('game${gameNum}').snapshots().listen((event) { });
-          if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
+          if (snapshot.connectionState == ConnectionState.active && snapshot.data?.data() != null) {
               Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
               if(cloudData.containsKey("player_${index}_deck")) cardsHandler = cloudData['player_${index}_deck'];
               else cardsHandler = [];
