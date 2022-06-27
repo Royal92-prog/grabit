@@ -108,7 +108,7 @@ class GameHostStates extends State<GameHost>{
                   left: size.width * 0.46 ,
                   top: size.height * 0.425,
                   child: GestureDetector(
-                    child: Image.asset('assets/HostGame/+ btn.png',
+                    child: Image.asset('assets/HostGame/- btn.png',
                         height: 0.08 * size.height,
                         width: 0.1 * size.width),
                     onTap: () => setState(() {
@@ -152,7 +152,7 @@ class GameHostStates extends State<GameHost>{
                   left: size.width * 0.52 ,
                   top: size.height * 0.53,
                   child: GestureDetector(
-                    child: Image.asset('assets/HostGame/+ btn.png',
+                    child: Image.asset('assets/HostGame/cleanBTN.png',
                         height: 0.08 * size.height,
                         width: 0.1 * size.width),
                     onTap: () => setState(() {

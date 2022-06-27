@@ -120,6 +120,7 @@ flutter:
     - assets/HostGame/join.png
     - assets/HostGame/got it_BTN.png
     - assets/game/woodenTurn.png
+    - assets/HostGame/cleanBTN.png
     - assets/game/your_turn_text.png
     - assets/Lobby/Signout_BTN.png
     - assets/How to play/next_BTN.png
