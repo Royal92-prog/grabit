@@ -36,6 +36,8 @@ With that said, it is also possible with the application, to play anytime - anyw
 
 - [Terms of Service](https://github.com/Technion236272/2022b-GrabIt/blob/355e9ce548deba94773aeb0683d8bc92568f6544/Android%20rights/Terms%20and%20Conditions)
 
+- [Setup](https://github.com/Technion236272/2022b-GrabIt/blob/main/docs/setup.md)
+
 - [Database](https://github.com/Technion236272/2022b-GrabIt/blob/main/docs/Database.md)
 
 ## Screenshots
