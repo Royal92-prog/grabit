@@ -48,10 +48,8 @@ class entryScreenState extends State<entryScreen>{
   @override
   Widget build(BuildContext context) {
     getCurrentGameNum();
-    if(isLoginMode) {
-      getCurrentAvatar();
-      getUserNickname();
-    }
+    print('avatar ${_avatarUrl}');
+
     var size = MediaQuery.of(context).size;
 
     return Stack(fit: StackFit.passthrough, children:
@@ -124,6 +122,8 @@ class entryScreenState extends State<entryScreen>{
                   return RegistrationScreen();
                 }));
               if (res?.item1) {
+                getCurrentAvatar();
+                getUserNickname();
                 setState(() {
                   isLoginMode = res?.item1;
                   _username = res?.item2;
@@ -212,7 +212,16 @@ class entryScreenState extends State<entryScreen>{
   }
 
   void getCurrentAvatar() async{
-    _avatarUrl = await getAvatarByUsername(_username);
+    await FirebaseFirestore.instance.collection('usersData').doc(_username).get().then((snapshot) {
+      if (snapshot.exists) {
+        var data = snapshot.data();
+        if (data != null) {
+          setState(() {
+            _avatarUrl = data['avatar'];
+          });
+        }
+      }
+    });
   }
 
   void updateUserNickname(nickname) async{
@@ -225,7 +234,9 @@ class entryScreenState extends State<entryScreen>{
           if (snapshot.exists) {
             final data = snapshot.data();
             if (data != null) {
-              _nicknameController.text = data['nickname'];
+              setState(() {
+                _nicknameController.text = data['nickname'];
+              });
             }
           }
         }
