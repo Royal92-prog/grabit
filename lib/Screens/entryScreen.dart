@@ -16,6 +16,7 @@ import 'package:grabit/services/gameNumberManager.dart';
 import 'package:grabit/services/playerManager.dart';
 import 'package:tuple/tuple.dart';
 
+import '../Classes/licencetDialog.dart';
 import '../Classes/card.dart';
 import '../main.dart';
 import '../services/Login.dart';
@@ -132,14 +133,37 @@ class entryScreenState extends State<entryScreen>{
                 });
               }
             },),),
+              GestureDetector(
+            child: Stack(children: [
+              Positioned(
+                right: size.width * 0.07,
+                top: size.height * 0.1,
+                child: Image.asset('assets/HostGame/cleanBTN.png',
+                height: 0.095 * size.height,
+                width: 0.08 * size.width),),
+                Positioned(
+                    right: size.width * 0.095,
+                    top: size.height * 0.111,
+                    child: Text( "C",
+                style: GoogleFonts.galindo(
+                  fontSize: 18,
+                  color: Colors.black,),))]),
+                onTap: () {
+              print("Show dialog");
+              Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) {
+                      return LicenseDialog();
+                    }
+                  ));}),
         Positioned(
-          left: size.width * 0.07,
-          top: size.height * 0.65,
-          child: GestureDetector(
-            child: Image.asset('assets/Lobby/Info_BTN.png',
-              height: 0.14 * size.height,
-              width: 0.14 * size.width),
-            onTap: () => setState(() { instructionsMode = true; }),)),
+            left: size.width * 0.07,
+            top: size.height * 0.64,
+            child: GestureDetector(
+              child: Image.asset('assets/Lobby/Info_BTN.png',
+                  height: 0.14 * size.height,
+                  width: 0.14 * size.width),
+              onTap: () => setState(() { instructionsMode = true; }),)),
         Positioned(
           left: size.width * 0.13,
           bottom: size.height * 0.09,
@@ -192,16 +216,9 @@ class entryScreenState extends State<entryScreen>{
                       }
                       ));
               }))),
-       /* Positioned(
-            right: size.width * 0.1,
-            bottom: size.height * 0.05,
-            child: Container(width: 0.1 * size.width,
-                height: 0.1 * size.height,
-                child: showAboutDialog(
-          applicationName : "GrabIt",
-          applicationVersion: "2.0.0", context: context,))),*/
-        instructionsMode == true ? InfoScreen(func: setInstructionMode) : SizedBox()]);
+        instructionsMode == true ? InfoScreen(func: setInstructionMode) : SizedBox(),]);
   }
+
   setInstructionMode(){
     setState (() {
       this.instructionsMode = false;
@@ -234,5 +251,6 @@ class entryScreenState extends State<entryScreen>{
   }
 
 }
+
 
 

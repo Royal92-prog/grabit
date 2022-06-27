@@ -95,8 +95,7 @@ class FriendlyGameStates extends State<FriendlyGame>{
       Positioned(left: size.width * 0.05 , bottom: size.height * 0.05, child:
       GestureDetector(child:  Image.asset('assets/HostGame/back.png', height: 0.2 * size.height,
           width: 0.25 * size.width),onTap: (){ Navigator.of(context).pop(); }
-      )),
-    ]));
+      ))]));
   }
 }
 
