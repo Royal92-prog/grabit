@@ -192,6 +192,14 @@ class entryScreenState extends State<entryScreen>{
                       }
                       ));
               }))),
+       /* Positioned(
+            right: size.width * 0.1,
+            bottom: size.height * 0.05,
+            child: Container(width: 0.1 * size.width,
+                height: 0.1 * size.height,
+                child: showAboutDialog(
+          applicationName : "GrabIt",
+          applicationVersion: "2.0.0", context: context,))),*/
         instructionsMode == true ? InfoScreen(func: setInstructionMode) : SizedBox()]);
   }
   setInstructionMode(){

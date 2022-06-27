@@ -55,9 +55,8 @@ class DrawCard extends StatelessWidget {
 
         if (currentTurn == -1 || currentTurn == -3) {
           //subscription.cancel();
-          Future.delayed(Duration.zero, () async {
+          Future.delayed(Duration(seconds: 1), () async {
             //print("players${gameNum}");
-            SchedulerBinding.instance.addPostFrameCallback((_) async{
               if(deviceIndex == 0){
                 await Future.delayed(Duration(seconds: 2));
                 await FirebaseFirestore.instance.collection(collectionType).doc(
@@ -66,13 +65,8 @@ class DrawCard extends StatelessWidget {
                     'game${gameNum}MSGS').delete();
                 await FirebaseFirestore.instance.collection(collectionType).doc(
                     'game${gameNum}').delete();
-                while(Navigator.of(context).canPop() == true){
-                  Navigator.of(context).pop();
                 }
-                //Navigator.of(context).canPop()popUntil((route) => route != null && route.isFirst);
-              }
-            });
-
+           Navigator.of(context).popUntil((route) => route.isFirst);
           });//currentTurnCallback(true);
           }}
           /*else if (currentTurn == -3) {
