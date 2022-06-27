@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,103 +8,256 @@ import 'package:grabit/Classes/gameTable.dart';
 import 'package:grabit/Classes/player.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/services.dart';
+import 'package:grabit/Screens/infoScreen.dart';
+import 'package:grabit/Screens/registrationScreen.dart';
+import 'package:grabit/Screens/waitingRoomScreen.dart';
+import 'package:grabit/services/avatarManager.dart';
+import 'package:grabit/services/gameNumberManager.dart';
 import 'package:grabit/services/playerManager.dart';
+import 'package:tuple/tuple.dart';
 
+import '../Classes/licencetDialog.dart';
 import '../Classes/card.dart';
+import '../main.dart';
+import '../services/Login.dart';
+import 'friendlyGameScreen.dart';
+import 'loadingScreen.dart';
 
-class entryScreen extends StatelessWidget {
-  entryScreen({required this.numPlayers}); //super(key: key)
-  int numPlayers;
+class entryScreen extends StatefulWidget {
+  const entryScreen({Key? key}) : super(key: key);
+  @override
+  State<entryScreen> createState() => entryScreenState();
+
+}
+
+class entryScreenState extends State<entryScreen>{
+  bool isLoginMode = !(Login.instance().user == null);
+  bool instructionsMode = false;
   final _nicknameController = TextEditingController();
   int _connectedPlayersNum = 0;
   int _playerIndex = 0;
-  late var cardsArr;
+  // late var cardsArr;
+  var _gameNum = 0;
+  String? _avatarUrl = null;
+  String _username = "guest";
+
+  @override
+  void dispose() async{
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    getCurrentGameNum();
+    print('avatar ${_avatarUrl}');
+
     var size = MediaQuery.of(context).size;
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
-    return Stack(fit: StackFit.passthrough, children: [Container(child: Image.asset('assets/Background.png',
-      width: size.width, height: size.height,),),Positioned(top: size.height*0.03,
-        left: size.width * 0.3, child:Container(child: Image.asset('assets/nickname.png',width: 0.2 * size.width,
-            height: 0.35 * size.height),width:size.width * 0.35, height: size.height * 0.35 )),
-      Positioned(top: 0.13 * size.height, right:0.585 * size.width,child:
-      Container(width:0.15 * size.width,height: 0.15 * size.height,
-          decoration: BoxDecoration(
-            color:Colors.blue, shape: BoxShape.circle,))),
-      Positioned(top: size.height * 0.028, left: size.width * 0.25,child://18
-      Container(
-          width:size.width * 0.45,
-          height: size.height * 0.35,
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            resizeToAvoidBottomInset: false,
-            body : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 108, vertical: 50),
+
+    return Stack(fit: StackFit.passthrough, children:
+      [
+        Container(child:
+          Image.asset('assets/Background.png',
+            width: size.width,
+            height: size.height,),),
+    Positioned(
+          top: size.height * 0.05,
+          left: size.width * 0.315,
+          child: Container(
+            width: size.width * 0.39,
+            height: size.height * 0.32,
+            child: Image.asset('assets/Lobby/writingArea.png',
+              width: 0.2 * size.width,
+              height: 0.35 * size.height),)),
+        Positioned(
+          top: 0.11 * size.height,
+          left: 0.32 * size.width,
+          child: CircleAvatar(
+                  radius: size.width * 0.045,
+                  backgroundImage: const AssetImage('assets/Lobby/Avatar_photo.png'),
+                  foregroundImage: _avatarUrl == null ? null : NetworkImage(_avatarUrl!),
+                  ),
+        ),
+        Positioned(
+          top: 0.18 * size.height,
+          left: 0.32 * size.width,
+          child: GestureDetector(
+              onTap: isLoginMode == false ? null : () async{
+                final url = await updateAvatarByUsername(_username);
+                setState(() {
+                  _avatarUrl = url;
+                });
+              },
+              child: isLoginMode ? Image.asset('assets/Lobby/+ BTN.png',
+                width: 0.125 * size.width,
+                height: 0.125 * size.height) : SizedBox())),
+        isLoginMode == true ? Positioned(
+          top: size.height * 0.21,
+          left: size.width * 0.435,
+          child: GestureDetector(
+            child: Image.asset('assets/Lobby/Signout_BTN.png',
+                width: 0.15 * size.width,
+                height: 0.15 * size.height),
+            onTap: () async {
+              var res = await Navigator.of(context).push(
+                  MaterialPageRoute<Tuple3>(
+                      builder: (context) {
+                        return RegistrationScreen();
+                      }));
+              setState(() {
+                isLoginMode = false;
+                _nicknameController.clear();
+                _avatarUrl = null;
+              });
+            },),) :
+        Positioned(
+          top: size.height * 0.21,
+          left: size.width * 0.435,
+          child: GestureDetector(
+              child: Image.asset('assets/Lobby/SignIn_BTN.png',
+              width: 0.15 * size.width,
+              height: 0.15 * size.height),
+            onTap: () async {
+              var res = await Navigator.of(context).push(
+              MaterialPageRoute<Tuple3>(
+                builder: (context) {
+                  return RegistrationScreen();
+                }));
+              if (res?.item1) {
+                getCurrentAvatar();
+                getUserNickname();
+                setState(() {
+                  isLoginMode = res?.item1;
+                  _username = res?.item2;
+                  _nicknameController.text = res?.item3;
+                });
+              }
+            },),),
+              GestureDetector(
+            child: Stack(children: [
+              Positioned(
+                right: size.width * 0.07,
+                top: size.height * 0.1,
+                child: Image.asset('assets/HostGame/cleanBTN.png',
+                height: 0.095 * size.height,
+                width: 0.08 * size.width),),
+                Positioned(
+                    right: size.width * 0.095,
+                    top: size.height * 0.111,
+                    child: Text( "C",
+                style: GoogleFonts.galindo(
+                  fontSize: 18,
+                  color: Colors.black,),))]),
+                onTap: () {
+              print("Show dialog");
+              Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) {
+                      return LicenseDialog();
+                    }
+                  ));}),
+        Positioned(
+            left: size.width * 0.07,
+            top: size.height * 0.64,
+            child: GestureDetector(
+              child: Image.asset('assets/Lobby/Info_BTN.png',
+                  height: 0.14 * size.height,
+                  width: 0.14 * size.width),
+              onTap: () => setState(() { instructionsMode = true; }),)),
+        Positioned(
+          left: size.width * 0.13,
+          bottom: size.height * 0.09,
+          child: GestureDetector(
+            child: Image.asset('assets/Lobby/FriendlyBattle_BTN.png',
+              width: 0.2 * size.width,
+              height: 0.12 * size.height),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute<void> (builder: (context) {
+              return FriendlyGame();
+            }));})),
+        Positioned(
+          top: size.height * 0.145,
+          left: size.width * 0.425,
+          child: SizedBox(
+              width: 0.235 * size.width,
+              height: 0.1 * size.height,
               child: TextField(
                 controller: _nicknameController,
+                showCursor: false,
                 decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  hintText: 'Enter nickname',
-                ),
-              ),
-            ),
-          ))
-      ),
-      Positioned(bottom: size.height * 0.04, left: size.width * 0.37,child://18
-      Container(
-          width:size.width * 0.25,
-          height: size.height * 0.25,
-          child:GestureDetector(
-              child:Image.asset('assets/playButton.png',width: 0.2 * size.width,
-                  height: 0.25 * size.height),
+                  border: InputBorder.none,
+                  hintText: 'YOUR NICKNAME',),))),
+        Positioned(
+          bottom: size.height * 0.04,
+          left: size.width * 0.39,
+          child: Container(
+            width: size.width * 0.25,
+            height: size.height * 0.25,
+            child: GestureDetector(
+              child: Image.asset('assets/playButton.png',
+                width: 0.2 * size.width,
+                height: 0.25 * size.height),
               onTap: () async{
-                FirebaseFirestore _firestore = FirebaseFirestore.instance;
-                _connectedPlayersNum = await getConnectedNum();
+                if (isLoginMode) {
+                  updateUserNickname(_nicknameController.text);
+                }
+                // FirebaseFirestore _firestore = FirebaseFirestore.instance;
+                _connectedPlayersNum = await getConnectedNum(_gameNum);
                 _playerIndex = _connectedPlayersNum;
                 ++_connectedPlayersNum;
-                Map<String,dynamic> dataUpload = {};
-                if (_connectedPlayersNum == 1) {
-                  cardsArr = [for(int i = 1; i <= (numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)); i++) i];
-                  cardsArr.shuffle();
-                  dataUpload['cardsData'] = cardsArr;
-                  print('hi ${_connectedPlayersNum}');
-                }
-                else {
-                  await _firestore.collection('game').doc('game1').get().then(
-                          (snapshot) {
-                            if (snapshot.exists) {
-                              final data = snapshot.data();
-                              if (data != null) {
-                                cardsArr = data['cardsData'];
-                              }
-                            }
-                            return null;
-                          }
-                          );
-                  print(_connectedPlayersNum);
-                }
-                int cards = ((numberOfRegularCards+((numberOfUniqueCards)*numberOfUniqueCardsRepeats)) / numPlayers).toInt();
-                Map<String, dynamic> uploadData = {};
-                var cardsHandler = [];
-                //cardsHandler.add([cardsArr.sublist(cards*i,(cards*(i+1))),[]]);
-                dataUpload['totem'] = false;
-                dataUpload['turn'] = 0;
-                dataUpload['matchingCards'] = [for(int i = 0; i < (numberOfRegularCards~/4); i++) 0]; /// zero list of zeros ///
-                dataUpload['matchingColorCards'] = [0,0,0,0];
-                dataUpload['cardsActiveUniqueArray'] = [for(int i = 0; i < (numberOfUniqueCards); i++) 0];
-                dataUpload['player_${_playerIndex.toString()}_deck'] = cardsArr.sublist(cards*(_playerIndex), (cards * (_playerIndex + 1)));
-                dataUpload['player_${(_playerIndex).toString()}_openCards'] = [];
-                dataUpload['player_${_playerIndex.toString()}_nickname'] = _nicknameController.text;
-                dataUpload['connectedPlayersNum'] = _connectedPlayersNum;
-                await _firestore.collection('game').doc('game1').set(dataUpload, SetOptions(merge : true));
-                // Navigator.of(context).push(
-                // MaterialPageRoute<void>(
-                // builder: (context) {
-                // return gameTable();
-                //       }
-                //       ));
-              })))]);
+                setConnectedNum(_connectedPlayersNum, _gameNum);
+                updateNicknameByIndex(_playerIndex, _nicknameController.text, _gameNum);
+                setAvatarForGame(_gameNum, _avatarUrl, _playerIndex);
+                Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                builder: (context) {
+                return WaitingRoom(gameNum: _gameNum, playerIndex: _playerIndex,
+                  collectionType: 'game', playersNumber: -1,);
+                      }
+                      ));
+              }))),
+        instructionsMode == true ? InfoScreen(func: setInstructionMode) : SizedBox(),]);
+  }
+
+  setInstructionMode(){
+    setState (() {
+      this.instructionsMode = false;
+    });
+  }
+
+  void getCurrentGameNum() async {
+    _gameNum = await getGameNum();
+  }
+
+  void getCurrentAvatar() async{
+    await FirebaseFirestore.instance.collection('usersData').doc(_username).get().then((snapshot) {
+      if (snapshot.exists) {
+        var data = snapshot.data();
+        if (data != null) {
+          setState(() {
+            _avatarUrl = data['avatar'];
+          });
+        }
+      }
+    });
+  }
+
+  void updateUserNickname(nickname) async{
+    await FirebaseFirestore.instance.collection('usersData').doc(_username).set({'nickname' : _nicknameController.text}, SetOptions(merge: true));
+  }
+
+  void getUserNickname() async{
+    await FirebaseFirestore.instance.collection('usersData').doc(_username).get().then(
+            (snapshot) {
+          if (snapshot.exists) {
+            final data = snapshot.data();
+            if (data != null) {
+              setState(() {
+                _nicknameController.text = data['nickname'];
+              });
+            }
+          }
+        }
+    );
   }
 
 }

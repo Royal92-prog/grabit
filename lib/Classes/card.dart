@@ -18,7 +18,10 @@ Map <int,Tuple2<int,String>> cardsFullDeck = <int,Tuple2<int,String>>{};
 
 class currentCard extends StatefulWidget {
   int index;
-  currentCard({required this.index});
+  int gameNum;
+  String collectionType;
+  currentCard({required this.index, required this.gameNum,
+    required this.collectionType});
   @override
   State<currentCard> createState() => cardState();
 
@@ -50,20 +53,25 @@ class cardState extends State<currentCard>{
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     initializeCardsMap();
     var size = MediaQuery.of(context).size;
-    return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('game').doc('game1').snapshots(),
+    return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance.collection(widget.collectionType).
+        doc('game${widget.gameNum}').snapshots(),
     builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
-      if(snapshot.connectionState == ConnectionState.active){
-      final cloudData = snapshot.data;
-      if(cloudData != null) {
-      openCards = cloudData['player_${(widget.index).toString()}_openCards'];
-      if (openCards.length == 0){
-        print("indexxxx ${widget.index.toString()}");
-      }
-      }
+      if(snapshot.connectionState == ConnectionState.active &&
+          snapshot.data?.data() != null){
+      //final cloudData = snapshot.data;
+        Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
+        openCards = cloudData.containsKey('player_${(widget.index).toString()}_openCards') ?
+          cloudData['player_${(widget.index).toString()}_openCards'] : [];
+
       return Container(
         child:openCards.length == 0 ? SizedBox(width: 10,height: 10,):
         SvgPicture.asset(cardsFullDeck[openCards[0]]?.item2

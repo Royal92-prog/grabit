@@ -15,10 +15,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 2.0.0
 
 environment:
-  sdk: ">=2.16.1 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -35,6 +35,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   firebase_core: ^1.8.0
+  animated_text_kit: ^4.2.2
+  flash: ^2.0.3+2
   firebase_auth: ^1.0.0
   cloud_firestore: ^3.1.7
   flutter_svg: ^0.22.0
@@ -42,7 +44,16 @@ dependencies:
   tuple_dart: ^1.4.2
   google_fonts: ^2.3.2
   tuple: ^2.0.0
+  get:
   firebase_database: ^9.0.14
+  animations: ^2.0.3
+  overlay_support: ^2.0.1
+  google_sign_in: ^5.3.3
+  flutter_auth_buttons: ^0.10.0
+  flutter_signin_button: ^2.0.0
+  auto_orientation: ^2.2.1
+  file_picker:
+  firebase_storage:
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -105,6 +116,30 @@ flutter:
 
 
   assets:
+    - assets/HostGame/back.png
+    - assets/HostGame/join.png
+    - assets/Lobby/grabitLogo.png
+    - assets/HostGame/got it_BTN.png
+    - assets/game/woodenTurn.png
+    - assets/HostGame/cleanBTN.png
+    - assets/game/your_turn_text.png
+    - assets/Lobby/Signout_BTN.png
+    - assets/How to play/next_BTN.png
+    - assets/How to play/X.png
+    - assets/HostGame/host.png
+    - assets/Lobby/Info_BTN.png
+    - assets/Lobby/+ BTN.png
+    - assets/Lobby/writingArea.png
+    - assets/logout_BTN.png
+    - assets/Lobby/Avatar_photo.png
+    - assets/Lobby/SignIn_BTN.png
+    - assets/HostGame/writingArea.svg
+    - assets/HostGame/- btn.png
+    - assets/HostGame/+ btn.png
+    - assets/How to play/back.png
+    - assets/HostGame/mainHeader.svg
+    - assets/Lobby/FriendlyBattle_BTN.png
+    -
     - assets/Full_pack.svg
     - WoodenTable.svg
     - nickname.png
@@ -210,6 +245,14 @@ flutter:
     - Special_card1.svg
     - Special_card2.svg
     - Special_card3.svg
+    -
+    - SignInLogo.png
+    - SignInButton.png
+    - broadNameField.png
+    - Google_BTN.png
+    - back.png
+    - Register_BTN.png
+    - DRAW_BTN.png
 
 
   #-
