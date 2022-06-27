@@ -32,15 +32,17 @@ With that said, it is also possible with the application, to play anytime - anyw
 
 ## Table of Contents
 
-- [Privacy Policy](https://github.com/Technion236272/2022b-GrabIt/blob/355e9ce548deba94773aeb0683d8bc92568f6544/Android%20rights/Privacy%20Policy)
-
-- [Terms of Service](https://github.com/Technion236272/2022b-GrabIt/blob/355e9ce548deba94773aeb0683d8bc92568f6544/Android%20rights/Terms%20and%20Conditions)
+- [Overview](https://github.com/Technion236272/2022b-GrabIt/blob/main/docs/overview.md)
 
 - [Setup](https://github.com/Technion236272/2022b-GrabIt/blob/main/docs/setup.md)
 
 - [Database](https://github.com/Technion236272/2022b-GrabIt/blob/main/docs/Database.md)
 
 - [Algorithms](https://github.com/Technion236272/2022b-GrabIt/blob/main/docs/algorithms.md)
+
+- [Privacy Policy](https://github.com/Technion236272/2022b-GrabIt/blob/355e9ce548deba94773aeb0683d8bc92568f6544/Android%20rights/Privacy%20Policy)
+
+- [Terms of Service](https://github.com/Technion236272/2022b-GrabIt/blob/355e9ce548deba94773aeb0683d8bc92568f6544/Android%20rights/Terms%20and%20Conditions)
 
 ## Screenshots
 ![rsz_in_the_game](https://user-images.githubusercontent.com/57787325/175979463-b0d795d8-37cd-489b-988a-851b2a11f243.png)
