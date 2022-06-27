@@ -57,7 +57,7 @@ class IpScreenPopUp extends StatelessWidget{
           child: GestureDetector(
             onTap: (() async{
               await FirebaseFirestore.instance.collection('privateGame').
-                doc('game${gameNum}').get().then((snapshot) async {
+                doc('game${gameNum}players').get().then((snapshot) async {
                   if (snapshot.exists) {
                     final data = snapshot.data();
                     if (data != null) {
