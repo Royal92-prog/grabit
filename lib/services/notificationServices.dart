@@ -173,7 +173,8 @@ class GameUpdatesListener extends StatelessWidget {
           doc('game${gameIndex}MSGS').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.connectionState == ConnectionState.active
+          && snapshot.data?.data() != null ) {
             //final cloudData = snapshot.data;
             if (snapshot.data != null) {
               Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);

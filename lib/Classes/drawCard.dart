@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 const numberOfRegularCards = 72;
 const numberOfUniqueCards = 3;
 const numberOfUniqueCardsRepeats = 2 ;
@@ -34,12 +35,13 @@ class DrawCard extends StatelessWidget {
     doc('game${gameNum}').snapshots(),
   builder: (BuildContext context,
     AsyncSnapshot <DocumentSnapshot> snapshot) {
-    StreamSubscription subscription = FirebaseFirestore.instance.collection(collectionType).
-    doc('game${gameNum}').snapshots().listen((event) { });
+    //StreamSubscription subscription = FirebaseFirestore.instance.collection(collectionType).
+    //doc('game${gameNum}').snapshots().listen((event) { });
       if (snapshot.connectionState == ConnectionState.active &&
         snapshot.data?.data() != null) {
           cardsHandler = [];
           Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
+          if(cloudData != null){
           for (int i = 0; i < playersNumber; i++) {
             if (cloudData.containsKey("player_${i}_deck")){
               cardsHandler.add([
@@ -52,21 +54,27 @@ class DrawCard extends StatelessWidget {
         currentTurn = cloudData.containsKey('turn') == true ? cloudData['turn'] : 0;
 
         if (currentTurn == -1 || currentTurn == -3) {
-          subscription.cancel();
+          //subscription.cancel();
           Future.delayed(Duration.zero, () async {
             //print("players${gameNum}");
-            if(deviceIndex == 0){
-              await Future.delayed(Duration(seconds: 3));
-              await FirebaseFirestore.instance.collection(collectionType).doc(
-                  'players${gameNum}').delete();
-              await FirebaseFirestore.instance.collection(collectionType).doc(
-                  'players${gameNum}MSGS').delete();
-              await FirebaseFirestore.instance.collection(collectionType).doc(
-                  'game${gameNum}').delete();
-            }
-            Navigator.of(context).popUntil((route) => route.isFirst);
+            SchedulerBinding.instance.addPostFrameCallback((_) async{
+              if(deviceIndex == 0){
+                await Future.delayed(Duration(seconds: 2));
+                await FirebaseFirestore.instance.collection(collectionType).doc(
+                    'players${gameNum}').delete();
+                await FirebaseFirestore.instance.collection(collectionType).doc(
+                    'game${gameNum}MSGS').delete();
+                await FirebaseFirestore.instance.collection(collectionType).doc(
+                    'game${gameNum}').delete();
+                while(Navigator.of(context).canPop() == true){
+                  Navigator.of(context).pop();
+                }
+                //Navigator.of(context).canPop()popUntil((route) => route != null && route.isFirst);
+              }
+            });
+
           });//currentTurnCallback(true);
-          }
+          }}
           /*else if (currentTurn == -3) {
             currentTurnCallback(false);
           }*/
