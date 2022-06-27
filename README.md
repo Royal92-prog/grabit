@@ -40,6 +40,8 @@ With that said, it is also possible with the application, to play anytime - anyw
 
 - [Database](https://github.com/Technion236272/2022b-GrabIt/blob/main/docs/Database.md)
 
+- [Algorithms](https://github.com/Technion236272/2022b-GrabIt/blob/main/docs/algorithms.md)
+
 ## Screenshots
 ![rsz_in_the_game](https://user-images.githubusercontent.com/57787325/175979463-b0d795d8-37cd-489b-988a-851b2a11f243.png)
 ![rsz_lobby](https://user-images.githubusercontent.com/57787325/175979765-2b08f9e6-9c05-4259-9c90-f643c6b58962.png)
