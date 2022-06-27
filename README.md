@@ -1,5 +1,3 @@
-<a href='https://play.google.com/store/apps/details?id=com.technion.android.grabit&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
-
 # GrabIt
 
 Our application brings jungle speed - The worldwide popular card game to your device. 
@@ -9,6 +7,10 @@ Now with:
 - No physical cards required!
 
 **Finally you can take the popular card game to anywhere, play with everyone, and HAVE FUN!**
+
+
+<a href='https://play.google.com/store/apps/details?id=com.technion.android.grabit&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="200" height="107"/></a>
+
 
 
 ## Motivation
