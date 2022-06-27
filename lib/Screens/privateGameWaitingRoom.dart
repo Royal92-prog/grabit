@@ -22,15 +22,12 @@ class PrivateGameWaitingRoom extends StatefulWidget {
 
 }
 
-
 class PrivateRoomStates extends State<PrivateGameWaitingRoom> {
   int _connectedNum = 0;
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery
-        .of(context)
-        .size;
+    var size = MediaQuery.of(context).size;
     var _nicknames = [];
     return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance.collection('privateGame').
@@ -40,18 +37,10 @@ class PrivateRoomStates extends State<PrivateGameWaitingRoom> {
           if (snapshot.connectionState == ConnectionState.active
               && snapshot.data?.data() != null) {
             Map<String, dynamic> cloudData =
-            (snapshot.data?.data() as Map<String, dynamic>);
+              (snapshot.data?.data() as Map<String, dynamic>);
             _connectedNum = cloudData.containsKey('connectedPlayersNum')
                 ? cloudData['connectedPlayersNum'] : 0;
-            //_nicknames =[];
-            //if(cloudData.containsKey('player_${i}_nickname')){
-            // _nicknames.add(cloudData['player_${i}_nickname']);
-            // }
-            //else{
-            //_nicknames.add("");
-            //}
-
-
+            
           if (_connectedNum == widget.playersNumber) {
             //startGame();
             for (int i = 0; i < widget.playersNumber; i++) {

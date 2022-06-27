@@ -65,7 +65,10 @@ class FriendlyGameStates extends State<FriendlyGame>{
             width: 0.15 * size.width,
             height: 0.1 * size.height),
         onTap:(() async {
-          int gameNum = int.parse(_gameRoomController.toString());
+          print("Room numbere is :: ");
+          print(int.parse(_gameRoomController.text.toString()));
+          int gameNum = int.parse(_gameRoomController.text.toString());
+          print(gameNum);
           await FirebaseFirestore.instance.collection('privateGame').
           doc('game${gameNum}').get().then((snapshot) async {
             if (snapshot.exists) {
@@ -74,8 +77,9 @@ class FriendlyGameStates extends State<FriendlyGame>{
                 int playersNumber = data['playersNumber'];
                 _playerIndex = data['connectedPlayersNum'];//data['currentNum'];
                 await FirebaseFirestore.instance.collection('privateGame').
-                doc('gameNumber').set({'connectedPlayersNum' : data['connectedPlayersNum'] +1 ,},
-                    SetOptions(merge: true));
+                doc('game${gameNum}').set({
+                  'connectedPlayersNum' : data['connectedPlayersNum'] +1 ,},
+                   SetOptions(merge: true));
                 Navigator.of(context).push(MaterialPageRoute<void>(
                     builder: (context) {
                       return PrivateGameWaitingRoom(
