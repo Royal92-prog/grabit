@@ -176,7 +176,11 @@ class _WaitingRoomState extends State<WaitingRoom> {
             }
         )
     );
-  }
+  }/*
+  void increaseGameNum(int currentGame) async {
+    ++currentGame;
+    await FirebaseFirestore.instance.collection('privateGame').doc('gameNumber').set({'currentNum' : currentGame}, SetOptions(merge: true));
+  }*/
 
   void initializeGameData() async {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;

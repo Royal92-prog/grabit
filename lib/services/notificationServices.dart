@@ -80,14 +80,16 @@ class GameUpdatesListener extends StatelessWidget {
             .doc('game${gameIndex}MSGS').snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot <DocumentSnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.connectionState == ConnectionState.active
+            && snapshot.data?.data() != null) {
             final cloudData = snapshot.data;
             if (cloudData != null) {
-              msg = cloudData['Player${index}Msgs'];
+              Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
+              msg = (cloudData.containsKey('turn')) == true ?
+                cloudData['Player${index}Msgs'] : "";
               /// lines 46 to 60 :New condition exit when there is dead end after a certain amount of time//
               if (msg != "") {
                 massageUpdateFunc(size, msg, index, context, collectionName);
-
               }
 
             }

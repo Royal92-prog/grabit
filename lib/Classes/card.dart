@@ -59,13 +59,16 @@ class cardState extends State<currentCard>{
     return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance.collection(widget.collectionName).doc('game${widget.gameNum}').snapshots(),
       builder: (BuildContext context, AsyncSnapshot <DocumentSnapshot> snapshot){
-        if(snapshot.connectionState == ConnectionState.active){
+        if(snapshot.connectionState == ConnectionState.active
+          && snapshot.data?.data() != null){
           final cloudData = snapshot.data;
           if(cloudData != null) {
-      openCards = cloudData['player_${(widget.index).toString()}_openCards'];
-      if (openCards.length == 0){
-        print("indexxxx ${widget.index.toString()}");
-      }
+            Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
+            openCards = (cloudData.containsKey('player_${(widget.index).toString()}_openCards')) == true ?
+              cloudData['player_${(widget.index).toString()}_openCards'] : [];
+          if (openCards.length == 0){
+            print("indexxxx ${widget.index.toString()}");
+           }
       }
       return Container(
         child:openCards.length == 0 ? SizedBox(width: 10,height: 10,):

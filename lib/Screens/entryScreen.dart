@@ -159,6 +159,7 @@ class entryScreenState extends State<entryScreen>{
                 width: 0.2 * size.width,
                 height: 0.25 * size.height),
               onTap: () async{
+                cardsArr = [];
                 FirebaseFirestore _firestore = FirebaseFirestore.instance;
                 _connectedPlayersNum = await getConnectedNum(_gameNum);
                 _playerIndex = _connectedPlayersNum;

@@ -26,7 +26,8 @@ class TurnAlert extends StatelessWidget {
             AsyncSnapshot <DocumentSnapshot> snapshot) {
           StreamSubscription subscription = FirebaseFirestore.instance.collection('game').
           doc('game${gameNum}').snapshots().listen((event) { });
-          if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.connectionState == ConnectionState.active
+            && snapshot.data?.data() != null) {
             if (snapshot.data != null) {
               Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
               currentTurn = (cloudData.containsKey('turn')) == true ?
