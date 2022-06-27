@@ -41,11 +41,6 @@ class entryScreenState extends State<entryScreen>{
   String _username = "guest";
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() async{
     super.dispose();
   }
@@ -53,6 +48,10 @@ class entryScreenState extends State<entryScreen>{
   @override
   Widget build(BuildContext context) {
     getCurrentGameNum();
+    if(isLoginMode) {
+      getCurrentAvatar();
+      getUserNickname();
+    }
     var size = MediaQuery.of(context).size;
 
     return Stack(fit: StackFit.passthrough, children:
