@@ -70,14 +70,14 @@ class FriendlyGameStates extends State<FriendlyGame>{
           int gameNum = int.parse(_gameRoomController.text.toString());
           print(gameNum);
           await FirebaseFirestore.instance.collection('privateGame').
-          doc('game${gameNum}').get().then((snapshot) async {
+          doc('game${gameNum}players').get().then((snapshot) async {
             if (snapshot.exists) {
               final data = snapshot.data();
               if (data != null) {
                 int playersNumber = data['playersNumber'];
                 _playerIndex = data['connectedPlayersNum'];//data['currentNum'];
                 await FirebaseFirestore.instance.collection('privateGame').
-                doc('game${gameNum}').set({
+                doc('game${gameNum}players').set({
                   'connectedPlayersNum' : data['connectedPlayersNum'] +1 ,},
                    SetOptions(merge: true));
                 Navigator.of(context).push(MaterialPageRoute<void>(

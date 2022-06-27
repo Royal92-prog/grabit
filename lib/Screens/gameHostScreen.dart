@@ -63,7 +63,7 @@ class GameHostStates extends State<GameHost>{
                     doc('gameNumber').set({'currentNum' : data['currentNum'] +1 ,},
                         SetOptions(merge: true));
                     await FirebaseFirestore.instance.collection('privateGame').
-                    doc('game${gameIp}').set({'connectedPlayersNum' : 0 ,'playersNumber' : playersNumber},
+                    doc('game${gameIp}players').set({'connectedPlayersNum' : 0 ,'playersNumber' : playersNumber},
                         SetOptions(merge: true));
 
                     }

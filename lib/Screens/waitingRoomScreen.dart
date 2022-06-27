@@ -14,7 +14,8 @@ class WaitingRoom extends StatefulWidget {
   int gameNum;
   int playerIndex;
 
-  WaitingRoom({required this.gameNum, required this.playerIndex});
+
+  WaitingRoom({required this.gameNum, required this.playerIndex,});
 
   @override
   State<WaitingRoom> createState() => _WaitingRoomState();

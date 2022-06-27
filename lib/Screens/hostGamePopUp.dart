@@ -63,7 +63,7 @@ class IpScreenPopUp extends StatelessWidget{
                     if (data != null) {
                       _playerIndex = data['connectedPlayersNum'];//data['currentNum'];
                       await FirebaseFirestore.instance.collection('privateGame').
-                      doc('game${gameNum}').set({'connectedPlayersNum' : data['connectedPlayersNum'] +1 ,},
+                      doc('game${gameNum}players').set({'connectedPlayersNum' : data['connectedPlayersNum'] +1 ,},
                         SetOptions(merge: true));
                     }
                   }
