@@ -61,6 +61,8 @@ class DrawCard extends StatelessWidget {
                   'players${gameNum}').delete();
               await FirebaseFirestore.instance.collection(collectionType).doc(
                   'players${gameNum}MSGS').delete();
+              await FirebaseFirestore.instance.collection(collectionType).doc(
+                  'game${gameNum}').delete();
             }
             Navigator.of(context).popUntil((route) => route.isFirst);
           });//currentTurnCallback(true);

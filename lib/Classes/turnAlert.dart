@@ -26,15 +26,14 @@ class TurnAlert extends StatelessWidget {
             AsyncSnapshot <DocumentSnapshot> snapshot) {
           StreamSubscription subscription = FirebaseFirestore.instance.collection(collectionType).
           doc('game${gameNum}').snapshots().listen((event) { });
-          if (snapshot.connectionState == ConnectionState.active) {
-            if (snapshot.data != null) {
+          if (snapshot.connectionState == ConnectionState.active && snapshot.data?.data() != null) {
               Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
               currentTurn = (cloudData.containsKey('turn')) == true ?
                 cloudData['turn'] : 0;
               if(currentTurn == -1 || currentTurn == -3){
                 subscription.cancel();
               }
-            }
+
 
             return Stack(children: [Image.asset('assets/game/woodenTurn.png',
               width: 0.135 * size.width,
