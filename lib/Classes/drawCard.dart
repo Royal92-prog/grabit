@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 const numberOfRegularCards = 72;
 const numberOfUniqueCards = 3;
 const numberOfUniqueCardsRepeats = 2 ;
@@ -12,6 +13,7 @@ class DrawCard extends StatelessWidget {
   final int playersNumber;
   final int gameNum;
   final int deviceIndex;
+  String collectionType;
   final Function(bool) currentTurnCallback;
   //var openCards = [];
   late var deck;
@@ -23,21 +25,23 @@ class DrawCard extends StatelessWidget {
 
   DrawCard({required this.index, required this.playersNumber,
     required this.gameNum, required this.deviceIndex,
-    required this.currentTurnCallback});
+    required this.currentTurnCallback, required this.collectionType});
 
   @override
   Widget build(BuildContext context) {
   var size = MediaQuery.of(context).size;
   return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(//<DocumentSnapshot>(
-  stream: FirebaseFirestore.instance.collection('game').
+  stream: FirebaseFirestore.instance.collection(collectionType).
     doc('game${gameNum}').snapshots(),
   builder: (BuildContext context,
     AsyncSnapshot <DocumentSnapshot> snapshot) {
-    StreamSubscription subscription = FirebaseFirestore.instance.collection('game').
-    doc('game${gameNum}').snapshots().listen((event) { });
-      if (snapshot.connectionState == ConnectionState.active && snapshot.data != null) {
+    //StreamSubscription subscription = FirebaseFirestore.instance.collection(collectionType).
+    //doc('game${gameNum}').snapshots().listen((event) { });
+      if (snapshot.connectionState == ConnectionState.active &&
+        snapshot.data?.data() != null) {
           cardsHandler = [];
           Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
+          if(cloudData != null){
           for (int i = 0; i < playersNumber; i++) {
             if (cloudData.containsKey("player_${i}_deck")){
               cardsHandler.add([
@@ -50,22 +54,21 @@ class DrawCard extends StatelessWidget {
         currentTurn = cloudData.containsKey('turn') == true ? cloudData['turn'] : 0;
 
         if (currentTurn == -1 || currentTurn == -3) {
-          subscription.cancel();
-          Future.delayed(Duration.zero, () async {
+          //subscription.cancel();
+          Future.delayed(Duration(seconds: 1), () async {
             //print("players${gameNum}");
-            if(playersNumber != 0) {
-              await Future.delayed(Duration(seconds: 8));
-            }
-            else {
-              await Future.delayed(Duration(seconds: 10));
-              await FirebaseFirestore.instance.collection('game').doc(
-                  'players${gameNum}').delete();
-              await FirebaseFirestore.instance.collection('game').doc(
-                  'players${gameNum}MSGS').delete();
-            }
-            Navigator.of(context).popUntil((route) => route.isFirst);
+              if(deviceIndex == 0){
+                await Future.delayed(Duration(seconds: 2));
+                await FirebaseFirestore.instance.collection(collectionType).doc(
+                    'players${gameNum}').delete();
+                await FirebaseFirestore.instance.collection(collectionType).doc(
+                    'game${gameNum}MSGS').delete();
+                await FirebaseFirestore.instance.collection(collectionType).doc(
+                    'game${gameNum}').delete();
+                }
+           Navigator.of(context).popUntil((route) => route.isFirst);
           });//currentTurnCallback(true);
-          }
+          }}
           /*else if (currentTurn == -3) {
             currentTurnCallback(false);
           }*/
@@ -87,7 +90,7 @@ class DrawCard extends StatelessWidget {
       FirebaseFirestore db = FirebaseFirestore.instance;
       Map<String, dynamic> cloudMsgs = {};
       Map<String, dynamic> dataUpload = {};
-      await db.collection("game").doc("game${gameNum}").set({
+      await db.collection(collectionType).doc("game${gameNum}").set({
         'turn' : -2},SetOptions(merge :true));
       if(cardsHandler[index][1].length > 0){
         decreaseCardsArray(cardsHandler[index][1][0]);
@@ -95,7 +98,7 @@ class DrawCard extends StatelessWidget {
       cardsHandler[index][1].insert(0,cardsHandler[index][0].removeAt(0));
       if (increaseCardsArray(cardsHandler[index][1][0]) == 2) {
         outerArrowsRevealed = true;
-      await db.collection("game").doc("game${gameNum}").set({
+      await db.collection(collectionType).doc("game${gameNum}").set({
         'player_${index}_openCards': cardsHandler[index][1],
         'player_${index}_deck': cardsHandler[index][0],
         'matchingCards' : cardsGroupArray,
@@ -106,7 +109,7 @@ class DrawCard extends StatelessWidget {
       for (int i = 0; i < playersNumber; i++) {
         cloudMsgs['player${i}MSGS'] = "outerArrows";
       }
-      await db.collection("game").doc('game${gameNum}MSGS').set(
+      await db.collection(collectionType).doc('game${gameNum}MSGS').set(
         cloudMsgs, SetOptions(merge: true));
       await handleSpecialCardNo0(index);
       for (int i = 0; i < playersNumber; i++) {
@@ -116,7 +119,7 @@ class DrawCard extends StatelessWidget {
           for (int i = 0; i < playersNumber; i++) {
             cloudMsgs['player${i}MSGS'] = "outerArrows";
           }
-          await db.collection("game").doc('game${gameNum}').set(
+          await db.collection(collectionType).doc('game${gameNum}').set(
             cloudMsgs, SetOptions(merge: true));
           await Future.delayed(Duration(milliseconds: 1000));
           handleSpecialCardNo0(i);
@@ -142,7 +145,7 @@ class DrawCard extends StatelessWidget {
         dataUpload['player_${i}_deck'] = cardsHandler[i][0];
         dataUpload['player_${i}_openCards'] = cardsHandler[i][1];
       }
-      await db.collection("game").doc('game${gameNum}').
+      await db.collection(collectionType).doc('game${gameNum}').
         set(dataUpload, SetOptions(merge: true));
     },
   child: Image.asset('assets/DRAW_BTN.png',
@@ -155,10 +158,8 @@ class DrawCard extends StatelessWidget {
   }
 
   int increaseCardsArray(int card) {
-    print("HERE increase");
     int ret = -1;
     if ((card - 1) ~/ 4 < cardsGroupArray.length) {
-      print("Regular");
       cardsGroupArray[(card - 1) ~/ 4] += 1; // add new front number to array
       cardsColorArray[(card - 1) % 4] += 1;
     }
@@ -203,7 +204,8 @@ class DrawCard extends StatelessWidget {
         print("(3) ${i},  matchi ng cards: ${cardsGroupArray} ,ColorsArr: ${cardsColorArray} UniqueArr ${cardsActiveUniqueArray}");
         //cardsUpload['player_${i}_deck'] = cardsHandler[i][0];
         //cardsUpload['player_${i}_openCards'] = cardsHandler[i][0];
-        await FirebaseFirestore.instance.collection("game").doc("game${gameNum}").set({
+        await FirebaseFirestore.instance.collection(collectionType).
+          doc("game${gameNum}").set({
           'matchingCards': cardsGroupArray,
           'matchingColorCards' : cardsColorArray,
           'cardsActiveUniqueArray' : cardsActiveUniqueArray,

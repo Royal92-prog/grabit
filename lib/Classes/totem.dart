@@ -9,10 +9,12 @@ import 'dart:math';
 import '../main.dart';
 
 class totem extends StatefulWidget {
-  totem({required this.index, required this.gameNum, required this.playersNumber});
+  totem({required this.index, required this.gameNum,
+    required this.playersNumber, required this.collectionType});
   int index;
   final int gameNum;
   int playersNumber;
+  String collectionType;
 
   @override
   State<totem> createState() => totemState();
@@ -76,14 +78,16 @@ class totemState extends State<totem> {
     var size = MediaQuery.of(context).size;
     double rightPosition = underTotemCards.length > 9 ? 0.008 : 0.016;
     return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
-      stream: FirebaseFirestore.instance.collection('game').
+      stream: FirebaseFirestore.instance.collection(widget.collectionType).
         doc('game${widget.gameNum}').snapshots(),
       builder: (
           BuildContext context,
           AsyncSnapshot <DocumentSnapshot> snapshot) {
-            StreamSubscription subscription = FirebaseFirestore.instance.collection('game').
-            doc('game${widget.gameNum}').snapshots().listen((event) { });
-            if (snapshot.connectionState == ConnectionState.active && snapshot.data?.data() != null) {
+            StreamSubscription subscription = FirebaseFirestore.instance.
+            collection(widget.collectionType).doc('game${widget.gameNum}').
+            snapshots().listen((event) { });
+            if (snapshot.connectionState == ConnectionState.active
+              && snapshot.data?.data() != null) {
                 Map<String, dynamic> cloudData = (snapshot.data?.data() as Map<String, dynamic>);
                 cardsHandler = [];
                 isTotemPressed = cloudData.containsKey('totem') == true ?
@@ -151,20 +155,11 @@ class totemState extends State<totem> {
                       alignment: Alignment.center),
                       onTap: isTotemPressed ? null : () async {
                         FirebaseFirestore _firestore = FirebaseFirestore.instance;
-                        //List <dynamic> messages = [for(int i = 0; i < widget.playersNumber; i++) ""];
-                        /*await _firestore.collection('game').doc('game${widget.gameNum}')
-                            .set({'totem': true, 'turn' : -2},
-                            SetOptions(merge: true));*/
-                        /// TODO problem sync
-                       /* await _firestore.collection('game').doc('game${widget.gameNum}')
-                          .set({'totem': true,
-                          'totem${widget.index}Pressed': true},
-                            SetOptions(merge: true));*/
                         Random random = new Random();
                         int randomNumber = random.nextInt(900);
                         await Future.delayed(Duration(milliseconds: randomNumber));
                         if (isTotemPressed == true) return;
-                         await _firestore.collection('game').doc('game${widget.gameNum}')
+                         await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}')
                           .set({'totem': true, 'turn' : -2},
                           SetOptions(merge: true));
                         Map<String, dynamic> cloudMassages = {};
@@ -200,9 +195,9 @@ class totemState extends State<totem> {
                               "inner arrows card ! \n player ${widget.index} pressed the inner button first";
                           }
                           //uploadData["messages"] = messages;
-                          await _firestore.collection('game').doc('game${widget.gameNum}').set(
+                          await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}').set(
                               uploadData, SetOptions(merge: true));
-                          await _firestore.collection('game').doc('game${widget.gameNum}MSGS').set(
+                          await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}MSGS').set(
                               cloudMassages, SetOptions(merge: true));
                         }
 
@@ -261,9 +256,9 @@ class totemState extends State<totem> {
                               //cloudMassages['Player${i}Msgs'] = "player ${widget.index} won the Battle";
                             }
 
-                        await _firestore.collection('game').doc('game${widget.gameNum}').set(
+                        await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}').set(
                           uploadData, SetOptions(merge: true));
-                        await _firestore.collection('game').doc('game${widget.gameNum}MSGS').set(
+                        await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}MSGS').set(
                           cloudMassages, SetOptions(merge: true));
                               }
 
@@ -297,9 +292,9 @@ class totemState extends State<totem> {
                             if(i == widget.index) continue;
                             cloudMassages['player${i}MSGS'] = "player ${widget.index} was penalized";
                           }
-                          await _firestore.collection('game').doc('game${widget.gameNum}').set(
+                          await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}').set(
                               uploadData, SetOptions(merge : true));
-                          await _firestore.collection('game').doc('game${widget.gameNum}MSGS').
+                          await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}MSGS').
                             set(cloudMassages, SetOptions(merge : true));
                         }
                     var winners = [];
@@ -315,9 +310,9 @@ class totemState extends State<totem> {
                       //cloudMassages['Player${i}Msgs'] = finalMsg;
                       cloudMassages['player${i}MSGS'] = finalMsg;
                     }
-                    await _firestore.collection('game').doc('game${widget.gameNum}MSGS').
+                    await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}MSGS').
                       set(cloudMassages, SetOptions(merge : true));
-                    await _firestore.collection('game').doc('game${widget.gameNum}').
+                    await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}').
                       set({'turn' : -3,}, SetOptions(merge: true));
                     }})
                 ]));

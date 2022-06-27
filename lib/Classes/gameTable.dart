@@ -16,13 +16,15 @@ import 'drawCard.dart';
 
 class GameTable extends StatelessWidget {
   GameTable({required this.playersNumber, required this.playerIndex,
-    required this.nicknames, required this.gameNum, required this.avatars});
+    required this.nicknames, required this.gameNum,
+    required this.avatars, required this.collectionType});
 
   int playersNumber;
   int playerIndex;
   int gameNum;
   var nicknames;
   var avatars;
+  String collectionType;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,7 @@ class GameTable extends StatelessWidget {
                 gameNum: gameNum,
                 deviceIndex: playerIndex,
                 avatarUrl: avatars[(playersNumber == 5 ? 2 : playersNumber - 2)],
+                collectionType: collectionType,
               )),//1
             //this player is always of index playersNumber -1
             Positioned(
@@ -71,6 +74,7 @@ class GameTable extends StatelessWidget {
                 gameNum: gameNum,
                 nickname: nicknames[playersNumber -1],
                 avatarUrl: avatars[(playersNumber -1)],
+                collectionType: collectionType,
               )),//2
             //this player exists in case there are 5 players and its index is 3
             playersNumber == 5 ? Positioned(
@@ -84,6 +88,7 @@ class GameTable extends StatelessWidget {
                 gameNum: gameNum,
                 deviceIndex: playerIndex,
                 avatarUrl: avatars[3],
+                collectionType: collectionType,
               )) :
                 SizedBox(),
             //this player is always of index 0 unless there are more than 3 players
@@ -98,6 +103,7 @@ class GameTable extends StatelessWidget {
                 gameNum: gameNum,
                 nickname: nicknames[playersNumber > 3 ? 1 : 0],
                 avatarUrl: avatars[(playersNumber > 3 ? 1 : 0)],
+                collectionType: collectionType,
               )),
             //this player is always of index 0
             playersNumber > 3 ? Positioned(
@@ -111,6 +117,7 @@ class GameTable extends StatelessWidget {
                 nickname: nicknames[0],
                 deviceIndex: playerIndex,
                 avatarUrl: avatars[0],
+                collectionType: collectionType,
               )) : SizedBox(),
             //totem
             Positioned(
@@ -118,12 +125,14 @@ class GameTable extends StatelessWidget {
               top: 0.73 * size.height,
               child: totem(index: playerIndex,
                 playersNumber: playersNumber,
+              collectionType: collectionType,
               // winnerCallback : (isDeadEnd) {deadEndCallback(context, isDeadEnd);},
               gameNum: gameNum,))]))),
             GameNotifications(
               context: context,
               index: playerIndex,
-              gameNum: gameNum,),
+              gameNum: gameNum,
+              collectionType: collectionType,),
             Positioned(
               bottom: size.height * 0.09,
               right: size.width * 0.067,
@@ -132,7 +141,8 @@ class GameTable extends StatelessWidget {
                 playersNumber: playersNumber,
                 gameNum: gameNum,
                 deviceIndex: playerIndex,
-                currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);}
+                currentTurnCallback: (isDeadEnd) {deadEndCallback(context, isDeadEnd);},
+                collectionType: collectionType,
                   )),
             Positioned(
               bottom: size.height * 0.07,
@@ -140,7 +150,8 @@ class GameTable extends StatelessWidget {
               child: TurnAlert(
                 index: playerIndex,
                 gameNum: gameNum,
-          )),
+                collectionType: collectionType,
+          ),),
           Positioned(
             left: size.width * 0.05 ,
             bottom: size.height * 0.05,
@@ -151,7 +162,7 @@ class GameTable extends StatelessWidget {
               onTap: () async{
                 Map<String, dynamic> cloudMessasges = {};
                 FirebaseFirestore _firestore = FirebaseFirestore.instance;
-                await _firestore.collection('game').doc('game${gameNum}').set(
+                await _firestore.collection(collectionType).doc('game${gameNum}').set(
                     {'turn' : -2}, SetOptions(merge : true));
                 cloudMessasges['player${playerIndex}MSGS'] = " Bye Bye :)";
                 for(int i = 0; i < playersNumber; i++){
@@ -159,9 +170,9 @@ class GameTable extends StatelessWidget {
                   cloudMessasges['player${i}MSGS'] = "player ${playerIndex} ended the game \n"
                       "see you next time :)";
                 }
-                await _firestore.collection('game').doc('game${gameNum}MSGS').
+                await _firestore.collection(collectionType).doc('game${gameNum}MSGS').
                 set(cloudMessasges, SetOptions(merge : true));
-                await _firestore.collection('game').doc('game${gameNum}').set(
+                await _firestore.collection(collectionType).doc('game${gameNum}').set(
                     {'turn' : -1}, SetOptions(merge : true));
               }
       )),
@@ -175,7 +186,7 @@ class GameTable extends StatelessWidget {
     await Future.delayed(Duration(seconds: delay));
     if (playerIndex == 0) {
       print("Line 165 ---------- operational");
-      await FirebaseFirestore.instance.collection('game').doc('players${gameNum}').delete();
+      await FirebaseFirestore.instance.collection(collectionType).doc('players${gameNum}').delete();
     }
     Navigator.of(context).popUntil((route) => route.isFirst);
     //Navigator.of(context).pop();

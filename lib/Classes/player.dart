@@ -23,10 +23,12 @@ class Player extends StatefulWidget {
   final String nickname;
   final gameNum;
   final int playersNumber;
+  final String collectionType;
 
   const Player({required this.index, required this.deviceIndex,
     required this.currentTurnCallback, required this.nickname,
-    required this.gameNum, required this.playersNumber, required this.avatarUrl});
+    required this.gameNum, required this.playersNumber,
+    required this.avatarUrl, required this.collectionType});
 
 
   @override
@@ -67,10 +69,13 @@ class PlayerState extends State<Player>{
           ),
         ),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, gameNum: widget.gameNum)),
+        playerDeck(index:widget.index, gameNum: widget.gameNum,
+          collectionType: widget.collectionType,)),
         Positioned(right: 0.11* size.width,top: 0.16* size.height, child: Text(widget.nickname, style:
             GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-        Positioned(top: size.height*0.37,right:size.width*0.13,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
+        Positioned(top: size.height*0.37,right:size.width*0.13,child:
+        currentCard(index: widget.index, gameNum: widget.gameNum,
+          collectionType: widget.collectionType,))]);
     }
 
     else if(widget.index == 0 || widget.index == 1){//0
@@ -88,9 +93,12 @@ class PlayerState extends State<Player>{
           ),
         ),
         Positioned(right: 0.11* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, gameNum: widget.gameNum,)),
+        playerDeck(index:widget.index, gameNum: widget.gameNum,
+          collectionType: widget.collectionType,)),
 
-        Positioned(bottom:size.height*0.15,left:size.width*0.23,child: currentCard(index: widget.index, gameNum: widget.gameNum,)),
+        Positioned(bottom:size.height*0.15,left:size.width*0.23,child:
+          currentCard(index: widget.index, gameNum: widget.gameNum,
+            collectionType: widget.collectionType,)),
 
         Positioned(right: 0.11* size.width,top: 0.16* size.height,child: Text(widget.nickname, style: GoogleFonts.galindo( fontSize:14,color: Colors.white,),))
         ]);
@@ -111,9 +119,12 @@ class PlayerState extends State<Player>{
           ),
         ),
         Positioned(left: 0.12* size.width,top: 0.25* size.height,child:
-        playerDeck(index:widget.index, gameNum: widget.gameNum,)),
+        playerDeck(index:widget.index, gameNum: widget.gameNum,
+          collectionType: widget.collectionType,)),
         Positioned(right: 0.11* size.width,top: 0.16* size.height,child: Text(widget.nickname, style:GoogleFonts.galindo( fontSize:14,color: Colors.white,),)),
-        Positioned(bottom:size.height*0.17,right:size.width*0.23,child: currentCard(index: widget.index, gameNum: widget.gameNum,))]);
+        Positioned(bottom:size.height*0.17,right:size.width*0.23,
+            child: currentCard(index: widget.index,
+              gameNum: widget.gameNum, collectionType: widget.collectionType,))]);
     }
   }
 

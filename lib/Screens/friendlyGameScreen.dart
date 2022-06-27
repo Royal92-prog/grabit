@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grabit/Screens/waitingRoomScreen.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
 import 'package:tuple_dart/tuple.dart';
 
+import 'gameHost.dart';
 import 'gameHostScreen.dart';
 
 
@@ -21,6 +23,7 @@ class FriendlyGame extends StatefulWidget {
 class FriendlyGameStates extends State<FriendlyGame>{
   int playersNumber = 3;
   int gameTimeLimit = 0;
+  late int _playerIndex;
   final _gameRoomController = TextEditingController();
   Widget build(BuildContext context) {
 
@@ -53,7 +56,31 @@ class FriendlyGameStates extends State<FriendlyGame>{
       ),
       Positioned(left: size.width * 0.53 , top: size.height * 0.4, child:
           GestureDetector(child: Image.asset('assets/HostGame/join.png', width: 0.15 * size.width,
-          height: 0.1 * size.height))),
+          height: 0.1 * size.height),
+          onTap: (() async {
+            int gameNum = int.parse(_gameRoomController.text.toString());
+            await FirebaseFirestore.instance.collection('privateGame').
+              doc('players${gameNum}').get().then((snapshot) async {
+              if (snapshot.exists) {
+                final data = snapshot.data();
+                if (data != null) {
+                  int playersNumber = data['playersNumber'];
+                  _playerIndex = data['connectedPlayersNum'];//data['currentNum'];
+            await FirebaseFirestore.instance.collection('privateGame').
+              doc('players${gameNum}').set({
+              'connectedPlayersNum' : data['connectedPlayersNum'] +1 ,},
+              SetOptions(merge: true));
+              Navigator.of(context).push(MaterialPageRoute<void>(
+              builder: (context) {
+              return WaitingRoom(
+                gameNum : gameNum,
+                playerIndex: _playerIndex,
+                playersNumber: playersNumber,
+                collectionType: 'privateGame',);
+                }));
+            }
+    }
+    });}))),
       Positioned(left: size.width * 0.53 , top: size.height * 0.53, child:
       GestureDetector(child: Image.asset('assets/HostGame/host.png', width: 0.15 * size.width,
           height: 0.1 * size.height),
@@ -68,8 +95,7 @@ class FriendlyGameStates extends State<FriendlyGame>{
       Positioned(left: size.width * 0.05 , bottom: size.height * 0.05, child:
       GestureDetector(child:  Image.asset('assets/HostGame/back.png', height: 0.2 * size.height,
           width: 0.25 * size.width),onTap: (){ Navigator.of(context).pop(); }
-      )),
-    ]));
+      ))]));
   }
 }
 

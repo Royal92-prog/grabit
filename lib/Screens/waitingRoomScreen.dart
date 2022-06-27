@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,8 +14,12 @@ import '../services/gameNumberManager.dart';
 class WaitingRoom extends StatefulWidget {
   int gameNum;
   int playerIndex;
+  int playersNumber;
+  String collectionType;
 
-  WaitingRoom({required this.gameNum, required this.playerIndex});
+
+  WaitingRoom({required this.gameNum, required this.playerIndex,
+    required this.playersNumber, required this.collectionType});
 
   @override
   State<WaitingRoom> createState() => _WaitingRoomState();
@@ -44,7 +49,8 @@ class _WaitingRoomState extends State<WaitingRoom> {
     var size = MediaQuery.of(context).size;
 
     return StreamBuilder <DocumentSnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('game').doc('players${widget.gameNum}').snapshots(),
+        stream: FirebaseFirestore.instance.collection(widget.collectionType)
+            .doc('players${widget.gameNum}').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.active && snapshot.data?.data() != null) {
             //final data = snapshot.data;
@@ -54,7 +60,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
                 ? cloudData['connectedPlayersNum'] : 0;
             _nicknames =[];
             for(int i = 0; i < _connectedNum; i++){
-              if(cloudData.containsKey('player_${i}_nickname')){
+              if(cloudData.containsKey('player_${i}_nickname') == true){
                 _nicknames.add(cloudData['player_${i}_nickname']);
               }
               else{
@@ -64,29 +70,33 @@ class _WaitingRoomState extends State<WaitingRoom> {
 
             _avatars =[];
             for(int i = 0; i < _connectedNum; i++){
-              if(cloudData.containsKey('player_${i}_avatar')){
+              if(cloudData.containsKey('player_${i}_avatar') == true){
                 _avatars.add(cloudData['player_${i}_avatar']);
               }
               else{
-                _avatars.add("");
+                _avatars.add(null);
               }
             }
             //_nicknames = cloudData.containsKey('player_${i}_nickname') ? [for(int i = 0; i < _connectedNum; i++) data['player_${i}_nickname']];
             //}
             // }
           }
-          if (_connectedNum == 3) {
-            if (widget.playerIndex == 0) {
+          if(widget.collectionType != 'game' && _connectedNum ==
+              widget.playersNumber){
+            startGame();
+          }
+          if (widget.collectionType == 'game' && _connectedNum == 3) {
+            if (widget.collectionType == 'game' && widget.playerIndex == 0) {
               startWaiting();
             }
             startTimer();
           }
 
-          if (_connectedNum == 4 && widget.playerIndex == 3) {
+          if (widget.collectionType == 'game' && _connectedNum == 4 && widget.playerIndex == 3) {
             getWaitTime();
           }
 
-          if (_connectedNum == 5) {
+          if (widget.collectionType == 'game' && _connectedNum == 5) {
             startGame();
           }
 
@@ -112,7 +122,8 @@ class _WaitingRoomState extends State<WaitingRoom> {
   }
 
   void startWaiting() async {
-    await FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').set({
+    await FirebaseFirestore.instance.collection(widget.collectionType).
+      doc('game${widget.gameNum}').set({
       'waitingTimerStart' : DateTime.now().millisecondsSinceEpoch,
     }, SetOptions(merge: true));
   }
@@ -122,7 +133,8 @@ class _WaitingRoomState extends State<WaitingRoom> {
   }
 
   void getWaitTime() async {
-    return FirebaseFirestore.instance.collection('game').doc('game${widget.gameNum}').get().then(
+    return FirebaseFirestore.instance.collection(widget.collectionType).
+      doc('game${widget.gameNum}').get().then(
             (snapshot) {
           if (snapshot.exists) {
             final data = snapshot.data();
@@ -147,20 +159,26 @@ class _WaitingRoomState extends State<WaitingRoom> {
   // }
 
   void startGame() async{
-    if (widget.playerIndex == 0) {
+    if (widget.playerIndex == 0 && widget.collectionType == 'game') {
       increaseGameNum(widget.gameNum);
     }
     initializeGameData();
-    // await Future.delayed(
-    //     const Duration(milliseconds: 8000));
-    Navigator.of(context).push(
-        MaterialPageRoute<void>(
-            builder: (context) {
-              return GameTable(playerIndex: widget.playerIndex, nicknames: _nicknames,
-                gameNum: widget.gameNum, playersNumber: _connectedNum, avatars: _avatars,);
-            }
-        )
-    );
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).push(
+          MaterialPageRoute<void>(
+              builder: (context) {
+                return GameTable(
+                    playerIndex: widget.playerIndex,
+                    nicknames: _nicknames,
+                    gameNum: widget.gameNum,
+                    playersNumber: _connectedNum,
+                    avatars: _avatars,
+                    collectionType: widget.collectionType);
+              }
+          )
+      );
+    });
+
   }
 
     void initializeGameData() async{
@@ -196,9 +214,9 @@ class _WaitingRoomState extends State<WaitingRoom> {
               cardsArr.sublist(cards*i, (cards*(i+1)));
           }
         }
-        await _firestore.collection('game').doc('game${widget.gameNum}MSGS').
+        await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}MSGS').
         set(messages, SetOptions(merge : true));
-        await _firestore.collection('game').doc('game${widget.gameNum}')
+        await _firestore.collection(widget.collectionType).doc('game${widget.gameNum}')
             .set(dataUpload, SetOptions(merge : true));
       }
     }

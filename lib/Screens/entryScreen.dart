@@ -16,6 +16,7 @@ import 'package:grabit/services/gameNumberManager.dart';
 import 'package:grabit/services/playerManager.dart';
 import 'package:tuple/tuple.dart';
 
+import '../Classes/licencetDialog.dart';
 import '../Classes/card.dart';
 import '../main.dart';
 import '../services/Login.dart';
@@ -41,11 +42,6 @@ class entryScreenState extends State<entryScreen>{
   String _username = "guest";
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() async{
     super.dispose();
   }
@@ -53,6 +49,8 @@ class entryScreenState extends State<entryScreen>{
   @override
   Widget build(BuildContext context) {
     getCurrentGameNum();
+    print('avatar ${_avatarUrl}');
+
     var size = MediaQuery.of(context).size;
 
     return Stack(fit: StackFit.passthrough, children:
@@ -125,6 +123,8 @@ class entryScreenState extends State<entryScreen>{
                   return RegistrationScreen();
                 }));
               if (res?.item1) {
+                getCurrentAvatar();
+                getUserNickname();
                 setState(() {
                   isLoginMode = res?.item1;
                   _username = res?.item2;
@@ -132,14 +132,37 @@ class entryScreenState extends State<entryScreen>{
                 });
               }
             },),),
+              GestureDetector(
+            child: Stack(children: [
+              Positioned(
+                right: size.width * 0.07,
+                top: size.height * 0.1,
+                child: Image.asset('assets/HostGame/cleanBTN.png',
+                height: 0.095 * size.height,
+                width: 0.08 * size.width),),
+                Positioned(
+                    right: size.width * 0.095,
+                    top: size.height * 0.111,
+                    child: Text( "C",
+                style: GoogleFonts.galindo(
+                  fontSize: 18,
+                  color: Colors.black,),))]),
+                onTap: () {
+              print("Show dialog");
+              Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) {
+                      return LicenseDialog();
+                    }
+                  ));}),
         Positioned(
-          left: size.width * 0.07,
-          top: size.height * 0.65,
-          child: GestureDetector(
-            child: Image.asset('assets/Lobby/Info_BTN.png',
-              height: 0.14 * size.height,
-              width: 0.14 * size.width),
-            onTap: () => setState(() { instructionsMode = true; }),)),
+            left: size.width * 0.07,
+            top: size.height * 0.64,
+            child: GestureDetector(
+              child: Image.asset('assets/Lobby/Info_BTN.png',
+                  height: 0.14 * size.height,
+                  width: 0.14 * size.width),
+              onTap: () => setState(() { instructionsMode = true; }),)),
         Positioned(
           left: size.width * 0.13,
           bottom: size.height * 0.09,
@@ -187,12 +210,14 @@ class entryScreenState extends State<entryScreen>{
                 Navigator.of(context).push(
                 MaterialPageRoute<void>(
                 builder: (context) {
-                return WaitingRoom(gameNum: _gameNum, playerIndex: _playerIndex,);
+                return WaitingRoom(gameNum: _gameNum, playerIndex: _playerIndex,
+                  collectionType: 'game', playersNumber: -1,);
                       }
                       ));
               }))),
-        instructionsMode == true ? InfoScreen(func: setInstructionMode) : SizedBox()]);
+        instructionsMode == true ? InfoScreen(func: setInstructionMode) : SizedBox(),]);
   }
+
   setInstructionMode(){
     setState (() {
       this.instructionsMode = false;
@@ -204,7 +229,16 @@ class entryScreenState extends State<entryScreen>{
   }
 
   void getCurrentAvatar() async{
-    _avatarUrl = await getAvatarByUsername(_username);
+    await FirebaseFirestore.instance.collection('usersData').doc(_username).get().then((snapshot) {
+      if (snapshot.exists) {
+        var data = snapshot.data();
+        if (data != null) {
+          setState(() {
+            _avatarUrl = data['avatar'];
+          });
+        }
+      }
+    });
   }
 
   void updateUserNickname(nickname) async{
@@ -217,7 +251,9 @@ class entryScreenState extends State<entryScreen>{
           if (snapshot.exists) {
             final data = snapshot.data();
             if (data != null) {
-              _nicknameController.text = data['nickname'];
+              setState(() {
+                _nicknameController.text = data['nickname'];
+              });
             }
           }
         }
@@ -225,5 +261,6 @@ class entryScreenState extends State<entryScreen>{
   }
 
 }
+
 
 
