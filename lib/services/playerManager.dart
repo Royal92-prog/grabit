@@ -11,7 +11,6 @@ void initializePlayers(int gameNum) async {
     'player_2_nickname' : "",
     'player_3_nickname' : "",
     'player_4_nickname' : "",
-    // 'connectedPlayersNum' : 0
       }, SetOptions(merge: true));
 }
 
